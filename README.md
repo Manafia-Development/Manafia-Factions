@@ -13,3 +13,9 @@ Heavily optimized factions experience with boots + shields.
 
 
 Donations appriciated :)
+
+
+
+
+
+We are looking for people to help with development as this is a project done in spare time. Consider helping out!
