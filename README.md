@@ -18,7 +18,7 @@ Condensed YML files
 Removed discord functionality as it was poorly optimized and ran on the main thread
 
 
-**Boosters:**
+
 
 Power Booster - Increase the power boost in your faction.
 
