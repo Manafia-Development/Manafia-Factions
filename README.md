@@ -1,4 +1,4 @@
-[![](https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg)](https://jitpack.io/#Manafia-Development/Manafia-Factions)
+[![](https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg)](https://jitpack.io/#Manafia-Development/Manafia-Factions) [![CodeFactor](https://www.codefactor.io/repository/github/manafia-development/manafia-factions/badge)](https://www.codefactor.io/repository/github/manafia-development/manafia-factions)
 
 # Manafia-Factions
 A new factions experience.
