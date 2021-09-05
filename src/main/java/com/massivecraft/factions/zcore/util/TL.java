@@ -553,10 +553,10 @@ public enum TL {
     COMMAND_COLEADER_PROMOTED("&e&lFactions &8➤ &f &fYou've promoted&6 %1$s &fto co-leader in your faction."),
     COMMAND_COLEADER_DESCRIPTION("Give or revoke co-leader rights."),
 
-    COMMAND_CONVERTCONFIG_DESCRIPTION("Convert your UltimateFactions configuration."),
+    COMMAND_CONVERTCONFIG_DESCRIPTION("Convert your Manafia Factions configuration."),
     COMMAND_CONVERTCONFIG_SUCCESS("Configuration successfully converted."),
     COMMAND_CONVERTCONFIG_FAIL("Configuration conversion failed."),
-    COMMAND_CONVERTCONFIG_FAILCONFIGMISSING("Please confirm that you've placed UltimateFactions files in a folder called 'UltimateFactions'."),
+    COMMAND_CONVERTCONFIG_FAILCONFIGMISSING("Please confirm that you've placed ManafiaFactions files in a folder called 'ManafiaFactions'."),
 
     COMMAND_MODIFYPOWER_ADDED("&e&lFactions &8➤ &f &fYou've added&6 %1$f &fpower to&6 %2$s&f. The new total rounded power -&6 %3$d&f."),
     COMMAND_MODIFYPOWER_DESCRIPTION("Modify the power of a faction or user."),
@@ -1090,7 +1090,7 @@ public enum TL {
     GENERIC_PUBLICLAND("Public faction land."),
     GENERIC_FACTIONLESS("factionless"),
     GENERIC_SERVERADMIN("A server admin"), //NEED TO FIND OUT WHERE THIS MESSAGE IS USED
-    GENERIC_SERVER("UltimateFactions Server"), //NEEED TO FIND OUT WHERE THIS MESSAGE IS USED
+    GENERIC_SERVER("ManafiaFactions Server"), //NEEED TO FIND OUT WHERE THIS MESSAGE IS USED
     GENERIC_DISABLED("&e&lFactions &8➤ &f &cThe feature %1$s is currently disabled."),
     GENERIC_ENABLED("&aenabled"),
     GENERIC_INFINITY("âˆž"),

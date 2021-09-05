@@ -18,7 +18,7 @@ public class CmdDebug extends FCommand {
         System.out.print("-------Main-------");
         System.out.print("Server com.massivecraft.factions.Version: " + FactionsPlugin.getInstance().getServer().getVersion());
         System.out.print("Server Bukkit com.massivecraft.factions.Version: " + FactionsPlugin.getInstance().getServer().getBukkitVersion());
-        System.out.print("UltimateFactions com.massivecraft.factions.Version: " + FactionsPlugin.getInstance().getDescription().getVersion());
+        System.out.print("Manafia Factions com.massivecraft.factions.Version: " + FactionsPlugin.getInstance().getDescription().getVersion());
         System.out.print("Is Beta com.massivecraft.factions.Version: " + (FactionsPlugin.getInstance().getDescription().getFullName().contains("BETA") ? "True" : "False"));
         System.out.print("Players Online: " + Bukkit.getOnlinePlayers().size());
         System.out.print("------Command------");

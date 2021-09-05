@@ -7,7 +7,7 @@
     <version>1.0.3-Stable</version>
     <packaging>jar</packaging>
 
-    <name>UltimateFactions</name>
+    <name>Manafia Factions</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
