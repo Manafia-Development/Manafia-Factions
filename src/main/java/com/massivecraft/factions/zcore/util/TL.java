@@ -234,10 +234,10 @@ public enum TL {
 
     //I AM HERE!!
     COMMAND_CONFIG_NOEXIST("&e&lFactions &8➤ &f &cNo configuration setting '%1$s' exists."),
-    COMMAND_CONFIG_SET_TRUE("The {configuration_option} option was set to &atrue&f."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
-    COMMAND_CONFIG_SET_FALSE("The {configuration_option} option was set to &cfalse&f."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
-    COMMAND_CONFIG_OPTIONSET("The {configuration_option} option was set to {status}."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
-    COMMAND_CONFIG_COLOURSET("The {configuration_option}'s color option set to {color}."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
+    COMMAND_CONFIG_SET_TRUE(" option was set to &atrue&f."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
+    COMMAND_CONFIG_SET_FALSE(" option was set to &cfalse&f."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
+    COMMAND_CONFIG_OPTIONSET(" option was set to {status}."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
+    COMMAND_CONFIG_COLOURSET("'s color option set to {color}."), //ADD CONFIGURABLE PLACEHOLDER FOR THIS MESSAGE
     COMMAND_CONFIG_INTREQUIRED("&e&lFactions &8➤ &f &cCan't set %1$s - An integer (whole number) value is required."),
     COMMAND_CONFIG_LONGREQUIRED("&e&lFactions &8➤ &f &cCan't set %1$s - A long integer (whole number) value is required."),
     COMMAND_CONFIG_DOUBLEREQUIRED("&e&lFactions &8➤ &f &cCan't set %1$s - A double (numeric) value is required."),
@@ -1042,7 +1042,7 @@ public enum TL {
     CLAIM_PROTECTED("&e&lFactions &8➤ &f &fThis land is currently protected."),
     CLAIM_DISABLED("&e&lFactions &8➤ &f &cThis world has land claiming currently disabled."),
     CLAIM_CANTCLAIM("&e&lFactions &8➤ &f &cYou can't claim land for %s."),
-    CLAIM_ALREADYOWN("&e&lFactions &8➤ &f &fThe faction '&6 %s &f' already owns this land."),
+    CLAIM_ALREADYOWN("&e&lFactions &8➤ &f&6 %s &f already owns this land."),
     CLAIM_MUSTBE("&e&lFactions &8➤ &f &fYou must be&6 %s &fto claim land."),
     CLAIM_MEMBERS("&e&lFactions &8➤ &f &fFactions must have at least&6 %s &fmembers to be able to claim land."),
     CLAIM_SAFEZONE("&e&lFactions &8➤ &f &cYou can't claim a safezone."),
@@ -1171,8 +1171,8 @@ public enum TL {
     ECON_PERSONTOOKMONEYFROM("The user %1$s took %2$s from %3$s."),
     ECON_DISABLED("&e&lFactions &8➤ &f &cFactions economy is currently disabled."),
     ECON_OVER_BAL_CAP("The amount %s is over essential's balance limit."),
-    ECON_MONEYLOST("&e&lFactions &8➤ &f &cThe user %s lost %s %s."), //FIND OUT WHY ALL PLACEHOLDERS ARE THE SAME
-    ECON_CANTAFFORD("&e&lFactions &8➤ &f &cThe user %s can't afford %s %s."),
+    ECON_MONEYLOST("&e&lFactions &8➤ &f &cThe faction %s&c lost %s&c %s."), //FIND OUT WHY ALL PLACEHOLDERS ARE THE SAME
+    ECON_CANTAFFORD("&e&lFactions &8➤ &f &cThe faction %s can't afford %s %s."),
     ECON_UNABLETOTRANSFER("Unable to transfer %s to %s from %s."),
     ECON_PLAYERBALANCE("&e&lFactions &8➤ &f &fThe balance of&6 %s &fis&6 %s&f."),
     ECON_DEPOSITFAILED("&e&lFactions &8➤ &f &cThe user %s would've gained %s %s, but the deposit failed."),
