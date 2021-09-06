@@ -22,7 +22,7 @@ public class CmdSpawnerLock extends FCommand {
     @Override
     public void perform(CommandContext context) {
         Conf.spawnerLock = !Conf.spawnerLock;
-        context.msg(TL.COMMAND_SPAWNER_LOCK_TOGGLED, Conf.spawnerLock ? Util.color("&aEnabled") : Util.color("&4Disabled"));
+        context.msg(TL.COMMAND_SPAWNER_LOCK_TOGGLED, Conf.spawnerLock ? Util.color("&4Disabled") : Util.color("&aEnabled"));
     }
 
     @Override

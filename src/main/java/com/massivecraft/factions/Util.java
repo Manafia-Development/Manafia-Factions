@@ -273,7 +273,7 @@ public class Util {
 
         Util.sendBetaAlert();
 
-        System.out.println("WARNING: Shields may not work as intended! Beware")
+        System.out.println("WARNING: Shields may not work as intended! Beware");
 
         PlaceholderUtil.setupPlaceholderAPI();
         FactionsPlugin.instance.postEnable();

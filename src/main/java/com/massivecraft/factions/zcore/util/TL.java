@@ -408,7 +408,7 @@ public enum TL {
 
     COMMAND_HINT_PERMISSION("You can manage your faction's permissions using '/f perms'."),
 
-    COMMAND_SPAWNERCHUNK_CLAIM_SUCCESSFUL("&e&lFactions &8➤ &f &f7You have successfully claimed a &espawner chunk &7for your faction."),
+    COMMAND_SPAWNERCHUNK_CLAIM_SUCCESSFUL("&e&lFactions &8➤ &f &f7You have successfully claimed a &espawner chunk &ffor your faction."),
     COMMAND_SPAWNERCHUNK_ALREADY_CHUNK("&e&lFactions &8➤ &f &f7This chunk is already a spawnerchunk!"),
     COMMAND_SPAWNERCHUNK_PAST_LIMIT("&e&lFactions &8➤ &fYou have exceeded your max spawnerchunk limit! &7Limit: &f%1$s"),
     SPAWNER_CHUNK_UNCLAIMED("&e&lFactions &8➤ &fou have unclaimed a spawnerchunk!"),
@@ -1136,7 +1136,7 @@ public enum TL {
     PLACEHOLDER_CUSTOM_FACTION("{faction}"), //FIND OUT WHAT THIS IS
 
     SPAWNER_CHUNK_PLACE_DENIED_WILDERNESS("&e&lFactions &8➤ &fYou may not place spawners in wilderness!"),
-    SPAWNER_CHUNK_PLACE_DENIED_NOT_SPAWNERCHUNK("&e&lFactions &8➤ &fYou may not place spawners in this chunk. Only Spawner Chunks!"),
+    SPAWNER_CHUNK_PLACE_DENIED_NOT_SPAWNERCHUNK("&e&lFactions &8➤ &fYou may not place spawners in this chunk. Only in spawner chunks!"),
 
 
     WARBANNER_NOFACTION("&e&lFactions &8➤ &f &cYou need a faction to use a warbanner."),

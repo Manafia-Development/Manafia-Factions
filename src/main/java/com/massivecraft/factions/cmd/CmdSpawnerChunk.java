@@ -31,17 +31,16 @@ public class CmdSpawnerChunk extends FCommand {
         Location location = context.player.getLocation();
         FastChunk fastChunk = new FastChunk(Objects.requireNonNull(location.getWorld()).getName(), location.getChunk().getX(), location.getChunk().getZ());
         if (fac.getSpawnerChunkCount() < fac.getAllowedSpawnerChunks()) {
-            if (fac.getSpawnerChunkCount() < fac.getAllowedSpawnerChunks()) {
-                if (context.fPlayer.attemptClaim(fac, new FLocation(context.player.getLocation()), true)) {
-                    if (!fac.getSpawnerChunks().contains(fastChunk)) {
-                        context.fPlayer.msg(TL.COMMAND_SPAWNERCHUNK_CLAIM_SUCCESSFUL);
-                    } else {
-                        context.fPlayer.msg(TL.COMMAND_SPAWNERCHUNK_ALREADY_CHUNK);
-                    }
+            if (context.fPlayer.attemptClaim(fac, new FLocation(context.player.getLocation()), true)) {
+                if (!fac.getSpawnerChunks().contains(fastChunk)) {
+                    fac.getSpawnerChunks().add(fastChunk);
+                    context.fPlayer.msg(TL.COMMAND_SPAWNERCHUNK_CLAIM_SUCCESSFUL);
+                } else {
+                    context.fPlayer.msg(TL.COMMAND_SPAWNERCHUNK_ALREADY_CHUNK);
                 }
-            } else {
-                context.fPlayer.msg(TL.COMMAND_SPAWNERCHUNK_PAST_LIMIT, fac.getAllowedSpawnerChunks());
             }
+        } else {
+            context.fPlayer.msg(TL.COMMAND_SPAWNERCHUNK_PAST_LIMIT, fac.getAllowedSpawnerChunks());
         }
     }
 
