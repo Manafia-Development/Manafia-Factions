@@ -26,8 +26,10 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -113,6 +115,19 @@ public class Util {
             return;
         }
     }
+
+
+    public static void checkLunar() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("LunarClient-API") == null) {
+            System.out.println("You are missing the LunarClient-API. Please install it to use the Lunar features.");
+            Bukkit.getPluginManager().disablePlugin(FactionsPlugin.getInstance());
+            return;
+
+        }
+    }
+
+
+
 
     public static void addFPlayers() {
         for (FPlayer fPlayer : FPlayers.getInstance().getAllFPlayers()) {

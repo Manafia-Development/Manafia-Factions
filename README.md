@@ -30,6 +30,13 @@ MobSpawn Booster - Increase mob spawn in your territory.
 
 
 
+
+##Lunar Integration
+
+This plugin features a basic lunar-client integration. These settings can be toggled in ``lunar.yml``
+
+
+
 ## Dependencies
 
 Dependencies: Vault & EssentialsX
@@ -40,6 +47,8 @@ SoftDepend: CoreProtect, PlayerVaults, PlaceholderAPI, MVdWPlaceholderAPI, Permi
 
 
 ## Installation
+
+Install Vault, EssentialsX and Lunar-API if you wish to enable Lunar integration.
 
 After the plugin is compiled, the final jar will be located in the ``/target`` directory. Take the *non-shaded* jar and upload that into your servers ``/plugins`` folder.
 

@@ -1,0 +1,40 @@
+#This will not work without the Lunar Bukkit API located at: https://github.com/LunarClient/BukkitAPI
+
+
+Integration:
+  Enabled: true
+
+
+
+
+Mods:
+  FPS: true
+  CPS: true
+  SkyBlockAddons: true
+  ToggleSneak: true
+  hypixel_mod: true
+  armorstatus: true
+  keystrokes: true
+  coords: true
+  crosshair: true
+  potioneffects: true
+  directionhud: true
+  waypoints: true
+  scoreboard: true
+  potion_counter: true
+  ping: true
+  motionBlur: true
+  chat: true
+  scrollable_tooltips: true
+  uhc_overlay: true
+  particleMultiplierMOd: true
+  cooldowns: true
+
+
+
+
+
+
+
+
+  Coordinates: false

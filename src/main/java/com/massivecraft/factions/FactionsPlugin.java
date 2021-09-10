@@ -12,6 +12,7 @@ import com.massivecraft.factions.cmd.chest.AntiChestListener;
 import com.massivecraft.factions.cmd.reserve.ReserveAdapter;
 import com.massivecraft.factions.cmd.reserve.ReserveObject;
 import com.massivecraft.factions.listeners.*;
+import com.massivecraft.factions.lunar.Lunar;
 import com.massivecraft.factions.missions.MissionHandler;
 import com.massivecraft.factions.shield.ShieldListener;
 import com.massivecraft.factions.struct.Relation;
@@ -108,9 +109,14 @@ public class FactionsPlugin extends MPlugin {
         });
 
          */
+
+
         LangUtil.initLang();
         FactionsPlugin.langMap = LangUtil.getLangMap();
+
         Util.checkVault();
+
+
         if (Conf.userSpawnerChunkSystem) {
             this.getServer().getPluginManager().registerEvents(new SpawnerChunkListener(), this);
         }
@@ -129,6 +135,8 @@ public class FactionsPlugin extends MPlugin {
         }
 
         Util.initSetup();
+        Lunar.lunarSetup();
+
         //  ShieldTimes.getAllTimes();
         this.loadSuccessful = true;
     }
