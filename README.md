@@ -71,7 +71,7 @@ After the plugin is compiled, the final jar will be located in the ``/target`` d
 
 ## For the future
 
-In future releases, we hope to add KOTH, duels, conquest and more. This would require a lot of time and effort, so any help is appreciated especially considering this would all be free and open-source.
+In future releases, we hope to add KOTH, duels, conquest and more. This would require a lot of time and effort, so any help is appreciated especially considering this would all be free and open-source. We already have the code for this- implementing it is what would take the longest time.
 
 
 
