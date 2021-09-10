@@ -12,7 +12,7 @@ import com.massivecraft.factions.cmd.chest.AntiChestListener;
 import com.massivecraft.factions.cmd.reserve.ReserveAdapter;
 import com.massivecraft.factions.cmd.reserve.ReserveObject;
 import com.massivecraft.factions.listeners.*;
-import com.massivecraft.factions.lunar.Lunar;
+//import com.massivecraft.factions.lunar.Lunar;
 import com.massivecraft.factions.missions.MissionHandler;
 import com.massivecraft.factions.shield.ShieldListener;
 import com.massivecraft.factions.struct.Relation;
@@ -126,7 +126,7 @@ public class FactionsPlugin extends MPlugin {
         Util.migrateFPlayerLeaders();
 
 
-        log("- Plugin Setup Successfully Finished - (Process took: " + (System.currentTimeMillis() - timeEnabledSetup) + "ms) ");
+        log(ChatColor.GREEN + "- Plugin Setup Successfully Finished - (Process took: " + (System.currentTimeMillis() - timeEnabledSetup) + "ms) ");
         int pluginId = 11641;
         new Metrics(this, pluginId);
         if (!preEnable()) {
@@ -135,7 +135,7 @@ public class FactionsPlugin extends MPlugin {
         }
 
         Util.initSetup();
-        Lunar.lunarSetup();
+       // Lunar.lunarSetup();
 
         //  ShieldTimes.getAllTimes();
         this.loadSuccessful = true;
