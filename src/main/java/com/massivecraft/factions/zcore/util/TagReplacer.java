@@ -30,6 +30,7 @@ public enum TagReplacer {
     TRUCES_LIST(TagType.FANCY, "{truces-list}"),
     OFFLINE_LIST(TagType.FANCY, "{offline-list}"),
     ALTS(TagType.FANCY, "{alts}"),
+    SHIELD_TIME(TagType.FANCY, "{shield-time}"),
 
     /**
      * Player variables, require a player
@@ -247,11 +248,13 @@ public enum TagReplacer {
 
 
             case SHIELD_TIME:
-                if(fac.isProtected() && fac.getShieldStart() != null) return context.faction.;
+                if(fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_INFO);
                 if(fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
                 return TL.SHIELD_NOT_ENABLED.toString();
 
             case LUNAR_STATUS:
+
+
 
 
 
