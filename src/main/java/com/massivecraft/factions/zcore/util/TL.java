@@ -329,6 +329,8 @@ public enum TL {
     SHIELD_SET("&aThe user %1$s has set your faction shield to %2$s - %3$s."),
     SHIELD_SET_GLOBAL("&e&lFactions &8➤ &f &fThe faction %s has set their faction shield from %2$s - %3$s."),
     SHIELD_INFO("&e&lFactions &8➤ &f &fYour faction shield is set from %1$s - %2$s"),
+    SHIELD_NOT_SET("&e&lFactions &8➤ &f Your shield has not been set!"),
+    SHIELD_NOT_ENABLED("&e&lFactions &8➤ &fShields are not enabled!"),
 
 
     FORCESHIELD_CANCELLED_BY_ADMIN("&e&lFactions &8➤ &f &cYour shield has been cancelled by {player}."),
@@ -853,6 +855,7 @@ public enum TL {
     COMMAND_SHOW_POINTS("&6Faction Points - &e{faction-points}"),
     COMMAND_SHOW_OWNER("&6Owner - &e{leader}"),
     COMMAND_SHOW_POWER("&6Land/power/maximum power - &e{chunks}/{power}/{maxPower}"),
+    COMMAND_SHOW_SHIELD("&6Shield Status - &e{shield-status"),
     COMMAND_SHOW_BONUS(" (bonus: "), //FIND OUT WHAT THIS IS
     COMMAND_SHOW_PENALTY(" (penalty: "), //FIND OUT WHAT THIS IS
     COMMAND_SHOW_DEPRECIATED("(%1$s depreciated)"), //This is spelled correctly.

@@ -120,6 +120,7 @@ public class Util {
     public static void checkLunar() {
         if (Bukkit.getServer().getPluginManager().getPlugin("LunarClient-API") == null) {
             System.out.println("You are missing the LunarClient-API. Please install it to use the Lunar features.");
+            Conf.save();
             Bukkit.getPluginManager().disablePlugin(FactionsPlugin.getInstance());
             return;
 
