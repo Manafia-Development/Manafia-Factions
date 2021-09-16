@@ -1308,6 +1308,15 @@ public enum TL {
     COMMAND_BOOSTERS_STARTED_ANNOUNCE("&e&lFactions &8➤&aThe faction %s has just activated a %s booster for %s."),
 
 
+    //RAIDS
+
+    COMMAND_RAID_DESCRIPTION("Start a faction raid."),
+    COMMAND_RAID_START(" "),
+    COMMAND_RAID_STOP(" "),
+    COMMAND_RAID_ACTIVE(" "),
+    COMMAND_RAID_STARTED_ANNOUNCE(" "),
+
+
     PLACEHOLDERAPI_NULL("");
 
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
