@@ -15,14 +15,16 @@ public class FileManager {
 
     private final CustomFile shop = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/shop.yml"));
     private final CustomFile permissions = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/permissions.yml"));
-    private final CustomFile lunar = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/lunar.yml"));
+    private final CustomFile lunar = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.seperator + "integrations" + File.seperator + "/lunar.yml"));
+    //private final CustomFile badlion = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.seperator + "integrations" + File.seperator + "/badlion.yaml"));
 
 
 
     public void setupFiles() {
         shop.setup(true, "");
         permissions.setup(true, "");
-        lunar.setup(true, "");
+        lunar.setup(true, "integrations");
+       // badlion.setup(true, "integrations")
     }
 
     public CustomFile getPermissions() {
