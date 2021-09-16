@@ -162,7 +162,8 @@ public enum Permission {
     WARP("warp"),
     WILD("wild"),
     CHEST("chest"),
-    RAID_START("raid.start");
+    RAID_START("raid.start"),
+    RAID("raid");
 
     public final String node;
 

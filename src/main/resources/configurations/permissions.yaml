@@ -22,7 +22,7 @@ factions:
   autoleavebypass: AUTO_LEAVE_BYPASS #Ability to bypass the AutoLeaveTask (Will not be kicked for being afk too long)
   ban: BAN #Ability to use F Ban
   bypass: BYPASS #Ability to use F Bypass
-  booster: BOOSTER #Ability to use F Boosters
+  boosterS: BOOSTERS #Ability to use F Boosters
   chat: CHAT #Ability to Cycle through Faction Based Chats
   chatspy: CHATSPY #Ability to spy on other Faction Chats
   check: CHECK #Ability to use F Check
@@ -152,8 +152,4 @@ factions:
   warp: WARP #Ability to use F Warp
   wild: WILD #Ability to use F Wild
   chest: CHEST #Ability to use F Chest
-  shield: SHIELD #Ability to use F Shield
-  boosters: BOOSTERS #Ability to use F Booster
-  booster: #Ability to use boost remove & add
-    add: BOOSTER_ADD #Add a booster
-    remove: BOOSTER_REMOVE #Remove a booster
+  raid: RAID #Open the raid menu
