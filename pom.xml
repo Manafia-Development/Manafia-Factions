@@ -420,6 +420,46 @@
             <version>2.8.5</version>
             <scope>provided</scope>
         </dependency>
+
+
+
+
+
+
+
+
+
+
+
+
+        <dependency>
+            <groupId>com.lunarclient</groupId>
+            <artifactId>bukkitapi</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/bukkitapi.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.lunarclient</groupId>
+            <artifactId>bukkitimpl</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/BukkitImpl.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
         <dependency>
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
@@ -488,7 +528,6 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
     <repositories>
         <repository>
             <id>rosewood-repo</id>

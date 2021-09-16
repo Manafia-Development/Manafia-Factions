@@ -31,7 +31,7 @@ MobSpawn Booster - Increase mob spawn in your territory.
 
 
 
-##Lunar Integration
+## Lunar Integration
 
 This plugin features a basic lunar-client integration. These settings can be toggled in ``lunar.yml``
 

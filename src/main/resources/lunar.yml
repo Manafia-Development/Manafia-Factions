@@ -2,11 +2,15 @@
 
 
 Integration:
-  Enabled: true
+  Enabled: false
 
 
 
+#Enable/Disable Staff modules
+Staff:
+  XRAY: false
 
+# These haven't yet been enabled
 Mods:
   FPS: true
   CPS: true
@@ -14,27 +18,41 @@ Mods:
   ToggleSneak: true
   hypixel_mod: true
   armorstatus: true
-  keystrokes: true
-  coords: true
-  crosshair: true
-  potioneffects: true
-  directionhud: true
-  waypoints: true
-  scoreboard: true
-  potion_counter: true
-  ping: true
-  motionBlur: true
-  chat: true
-  scrollable_tooltips: true
-  uhc_overlay: true
-  particleMultiplierMOd: true
-  cooldowns: true
-
-
-
-
-
-
-
-
-  Coordinates: false
+  Keystrokes: true
+  Coords: true
+  Crosshair: true
+  Potioneffects: true
+  Directionhud: true
+  Waypoints: true
+  Scoreboard: true
+  Potion_Counter: true
+  Ping: true
+  MotionBlur: true
+  Chat: true
+  Scrollable_Tooltips: true
+  Uhc_Overlay: true
+  Particle_Multiplier: true
+  Cooldowns: true
+  WorldEdit: true
+  Clock: true
+  Stopwatch: true
+  Memory: true
+  Combo: true
+  Range: true
+  Time_Changer: true
+  ServerAddress: true
+  Saturation: true
+  ItemPhysics: true
+  Item_Tracker: true
+  Shiny_Pots: true
+  Block_Outline: true
+  Screenshot: true
+  FOV_Mod: true
+  TextHotKey: true
+  Netgraph: true
+  Mumble_link: true
+  Bossbar: true
+  Freelook: true
+  Repla_ymod: true
+  Nick_hider: true
+  Zoom: true

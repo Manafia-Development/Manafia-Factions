@@ -12,6 +12,9 @@ import com.massivecraft.factions.cmd.chest.AntiChestListener;
 import com.massivecraft.factions.cmd.reserve.ReserveObject;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.listeners.*;
+import com.massivecraft.factions.lunar.Lunar;
+import com.massivecraft.factions.lunar.LunarClientUserListener;
+import com.massivecraft.factions.lunar.LunarMods;
 import com.massivecraft.factions.missions.MissionHandler;
 import com.massivecraft.factions.shield.ShieldListener;
 import com.massivecraft.factions.util.FlightEnhance;
@@ -166,7 +169,8 @@ public class Util {
                 new FChestListener(),
                 new MenuListener(),
                 new AntiChestListener(),
-                new ShieldListener()
+                new ShieldListener(),
+                new LunarClientUserListener(LunarMods.getInstance())
         };
 
         for (Listener eventListener : FactionsPlugin.instance.eventsListener)
