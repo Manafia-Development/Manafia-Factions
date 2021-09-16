@@ -161,7 +161,8 @@ public enum Permission {
     SHOWCLAIMS("showclaims"),
     WARP("warp"),
     WILD("wild"),
-    CHEST("chest");
+    CHEST("chest"),
+    RAID_START("raid.start");
 
     public final String node;
 

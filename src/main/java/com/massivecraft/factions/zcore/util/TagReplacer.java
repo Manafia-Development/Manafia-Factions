@@ -2,6 +2,7 @@ package com.massivecraft.factions.zcore.util;
 
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.integration.Econ;
+import com.massivecraft.factions.shield.ShieldTimes;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.util.timer.TimerManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -29,6 +30,7 @@ public enum TagReplacer {
     TRUCES_LIST(TagType.FANCY, "{truces-list}"),
     OFFLINE_LIST(TagType.FANCY, "{offline-list}"),
     ALTS(TagType.FANCY, "{alts}"),
+    SHIELD_TIME(TagType.FANCY, "{shield-time}"),
 
     /**
      * Player variables, require a player
@@ -40,6 +42,7 @@ public enum TagReplacer {
     PLAYER_MAXPOWER(TagType.PLAYER, "{player-maxpower}"),
     PLAYER_KILLS(TagType.PLAYER, "{player-kills}"),
     PLAYER_DEATHS(TagType.PLAYER, "{player-deaths}"),
+    LUNAR_STATUS(TagType.PLAYER, "{lunar-status}"),
 
     /**
      * Faction variables, require at least a player
@@ -235,10 +238,42 @@ public enum TagReplacer {
                 return fac.hasHome() ? String.valueOf(fac.getHome().getBlockY()) : minimal ? null : "{ig}";
             case HOME_Z:
                 return fac.hasHome() ? String.valueOf(fac.getHome().getBlockZ()) : minimal ? null : "{ig}";
+
+
+            case SHIELD_STATUS:
+                if(fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_ALREADY_RUNNING);
+                if(fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
+                return TL.SHIELD_NOT_ENABLED.toString();
+
+
+
+            case SHIELD_TIME:
+                if(fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_INFO);
+                if(fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
+                return TL.SHIELD_NOT_ENABLED.toString();
+
+            case LUNAR_STATUS:
+
+
+
+
+
+
+
+
             //case SHIELD_STATUS:
             //if(fac.isProtected() && fac.getShieldFrame() != null) return String.valueOf(TL.SHIELD_CURRENTLY_ENABLE);
             //if(fac.getShieldFrame() == null) return String.valueOf(TL.SHIELD_NOT_SET);
             //return TL.SHIELD_CURRENTLY_NOT_ENABLED.toString();
+
+
+
+
+
+
+
+
+
             case LAND_VALUE:
                 return Econ.shouldBeUsed() ? Econ.moneyString(Econ.calculateTotalLandValue(fac.getLandRounded())) : minimal ? null : TL.ECON_OFF.format("value");
             case LAND_REFUND:

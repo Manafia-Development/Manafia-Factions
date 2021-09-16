@@ -152,3 +152,8 @@ factions:
   warp: WARP #Ability to use F Warp
   wild: WILD #Ability to use F Wild
   chest: CHEST #Ability to use F Chest
+  shield: SHIELD #Ability to use F Shield
+  boosters: BOOSTERS #Ability to use F Booster
+  booster: #Ability to use boost remove & add
+    add: BOOSTER_ADD #Add a booster
+    remove: BOOSTER_REMOVE #Remove a booster
