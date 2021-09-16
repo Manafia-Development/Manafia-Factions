@@ -392,3 +392,5 @@ permissions:
     description: Removed a booster 
   faction.boosters:
     description: Opens up the boosters menu
+  faction.raid.start:
+    description: Starts a faction raid  

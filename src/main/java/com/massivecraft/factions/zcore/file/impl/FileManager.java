@@ -17,7 +17,7 @@ public class FileManager {
     private final CustomFile permissions = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/permissions.yml"));
     private final CustomFile lunar = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.seperator + "integrations" + File.seperator + "/lunar.yml"));
     //private final CustomFile badlion = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.seperator + "integrations" + File.seperator + "/badlion.yaml"));
-
+    private final CustomFile raids = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/raids.yaml"));
 
 
     public void setupFiles() {
@@ -25,6 +25,7 @@ public class FileManager {
         permissions.setup(true, "");
         lunar.setup(true, "integrations");
        // badlion.setup(true, "integrations")
+       raids.setup(true, "");
     }
 
     public CustomFile getPermissions() {
@@ -38,6 +39,11 @@ public class FileManager {
     public CustomFile getLunar() {
         return lunar;
     }
+
+    public CustomFile getRaids() {
+        return raids;
+    }
+
 
 
 
