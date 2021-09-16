@@ -393,4 +393,6 @@ permissions:
   faction.boosters:
     description: Opens up the boosters menu
   faction.raid.start:
-    description: Starts a faction raid  
+    description: Starts a faction raid
+  faction.raid:
+    descripition: Opens the raid menu
