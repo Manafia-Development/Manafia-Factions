@@ -28,7 +28,7 @@ public class CustomFile {
         if (!getFile().exists()) {
             if (loadFromProject)
                 if (!inFolder.equalsIgnoreCase(""))
-                    FactionsPlugin.getInstance().saveResource(inFolder + "/data/" + file.getName(), false);
+                    FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
                    // FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
                 else
                     FactionsPlugin.getInstance().saveResource(file.getName(), false);
