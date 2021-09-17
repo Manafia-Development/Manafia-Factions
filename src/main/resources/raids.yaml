@@ -1,3 +1,7 @@
 #Main configuration file for raids
 #Basic raids functionality is here! Plenty more features and customizations to be added. Don't worry :)
 Enabled: false
+
+Mechanics:
+  #Should players be able to mine spawners during a raid?
+  Spawner-Break: false

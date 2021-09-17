@@ -53,14 +53,10 @@ public class CmdRaid extends FCommand {
             context.msg(TL.COMMAND_RAID_HELP_2);
             return;
         }
-        /*
+    
         if(context.faction.isProtected()) {
             context.sender.sendMessage(TL.COMMAND_RAID_DENIED.format(target, me));
-        }
-
-         */
-
-
+        }    
         if (context.faction.isPeaceful()) {
             context.sender.sendMessage(TL.COMMAND_RAID_DENIED.format(target));
             return;
@@ -82,7 +78,13 @@ public class CmdRaid extends FCommand {
             Bukkit.broadcastMessage(TL.COMMAND_RAID_STARTED_BROADCAST.format(me, target.getTag()));
         //    boolean RaidStarted = true;
 
+        if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Mechanics.Spawner-Break", false)) {
+            
+           // boolean raidSpawners = true;
 
+            //TODO add a timer!
+
+        }
             return;
         }
     }

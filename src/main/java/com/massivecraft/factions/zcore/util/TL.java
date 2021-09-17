@@ -1323,6 +1323,7 @@ public enum TL {
     COMMAND_RAID_INVALID_FAC("&e&lFactions &8➤&c That is an invalid faction name! "),
     COMMAND_RAID_DENIED_YOURSELF("&e&lFactions &8➤ &c You cannot raid yourself!"),
     COMMAND_RAID_STARTED_BROADCAST("&f\n &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &f&l«&c&l*&4&l*&c&l*&f&l»&r &4&lFaction Raid &r &f&l«&c&l*&4&l*&c&l*&f&l» \n &r &r &r &fThe user &c %s &f has declared a &araid              \n &r &r &r &r &r &r &fon the faction &c%s &f \n &f \n &r &r &r &r &r &r &r &r &r &r &r &7&o(( Prepare your defences! )) "),
+    COMMAND_RAID_SPAWNER_DENY("&e&lFactions &8➤&c You may not mine spawners during a raid!"),
 
 
     PLACEHOLDERAPI_NULL("");

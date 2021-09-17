@@ -288,23 +288,4 @@ public class FactionsPlugin extends MPlugin {
         fLogManager = new FLogManager();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

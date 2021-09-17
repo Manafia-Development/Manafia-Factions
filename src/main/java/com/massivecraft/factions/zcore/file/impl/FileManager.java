@@ -45,6 +45,9 @@ public class FileManager {
         return raids;
     }
 
+    public CustomFile getBadlion() {
+        return badlion;
+    }
 
 
 
