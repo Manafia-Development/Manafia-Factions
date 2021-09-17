@@ -1311,15 +1311,18 @@ public enum TL {
     //RAIDS
 
     COMMAND_RAID_DESCRIPTION("Start a faction raid."),
-    COMMAND_RAID_START(" "),
-    COMMAND_RAID_STOP(" "),
-    COMMAND_RAID_ACTIVE(" "),
-    COMMAND_RAID_STARTED_ANNOUNCE(" "),
-    COMMAND_RAID_HELP_1(" "),
-    COMMAND_RAID_HELP_2(" "),
-    COMMAND_RAID_DENIED(" "),
-    COMMAND_RAID_SHIELD_RUNNING(" "),
-    COMMAND_RAID_NOCLAIMS(" "),
+    COMMAND_RAID_START("&e&lFactions &8➤ &4&l The faction %s has just started a raid against %s!"),
+    COMMAND_RAID_STOP("&e&lFactions &8➤ &4&l The raid has just stopped!"),
+    COMMAND_RAID_ACTIVE("&e&lFactions &8➤ &4&l The faction %s is in an active raid!"),
+    COMMAND_RAID_STARTED_ANNOUNCE("&e&lFactions &8➤&4&l The faction  %s has just started a raid against %s"),
+    COMMAND_RAID_HELP_1("&cTo start a raid, please type '/f raid <faction>'"),
+    COMMAND_RAID_HELP_2("&cRaiding can only be preformed if the faction is an enemy."),
+    COMMAND_RAID_DENIED("&e&lFactions &8➤&c A raid against %s could not be set."),
+    COMMAND_RAID_SHIELD_RUNNING("&e&lFactions &8➤&c A shield is active!"),
+    COMMAND_RAID_NOCLAIMS("&e&lFactions &8➤ &cThe faction  %s has no claims!"),
+    COMMAND_RAID_INVALID_FAC("&e&lFactions &8➤&c That is an invalid faction name! "),
+    COMMAND_RAID_DENIED_YOURSELF("&e&lFactions &8➤ &c You cannot raid yourself!"),
+    COMMAND_RAID_STARTED_BROADCAST("&f\n &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &r &f&l«&c&l*&4&l*&c&l*&f&l»&r &4&lFaction Raid &r &f&l«&c&l*&4&l*&c&l*&f&l» \n &r &r &r &fThe user &c %s &f has declared a &araid              \n &r &r &r &r &r &r &fon the faction &c%s &f \n &f \n &r &r &r &r &r &r &r &r &r &r &r &7&o(( Prepare your defences! )) "),
 
 
     PLACEHOLDERAPI_NULL("");

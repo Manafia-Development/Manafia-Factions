@@ -14,6 +14,7 @@ import com.massivecraft.factions.cmd.claim.*;
 import com.massivecraft.factions.cmd.econ.CmdMoney;
 import com.massivecraft.factions.cmd.grace.CmdGrace;
 import com.massivecraft.factions.cmd.points.CmdPoints;
+import com.massivecraft.factions.cmd.raids.CmdRaid;
 import com.massivecraft.factions.cmd.relational.CmdRelationAlly;
 import com.massivecraft.factions.cmd.relational.CmdRelationEnemy;
 import com.massivecraft.factions.cmd.relational.CmdRelationNeutral;
@@ -169,6 +170,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdBoosterAdd cmdBoosterAdd = new CmdBoosterAdd();
     public CmdBoosterRemove cmdBoosterRemove = new CmdBoosterRemove();
     public CmdBoosters cmdBoosters = new CmdBoosters();
+    public CmdRaid cmdRaid = new CmdRaid();
     //Variables to know if we already setup certain sub commands
     public Boolean checkEnabled = false;
     public Boolean missionsEnabled = false;
@@ -187,6 +189,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public Boolean fAuditEnabled = false;
     public Boolean fStrikes = false;
     public Boolean fBoosterEnabled = false;
+    public Boolean raidEnabled = false;
 
     public FCmdRoot () {
         super();
@@ -306,6 +309,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdFriendlyFire);
         this.addSubCommand(this.cmdSetPower);
         this.addSubCommand(this.cmdSetTnt);
+        this.addSubCommand(this.cmdRaid);
         addVariableCommands();
         if (CommodoreProvider.isSupported()) brigadierManager.build();
     }
@@ -352,6 +356,11 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
 
         if (Conf.userSpawnerChunkSystem) {
             this.addSubCommand(this.cmdSpawnerChunk);
+        }
+
+        if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Enabled", false) && !raidEnabled) {
+            this.addSubCommand(this.cmdRaid);
+            raidEnabled = true;
         }
 
         if (FactionsPlugin.getInstance().getConfig().getBoolean("Missions-Enabled", false) && !missionsEnabled) {

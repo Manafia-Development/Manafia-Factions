@@ -121,6 +121,7 @@ public class Aliases {
     public static ArrayList<String> titles = new ArrayList<>(Collections.singletonList("titles"));
     public static ArrayList<String> power_power = new ArrayList<>(Arrays.asList("pow", "power"));
     public static ArrayList<String> power_boost = new ArrayList<>(Collections.singletonList("powerboost"));
+    public static ArrayList<String> raid = new ArrayList<>(Collections.singletonList("raid"));
     public static ArrayList<String> raid_start = new ArrayList<>(Collections.singletonList("raidstart"));
     public static ArrayList<String> reload = new ArrayList<>(Collections.singletonList("reload"));
     public static ArrayList<String> rules = new ArrayList<>(Arrays.asList("r", "rule", "rules"));

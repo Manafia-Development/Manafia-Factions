@@ -2,21 +2,24 @@ package com.massivecraft.factions.cmd.raids;
 
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
-import com.massivecraft.factions.cmd.Aliases;
-import com.massivecraft.factions.cmd.CommandContext;
-import com.massivecraft.factions.cmd.CommandRequirements;
-import com.massivecraft.factions.cmd.FCommand;
+import com.massivecraft.factions.Util;
+import com.massivecraft.factions.cmd.*;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.zcore.util.TL;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.security.PublicKey;
+import java.util.List;
 
 public class CmdRaid extends FCommand {
 
     public CmdRaid() {
         super();
         this.aliases.addAll(Aliases.raid);
-        this.requiredArgs.add("faction name");
+        this.requiredArgs.add("faction");
         this.requirements = new CommandRequirements.Builder(Permission.RAID)
                 .memberOnly()
                 .withRole(Role.LEADER)
@@ -27,52 +30,66 @@ public class CmdRaid extends FCommand {
     @Override
     public void perform(CommandContext context) {
 
-        Faction them = context.argAsFaction(0);
-        if (them == null) return;
+
+        Faction target = context.argAsFaction(0);
+        String me = context.sender.getName();
+        Faction meFac = context.fPlayer.getFaction();
+        if (target == null) {
+            context.sender.sendMessage(TL.COMMAND_RAID_INVALID_FAC.format(context.argAsString(0)));
+            return;
+        }
+
+        context.faction = target;
 
 
-        if (!FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Enabled", false)) {
+        if (!FCmdRoot.instance.raidEnabled) {
             context.msg(TL.GENERIC_DISABLED, "Faction Raids");
             boolean isEnabled = false;
             return;
         }
 
-        if(context.fPlayer.getRole() !=Role.LEADER && !context.fPlayer.isAdminBypassing()) {
+        if (context.fPlayer.getRole() != Role.LEADER && !context.fPlayer.isAdminBypassing()) {
             context.msg(TL.COMMAND_RAID_HELP_1, "set a raid!");
             context.msg(TL.COMMAND_RAID_HELP_2);
             return;
         }
-
+        /*
         if(context.faction.isProtected()) {
-            context.msg(TL.COMMAND_RAID_DENIED, context.faction);
-        }
-        if(context.faction.isPeaceful()) {
-            context.msg(TL.COMMAND_RAID_DENIED, context.faction);
-        }
-        if(context.faction.isShieldRunning()) {
-            context.msg(TL.COMMAND_RAID_SHIELD_RUNNING, context.faction);
-        }
-        if(context.faction.getAllClaims().isEmpty()) {
-            context.msg(TL.COMMAND_RAID_NOCLAIMS);
+            context.sender.sendMessage(TL.COMMAND_RAID_DENIED.format(target, me));
         }
 
-        if(context.faction.isNormal()) {
-            if(context.fPlayer.getFaction().getRelationTo(context.fPlayer) == Relation.ENEMY) {
-                Faction faction = context.argAsFaction(0, context.faction);
-                faction.msg(TL.COMMAND_RAID_STARTED_ANNOUNCE);
-            }
+         */
 
+
+        if (context.faction.isPeaceful()) {
+            context.sender.sendMessage(TL.COMMAND_RAID_DENIED.format(target));
+            return;
+        }
+        if (context.faction.isShieldRunning()) {
+            context.sender.sendMessage(TL.COMMAND_RAID_SHIELD_RUNNING.format(target, me));
+            return;
+        }
+        if (context.faction.getAllClaims().isEmpty()) {
+            context.sender.sendMessage(TL.COMMAND_RAID_NOCLAIMS.format(context.argAsString(0)));
+            return;
+        }
+        if (context.faction.getTag().equals(context.fPlayer.getTag())) {
+            context.sender.sendMessage(String.valueOf(TL.COMMAND_RAID_DENIED_YOURSELF));
+            return;
         }
 
+        if (context.faction.isNormal()) {
+            Bukkit.broadcastMessage(TL.COMMAND_RAID_STARTED_BROADCAST.format(me, target.getTag()));
+        //    boolean RaidStarted = true;
 
+
+            return;
         }
-    @Override
-    public TL getUsageTranslation() {
-        return TL.COMMAND_RAID_DESCRIPTION;
     }
-}
 
 
-
-
-
+        @Override
+        public TL getUsageTranslation() {
+            return TL.COMMAND_RAID_DESCRIPTION;
+        }
+    }

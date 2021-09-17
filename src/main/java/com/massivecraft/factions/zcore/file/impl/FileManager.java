@@ -12,7 +12,7 @@ import java.io.File;
  */
 public class FileManager {
 
-    private final CustomFile shop = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "configurations" + File.separator + "/shop.yaml"));
+    private final CustomFile shop = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/shop.yml"));
     private final CustomFile permissions = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "configurations" + File.separator + "/permissions.yaml"));
     private final CustomFile lunar = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "integrations" + File.separator + "/lunar.yaml"));
     private final CustomFile badlion = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "integrations" + File.separator + "/badlion.yaml"));
@@ -22,7 +22,7 @@ public class FileManager {
 
 
     public void setupFiles() {
-        shop.setup(true, "configurations");
+        shop.setup(true, "");
         permissions.setup(true, "configurations");
         lunar.setup(true, "integrations");
         badlion.setup(true, "integrations");
