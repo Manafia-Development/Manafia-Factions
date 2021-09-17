@@ -34,6 +34,10 @@ MobSpawn Booster - Increase mob spawn in your territory.
 We are currently working hard to add the premium raids feature right here, for free! As of now, we have a basic functional system, but we plan to extend on this greatly. 
 
 
+Usage:
+``/f raid <faction>``
+
+
 
 
 ## Lunar Integration
