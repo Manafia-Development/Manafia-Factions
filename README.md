@@ -92,3 +92,8 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+
+## Support
+
+Support is avaliable at https://matrix.to/#/#manafia-development:mozilla.org
+
