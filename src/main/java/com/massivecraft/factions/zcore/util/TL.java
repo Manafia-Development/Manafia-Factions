@@ -1326,6 +1326,26 @@ public enum TL {
     COMMAND_RAID_SPAWNER_DENY("&e&lFactions &8➤&c You may not mine spawners during a raid!"),
 
 
+    //CLOAKS
+
+    COMMAND_CLOAKS_ADD_DESCRIPTION("Set a faction cloak."),
+    COMMAND_CLOAKS_ADD_INVALID_FAC("&e&lFactions &8➤&cThe faction %s doesn't exist."),
+    COMMAND_CLOAKS_ADD_INVALID_TYPE("&e&lFactions &8➤&cThe cloak type %s doesn't exist."),
+    COMMAND_CLOAKS_ADD_INVALID_TIME("&e&lFactions &8➤&cThe time value %s is not valid."),
+    COMMAND_CLOAKS_ADD_SUCCESSFUL("&e&lFactions &8➤&aSuccessfully added cloak type %s to faction %s."),
+    COMMAND_CLOAKS_ADD_ACTIVE("&e&lFactions &8➤&cThe cloak type %s is already active for this faction."),
+    COMMAND_CLOAKS_REMOVE_DESCRIPTION("Remove a faction a cloak."),
+    COMMAND_CLOAKS_REMOVE_INVALID_FAC("&e&lFactions &8➤&cThe faction %s doesn't exist."),
+    COMMAND_CLOAKS_REMOVE_INVALID_TYPE("&e&lFactions &8➤&cThe cloak type %s doesn't exist."),
+    COMMAND_CLOAKS_REMOVE_INVALID_NOT_ACTIVE("&e&lFactions &8➤&cThe cloak type %s is not active for this faction."),
+    COMMAND_CLOAKS_REMOVE_SUCCESSFUL("&aSuccessfully removed cloak type %s from faction %s."),
+    COMMAND_CLOAKS_ALREADY_ACTIVE("&e&lFactions &8➤&cYou already have an active %s cloak."),
+    COMMAND_CLOAKS_NOT_ENOUGH("&e&lFactions &8➤&cYou do not have enough money to complete this transaction."),
+    COMMAND_CLOAKS_PURCHASED("&e&lFactions &8➤&aYou have successfully purchased a %s cloak for your faction."),
+    COMMAND_CLOAKS_DESCRIPTION("Open the cloak shop gui."),
+    COMMAND_CLOAKS_STARTED_ANNOUNCE("&e&lFactions &8➤&aThe faction %s has just activated a %s cloak for %s."),
+
+
     PLACEHOLDERAPI_NULL("");
 
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();

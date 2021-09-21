@@ -170,7 +170,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdBoosterAdd cmdBoosterAdd = new CmdBoosterAdd();
     public CmdBoosterRemove cmdBoosterRemove = new CmdBoosterRemove();
     public CmdBoosters cmdBoosters = new CmdBoosters();
-    public CmdRaid cmdRaid = new CmdRaid();.
+    public CmdRaid cmdRaid = new CmdRaid();
     public CmdCloaks cmdCloaks = new CmdCloaks();
     //Variables to know if we already setup certain sub commands
     public Boolean checkEnabled = false;
