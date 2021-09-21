@@ -16,6 +16,7 @@ public class FileManager {
     private final CustomFile permissions = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "configurations" + File.separator + "/permissions.yaml"));
     private final CustomFile lunar = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "integrations" + File.separator + "/lunar.yaml"));
     private final CustomFile badlion = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "integrations" + File.separator + "/badlion.yaml"));
+    private final CustomFile cloaks = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "configurations" + File.separator + "/cloaks.yaml"));
     private final CustomFile raids = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/raids.yaml"));
 
 
@@ -24,6 +25,7 @@ public class FileManager {
     public void setupFiles() {
         shop.setup(true, "");
         permissions.setup(true, "configurations");
+        cloaks.setup(true, "configurations");
         lunar.setup(true, "integrations");
         badlion.setup(true, "integrations");
         raids.setup(true, "");
@@ -47,6 +49,10 @@ public class FileManager {
 
     public CustomFile getBadlion() {
         return badlion;
+    }
+
+    public CustomFile getCloaks() {
+      return cloaks;
     }
 
 

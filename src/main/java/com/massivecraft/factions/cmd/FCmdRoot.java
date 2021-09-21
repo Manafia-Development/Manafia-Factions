@@ -170,7 +170,8 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdBoosterAdd cmdBoosterAdd = new CmdBoosterAdd();
     public CmdBoosterRemove cmdBoosterRemove = new CmdBoosterRemove();
     public CmdBoosters cmdBoosters = new CmdBoosters();
-    public CmdRaid cmdRaid = new CmdRaid();
+    public CmdRaid cmdRaid = new CmdRaid();.
+    public CmdCloaks cmdCloaks = new CmdCloaks();
     //Variables to know if we already setup certain sub commands
     public Boolean checkEnabled = false;
     public Boolean missionsEnabled = false;
@@ -190,6 +191,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public Boolean fStrikes = false;
     public Boolean fBoosterEnabled = false;
     public Boolean raidEnabled = false;
+    public boolean cloaksEnabled = false;
 
     public FCmdRoot () {
         super();
@@ -310,6 +312,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdSetPower);
         this.addSubCommand(this.cmdSetTnt);
         this.addSubCommand(this.cmdRaid);
+        //this.addSubCommand(this.cmdCloaks);
         addVariableCommands();
         if (CommodoreProvider.isSupported()) brigadierManager.build();
     }

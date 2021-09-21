@@ -3,6 +3,8 @@ package com.massivecraft.factions.zcore.persist;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.boosters.Booster;
 import com.massivecraft.factions.boosters.BoosterType;
+import com.massivecraft.factions.cloak.Cloak;
+import com.massivecraft.factions.cloak.CloakType;
 import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent.PlayerDisbandReason;
@@ -40,6 +42,7 @@ import java.util.logging.Level;
 
 public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private final Map<BoosterType, Booster> boosters = new HashMap<>();
+    private finam Map<CloakType, Cloak> cloaks = new HashMap<>();
     public HashMap<Integer, String> rules = new HashMap<>();
     public int tnt;
     public Location checkpoint;
@@ -93,7 +96,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private int allowedSpawnerChunks;
     private Set<FastChunk> spawnerChunks;
     private boolean protectedfac = true;
-    private boolean cloaked;
 
     // -------------------------------------------- //
     // Construct
@@ -125,7 +127,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.completedMissions = new ArrayList<>();
         allowedSpawnerChunks = Conf.allowedSpawnerChunks;
         spawnerChunks = new HashSet<>();
-        cloaked = false;
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
@@ -156,7 +157,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.bufferCheckMinutes = 0;
         this.weeWoo = false;
         this.checks = new ConcurrentHashMap<>();
-        this.cloaked = false;
         allowedSpawnerChunks = Conf.allowedSpawnerChunks;
         spawnerChunks = new HashSet<>();
         this.playerWallCheckCount = new ConcurrentHashMap<>();
@@ -173,12 +173,28 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.protectedfac = protectedfac;
     }
 
-    public boolean isFactionCloaked() {
-        return cloaked;
+    public boolean hasCloak(CloakType cloakType) {
+        if (cloaks.containsKey(cloakType)) {
+            Cloak cloak = cloaks.get(cloakType);
+            if (System.currentTimeMillis() > cloaks.getEndTimeStamp()) {
+                cloaks.remove(cloakType);
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
-    public void setIsFactionCloaked(boolean cloaked) {
-        this.cloaked = cloaked;
+    public void addCloak(Cloak cloak) {
+        this.cloaks.put(cloak.getCloakType(), cloak);
+    }
+
+    public void removeCloak(CloakType cloakType) {
+        this.cloaks.remove(cloakType);
+    }
+
+    public Map<CloakType, Cloak> getActiveCloaks() {
+        return cloaks;
     }
 
     public int getSpawnerChunkCount() {

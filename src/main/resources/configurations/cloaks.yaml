@@ -1,0 +1,14 @@
+Cloaks:
+  Enabled: false
+  Rows: 3
+  Title: '&aFactions Cloaks'
+  DummyItem:
+    Name: '&f'
+    Type: BLACK_STAINED_GLASS_PANE
+    Lore:
+      - ' '
+  ActiveCloak:
+    Name: '&cThis cloak is already activated.'
+    Type: BARRIER
+    Lore:
+      - ''
