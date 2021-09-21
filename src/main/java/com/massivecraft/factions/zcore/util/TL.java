@@ -1344,7 +1344,12 @@ public enum TL {
     COMMAND_CLOAKS_PURCHASED("&e&lFactions &8➤&aYou have successfully purchased a %s cloak for your faction."),
     COMMAND_CLOAKS_DESCRIPTION("Open the cloak shop gui."),
     COMMAND_CLOAKS_STARTED_ANNOUNCE("&e&lFactions &8➤&aThe faction %s has just activated a %s cloak for %s."),
+    COMMAND_CLOAKS_CLAIM_SUCCESSFUL("&e&lFactions &8➤&a Sucessfully cloaked a chunk!"),
+    COMMAND_CLOAKS_ALREADY_CHUNK("&e&lFactions &8➤&c Chunk is already cloaked!"),
 
+
+
+    
 
     PLACEHOLDERAPI_NULL("");
 

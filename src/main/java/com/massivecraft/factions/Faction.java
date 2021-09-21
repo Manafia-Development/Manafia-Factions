@@ -2,6 +2,7 @@ package com.massivecraft.factions;
 
 import com.massivecraft.factions.boosters.Booster;
 import com.massivecraft.factions.boosters.BoosterType;
+import com.massivecraft.factions.util.CloakChunk;
 import com.massivecraft.factions.event.FactionDisbandEvent.PlayerDisbandReason;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
@@ -35,6 +36,18 @@ public interface Faction extends EconomyParticipator {
     void removeCloak(CloakType cloak);
 
     Map<CloakType, Cloak> getActiveCloaks();
+
+    Set<CloakChunk> getCloakChunks();
+
+    void setCloakChunks(Set<CloakChunk> cloakChunks);
+
+    void clearCloakChunks();
+
+    int getCloakChunkCount();
+
+    int getAllowedCloakChunks();
+
+    void setAllowedCloakChunks(int chunks);
 
     //double getFactionBalance();
 

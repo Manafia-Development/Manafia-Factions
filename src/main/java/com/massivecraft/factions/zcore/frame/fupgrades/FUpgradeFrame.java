@@ -58,6 +58,14 @@ public class FUpgradeFrame {
                                 if (Conf.allowSpawnerChunksUpgrade) {
                                     updateSpawnerChunks(fme.getFaction());
                                 }
+                            /*
+                            if (value == UpgradeType.CLOAKCHUNKS) {
+                            if (FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getBoolean("Enabled"), true) {
+                            updateCloakChunks(fme.getFaction());
+                          }
+                          }
+
+                            */
                             }
 
                             fme.getFaction().setUpgrade(value, fme.getFaction().getUpgrade(value) + 1);
@@ -76,11 +84,14 @@ public class FUpgradeFrame {
 
                         if (value == UpgradeType.WARP) updateWarps(fme.getFaction());
 
-
                         if (value == UpgradeType.SPAWNERCHUNKS) {
                             if (Conf.allowSpawnerChunksUpgrade) {
                                 updateSpawnerChunks(fme.getFaction());
                             }
+/*
+if (value == UpgradeType.CLOAKCHUNKS) {
+
+*/
                         }
 
 
@@ -107,6 +118,14 @@ public class FUpgradeFrame {
         int size = FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.SpawnerChunks.chunk-limit.level-" + (level + 1));
         faction.setAllowedSpawnerChunks(size);
     }
+
+    /*
+    private void updateCloakChunks(Faction faction) {
+        int level = faction.getUpgrade(UpgradeType.CLOAKCHUNKS);
+        int size = FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.CloakChunks.chunk-limit.level-" + (level + 1));
+        faction.setAllowedCloakChunks(size);
+    }
+    */
 
     private void updateTNT(Faction faction) {
         int level = faction.getUpgrade(UpgradeType.TNT);

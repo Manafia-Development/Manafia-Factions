@@ -5,6 +5,7 @@ import com.massivecraft.factions.boosters.Booster;
 import com.massivecraft.factions.boosters.BoosterType;
 import com.massivecraft.factions.cloak.Cloak;
 import com.massivecraft.factions.cloak.CloakType;
+import com.massivecraft.factions.util.CloakChunk;
 import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent.PlayerDisbandReason;
@@ -95,6 +96,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private LocalTime shieldEnd;
     private int allowedSpawnerChunks;
     private Set<FastChunk> spawnerChunks;
+    private set<CloakChunk> cloakChunks;
     private boolean protectedfac = true;
 
     // -------------------------------------------- //
@@ -219,6 +221,14 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     public void setSpawnerChunks(Set<FastChunk> spawnerChunks) {
         this.spawnerChunks = spawnerChunks;
+    }
+
+    public Set<CloakChunk> getCloakChunks() {
+        return this.spawnerChunks;
+    }
+
+    public void setCloakChunks(Set<CloakChunk> cloakChunks) {
+        this.cloakChunks = cloakChunks;
     }
 
 
