@@ -280,11 +280,12 @@ public abstract class MemoryBoard extends Board {
                             continue;
                         }
 
-
-                        if (CloakUtil.hasCloak(flocationHere)) {
-                          row.then("-").color(ChatColor.GRAY);
-                          continue;
+                        if (CloakUtil.isCloaked(flocationHere)) {
+                            row.then(String.valueOf(tag)).color(ChatColor.GRAY).tooltip(oneLineToolTip(factionHere, fplayer) + CC.Reset + CC.Blue + " " + "Cloaked");
+                            continue;
                         }
+
+
 
                         //row.then(String.valueOf(tag)).color(factionHere.getColorTo(faction)).tooltip(getToolTip(factionHere, fplayer));
                         //changed out with a performance friendly one line tooltip :D

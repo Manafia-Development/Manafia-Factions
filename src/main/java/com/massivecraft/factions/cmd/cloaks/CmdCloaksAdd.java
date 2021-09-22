@@ -25,7 +25,7 @@ public class CmdCloaksAdd extends FCommand {
 
         this.requiredArgs.add("faction");
         this.requiredArgs.add("CloakType");
-        this.requiredArgs.add("time");
+     //   this.requiredArgs.add("time");
 
         this.requirements = new CommandRequirements.Builder(Permission.CLOAK_ADD).playerOnly().memberOnly().build();
     }
@@ -46,9 +46,9 @@ public class CmdCloaksAdd extends FCommand {
             return;
         }
 
-        String timeLength = context.argAsString(3);
-        TimeUtil timeUtil;
-
+     //   String timeLength = context.argAsString(3);
+     //   TimeUtil timeUtil;
+/*
         try {
             timeUtil = TimeUtil.parseString(timeLength);
         } catch (TimeUtil.TimeParseException e) {
@@ -61,6 +61,8 @@ public class CmdCloaksAdd extends FCommand {
 
         Cloak cloak = new Cloak(cloakType, endTimeStamp);
         target.addCloak(cloak);
+
+ */
 
 
 
@@ -77,11 +79,13 @@ public class CmdCloaksAdd extends FCommand {
         } else {
             context.fPlayer.msg(TL.COMMAND_CLOAKS_PAST_LIMIT, fac.getAllowedCloakChunks());
         }
-
+/*
         context.sender.sendMessage(TL.COMMAND_CLOAKS_ADD_SUCCESSFUL.format(context.argAsString(1), context.argAsString(0),
                 timeUtil.toString()));
 
-        Bukkit.broadcastMessage(TL.COMMAND_CLOAKS_STARTED_ANNOUNCE.format(context.argAsString(0), context.argAsString(1), timeUtil.toString()));
+ */
+
+        Bukkit.broadcastMessage(String.valueOf(TL.COMMAND_CLOAKS_STARTED_ANNOUNCE));
     }
 
 
