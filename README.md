@@ -17,40 +17,17 @@ More configuration
 Condensed YML files
 Removed discord functionality as it was poorly optimized and ran on the main thread
 
+## Features
+
+- Raids
+- Lunar Client Integration
+- Boosters
+- Shields
+- Cloaked Chunks 
+- Configure CPU cores for claiming
 
 
 
-Power Booster - Increase the power boost in your faction.
-
-Exp Booster - Increase mob exp drops in your territory.
-
-MobDrops Booster - Increase mob drops in your territory.
-
-MobSpawn Booster - Increase mob spawn in your territory.
-
-
-## Raids
-
-We are currently working hard to add the premium raids feature right here, for free! As of now, we have a basic functional system, but we plan to extend on this greatly. 
-
-
-Usage:
-``/f raid <faction>``
-
-
-
-
-## Lunar Integration
-
-This plugin features a basic lunar-client integration. These settings can be toggled in ``lunar.yml``
-
-
-
-## Dependencies
-
-Dependencies: Vault & EssentialsX
-
-SoftDepend: CoreProtect, PlayerVaults, PlaceholderAPI, MVdWPlaceholderAPI, PermissionsEx, Permissions, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, CAPI, AuthMe, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag, dynmap, FactionsTop
 
 
 
