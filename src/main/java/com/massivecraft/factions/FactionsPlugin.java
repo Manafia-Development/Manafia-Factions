@@ -13,6 +13,8 @@ import com.massivecraft.factions.cmd.reserve.ReserveAdapter;
 import com.massivecraft.factions.cmd.reserve.ReserveObject;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.lunar.Lunar;
+import com.massivecraft.factions.lunar.LunarClientUserListener;
+import com.massivecraft.factions.lunar.LunarMods;
 import com.massivecraft.factions.missions.MissionHandler;
 import com.massivecraft.factions.shield.ShieldListener;
 import com.massivecraft.factions.struct.Relation;
@@ -30,6 +32,7 @@ import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.frame.fupgrades.UpgradesListener;
 import com.massivecraft.factions.zcore.util.LangUtil;
+import dev.rosewood.rosestacker.listener.RaidListener;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -99,33 +102,12 @@ public class FactionsPlugin extends MPlugin {
         this.timeEnabledSetup = System.currentTimeMillis();
         log("- Initiating Plugin Setup -");
         Logger logger = this.getLogger();
-        /*
-        new UpdateChecker(this, 93177).getVersion(version -> {
-            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                logger.info("You are running the latest version!");
-            } else {
-                logger.info("There is a new update available.");
-            }
-        });
-
-         */
-
-
         LangUtil.initLang();
         FactionsPlugin.langMap = LangUtil.getLangMap();
-
         Util.checkVault();
-
-
-        if (Conf.userSpawnerChunkSystem) {
-            this.getServer().getPluginManager().registerEvents(new SpawnerChunkListener(), this);
-        }
-
         version = Short.parseShort(ReflectionUtils.PackageType.getServerVersion().split("_")[1]);
         Version.versionInfo();
         Util.migrateFPlayerLeaders();
-
-
         log(ChatColor.GREEN + "- Plugin Setup Successfully Finished - (Process took: " + (System.currentTimeMillis() - timeEnabledSetup) + "ms) ");
         int pluginId = 11641;
         new Metrics(this, pluginId);
@@ -133,10 +115,11 @@ public class FactionsPlugin extends MPlugin {
             this.loadSuccessful = false;
             return;
         }
-
         Util.initSetup();
-        Lunar.lunarSetup();
-        //  ShieldTimes.getAllTimes();
+        //TODO Fix this - it is awful having it here
+        if (Conf.userSpawnerChunkSystem) {
+            this.getServer().getPluginManager().registerEvents(new SpawnerChunkListener(), this);
+        }
         this.loadSuccessful = true;
     }
 
@@ -154,8 +137,6 @@ public class FactionsPlugin extends MPlugin {
         super.onDisable();
     }
 
-
-
     public static void registerEvents() {
         FactionsPlugin.instance.eventsListener = new Listener[]{
                 new FactionsChatListener(),
@@ -167,7 +148,8 @@ public class FactionsPlugin extends MPlugin {
                 new FChestListener(),
                 new MenuListener(),
                 new AntiChestListener(),
-                new ShieldListener()
+                new ShieldListener(),
+                //new RaidListener()
         };
     }
 

@@ -8,6 +8,7 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.util.AsciiCompass;
 import com.massivecraft.factions.util.CC;
+import com.massivecraft.factions.util.CloakUtil;
 import com.massivecraft.factions.util.SpawnerChunkUtil;
 import com.massivecraft.factions.zcore.util.TL;
 import com.massivecraft.factions.zcore.util.TagReplacer;
@@ -102,6 +103,7 @@ public abstract class MemoryBoard extends Board {
             faction.clearAllClaimOwnership();
             faction.clearWarps();
             faction.clearSpawnerChunks();
+            faction.clearCloakChunks();
         }
         clean(factionId);
     }

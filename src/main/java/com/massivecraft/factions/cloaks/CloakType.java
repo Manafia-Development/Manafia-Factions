@@ -6,15 +6,15 @@ public enum CloakType {
    SHIELD,
    SPECIAL;
 
-}
 
-public static CloakType getTypeFromString(String name) {
-   CloakType = null;
+   public static CloakType getTypeFromString(String name) {
+      CloakType type = null;
 
-   for (CloakType cloakType: values()) {
-      if (cloakType.name().equalsIgnoreCase(name)) {
-         type = cloakType;
-         break;
+      for (CloakType cloakType : values()) {
+         if (cloakType.name().equalsIgnoreCase(name)) {
+            type = cloakType;
+            break;
+         }
       }
       return type;
    }

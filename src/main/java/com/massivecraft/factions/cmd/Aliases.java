@@ -74,9 +74,9 @@ public class Aliases {
     public static ArrayList<String> chat = new ArrayList<>(Arrays.asList("chat", "c"));
     public static ArrayList<String> chatspy = new ArrayList<>(Collections.singletonList("chatspy"));
     public static ArrayList<String> checkpoint = new ArrayList<>(Arrays.asList("checkp", "checkpoint", "cpoint"));
-    public static ArrayList<String> boostersAdd = new ArrayList<>(Arrays.asList("cloakadd", "addcloak"));
-    public static ArrayList<String> boostersRemove = new ArrayList<>(Arrays.asList("cloakremove", "removecloak"));
-    public static ArrayList<String> boostersGUI = new ArrayList<>(Arrays.asList("cloak", "cloaks"));
+    public static ArrayList<String> CloakAdd = new ArrayList<>(Arrays.asList("cloakadd", "addcloak"));
+    public static ArrayList<String> CloakRemove = new ArrayList<>(Arrays.asList("cloakremove", "removecloak"));
+    public static ArrayList<String> CloakGUI = new ArrayList<>(Arrays.asList("cloak", "cloaks"));
     public static ArrayList<String> coleader = new ArrayList<>(Arrays.asList("coleader", "setcoleader", "co", "setco"));
     public static ArrayList<String> config = new ArrayList<>(Collections.singletonList("config"));
     public static ArrayList<String> convert = new ArrayList<>(Collections.singletonList("convert"));

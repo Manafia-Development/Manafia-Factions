@@ -1,6 +1,6 @@
 #This will not work without the Lunar Bukkit API located at: https://github.com/LunarClient/BukkitAPI
 
-
+#Enable/Disable lunar client integration
 Integration:
   Enabled: false
 
@@ -8,7 +8,7 @@ Integration:
 
 #Enable/Disable Staff modules
 Staff:
-  XRAY: false
+  XRAY: false #This here is enabled in the plugin and is working
 
 # These haven't yet been enabled
 Mods:

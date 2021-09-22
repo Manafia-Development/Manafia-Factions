@@ -11,6 +11,8 @@ import com.massivecraft.factions.cmd.check.CmdCheck;
 import com.massivecraft.factions.cmd.check.CmdWeeWoo;
 import com.massivecraft.factions.cmd.chest.CmdChest;
 import com.massivecraft.factions.cmd.claim.*;
+import com.massivecraft.factions.cmd.cloaks.CmdCloaks;
+import com.massivecraft.factions.cmd.cloaks.CmdCloaksAdd;
 import com.massivecraft.factions.cmd.econ.CmdMoney;
 import com.massivecraft.factions.cmd.grace.CmdGrace;
 import com.massivecraft.factions.cmd.points.CmdPoints;
@@ -171,7 +173,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdBoosterRemove cmdBoosterRemove = new CmdBoosterRemove();
     public CmdBoosters cmdBoosters = new CmdBoosters();
     public CmdRaid cmdRaid = new CmdRaid();
-    public CmdCloaks cmdCloaks = new CmdCloaks();
+    public CmdCloaksAdd cmdCloaksAdd = new CmdCloaksAdd();
     //Variables to know if we already setup certain sub commands
     public Boolean checkEnabled = false;
     public Boolean missionsEnabled = false;
@@ -312,7 +314,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdSetPower);
         this.addSubCommand(this.cmdSetTnt);
         this.addSubCommand(this.cmdRaid);
-        //this.addSubCommand(this.cmdCloaks);
+        this.addSubCommand(this.cmdCloaksAdd);
         addVariableCommands();
         if (CommodoreProvider.isSupported()) brigadierManager.build();
     }

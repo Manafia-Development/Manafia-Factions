@@ -29,10 +29,8 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -48,20 +46,6 @@ public class Util {
     public static void logFactionEvent(Faction faction, FLogType type, String... arguments) {
         FactionsPlugin.getInstance().fLogManager.log(faction, type, arguments);
     }
-    /*
-
-    YamlConfiguration configuracion = YamlConfiguration.loadConfiguration(configFile);
-
-    String defpermisos = "";
-    String textpermisos = configuracion.getString("Configuration.NoPermissionsMessage", defpermisos);
-    String permisos = ChatColor.translateAlternateColorCodes('&', textpermisos);
-
-    String defprefix = "";
-    String textprefix = configuracion.getString("Configuration.Prefix", defprefix);
-    String prefix = ChatColor.translateAlternateColorCodes('&', textprefix);
-
-     */
-
 
     public static String color(String line) {
         line = ChatColor.translateAlternateColorCodes('&', line);
@@ -171,7 +155,8 @@ public class Util {
                 new MenuListener(),
                 new AntiChestListener(),
                 new ShieldListener(),
-                new LunarClientUserListener(LunarMods.getInstance())
+                new LunarClientUserListener(LunarMods.getInstance()),
+                //new RaidListener(),
         };
 
         for (Listener eventListener : FactionsPlugin.instance.eventsListener)
@@ -280,6 +265,10 @@ public class Util {
 
         FactionsPlugin.instance.getServer().getPluginManager().registerEvents(FactionsPlugin.instance.factionsPlayerListener = new FactionsPlayerListener(), FactionsPlugin.instance);
         Util.registerEvents();
+
+        if (FactionsPlugin.getInstance().getFileManager().getLunar().getConfig().getBoolean("Enabled", true)) {
+            Lunar.lunarSetup();
+        }
 
         if (Conf.useGraceSystem)
             FactionsPlugin.instance.getServer().getPluginManager().registerEvents(FactionsPlugin.instance.timerManager.graceTimer, FactionsPlugin.instance);

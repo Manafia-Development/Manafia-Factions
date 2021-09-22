@@ -79,8 +79,8 @@ public class CmdRaid extends FCommand {
         //    boolean RaidStarted = true;
 
         if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Mechanics.Spawner-Break", false)) {
-            
-           // boolean raidSpawners = true;
+
+             boolean raidSpawners = true;
 
             //TODO add a timer!
 

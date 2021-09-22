@@ -11,7 +11,7 @@ import java.util.List;
 public class Lunar {
 
     public Lunar() {
-        instance = this;
+        Lunar instance = this;
     }
 
     private void initialize() {

@@ -2,6 +2,8 @@ package com.massivecraft.factions;
 
 import com.massivecraft.factions.boosters.Booster;
 import com.massivecraft.factions.boosters.BoosterType;
+import com.massivecraft.factions.cloaks.Cloak;
+import com.massivecraft.factions.cloaks.CloakType;
 import com.massivecraft.factions.util.CloakChunk;
 import com.massivecraft.factions.event.FactionDisbandEvent.PlayerDisbandReason;
 import com.massivecraft.factions.iface.EconomyParticipator;
@@ -46,6 +48,7 @@ public interface Faction extends EconomyParticipator {
     int getCloakChunkCount();
 
     int getAllowedCloakChunks();
+
 
     void setAllowedCloakChunks(int chunks);
 

@@ -1,3 +1,6 @@
+Enabled: false
+Allowed-Cloaks: 10
+
 Cloaks:
   Enabled: false
   Rows: 3

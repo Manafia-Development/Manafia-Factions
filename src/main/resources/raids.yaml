@@ -5,3 +5,7 @@ Enabled: false
 Mechanics:
   #Should players be able to mine spawners during a raid?
   Spawner-Break: false
+  #Do you want to enable a genbucket cooldown during a raid
+  Gen-Buckets:
+     Enabled: false
+     Cooldown: 10m

@@ -1,5 +1,6 @@
 package com.massivecraft.factions.cmd.cloaks;
 
+import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.cloaks.Cloak;
 import com.massivecraft.factions.cloaks.CloakType;
@@ -8,18 +9,22 @@ import com.massivecraft.factions.cmd.CommandContext;
 import com.massivecraft.factions.cmd.CommandRequirements;
 import com.massivecraft.factions.cmd.FCommand;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.util.CloakChunk;
 import com.massivecraft.factions.util.TimeUtil;
 import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
-public class CmdCloakAdd extends FCommand {
+import java.util.Objects;
 
-    public CmdCloakAdd () {
+public class CmdCloaksAdd extends FCommand {
+
+    public CmdCloaksAdd () {
         super();
-        this.aliases.addAll(Aliases.cloaksAdd);
+        this.aliases.addAll(Aliases.CloakAdd);
 
         this.requiredArgs.add("faction");
-        this.requiredArgs.add("type");
+        this.requiredArgs.add("CloakType");
         this.requiredArgs.add("time");
 
         this.requirements = new CommandRequirements.Builder(Permission.CLOAK_ADD).playerOnly().memberOnly().build();
@@ -38,11 +43,6 @@ public class CmdCloakAdd extends FCommand {
 
         if (target == null) {
               context.sender.sendMessage(TL.COMMAND_CLOAKS_ADD_INVALID_FAC.format(context.argAsString(0)));
-            return;
-        }
-
-        if (target.hasCloak(cloakType)) {
-            context.sender.sendMessage(TL.COMMAND_CLOAKS_ADD_ACTIVE.format(context.argAsString(1)));
             return;
         }
 
@@ -68,45 +68,25 @@ public class CmdCloakAdd extends FCommand {
         if (fac.getCloakChunkCount() < fac.getAllowedCloakChunks()) {
             if (context.fPlayer.attemptClaim(fac, new FLocation(context.player.getLocation()), true)) {
                 if (!fac.getCloakChunks().contains(cloakChunk)) {
-                    fac.getCloakChunks().add(cloakChunks);
+                    fac.getCloakChunks().add(cloakChunk);
                     context.fPlayer.msg(TL.COMMAND_CLOAKS_CLAIM_SUCCESSFUL);
                 } else {
                     context.fPlayer.msg(TL.COMMAND_CLOAKS_ALREADY_CHUNK);
                 }
             }
         } else {
-            context.fPlayer.msg(TL.COMMAND_CLOAKSK_PAST_LIMIT, fac.getAllowedCloakChunks());
+            context.fPlayer.msg(TL.COMMAND_CLOAKS_PAST_LIMIT, fac.getAllowedCloakChunks());
         }
 
         context.sender.sendMessage(TL.COMMAND_CLOAKS_ADD_SUCCESSFUL.format(context.argAsString(1), context.argAsString(0),
                 timeUtil.toString()));
 
-        Bukkit.broadcastMessage(TL.CLOAKS_STARTED_ANNOUNCE.format(context.argAsString(0), context.argAsString(1), timeUtil.toString()));
+        Bukkit.broadcastMessage(TL.COMMAND_CLOAKS_STARTED_ANNOUNCE.format(context.argAsString(0), context.argAsString(1), timeUtil.toString()));
     }
-
-
-
-
-
-        CloakChunk cloakChunk = new CloakChunk(Objects.requireNonNull(location.getWorld()).getName(), location.getChunk().getX(), location.getChunk().getZ());
-        if (fac.getCloakChunkCount() < fac.getAllowedCloakChunks()) {
-            if (context.fPlayer.attemptClaim(fac, new FLocation(context.player.getLocation()), true)) {
-                if (!fac.getCloakChunks().contains(cloakChunk)) {
-                    fac.getCloakChunks().add(cloakChunks);
-                    context.fPlayer.msg(TL.COMMAND_CLOAKS_CLAIM_SUCCESSFUL);
-                } else {
-                    context.fPlayer.msg(TL.COMMAND_CLOAKS_ALREADY_CHUNK);
-                }
-            }
-        } else {
-            context.fPlayer.msg(TL.COMMAND_CLOAKSK_PAST_LIMIT, fac.getAllowedCloakChunks());
-        }
-    }
-
 
 
     @Override
     public TL getUsageTranslation () {
-        return TL.COMMAND_CLOAK_ADD_DESCRIPTION;
+        return TL.COMMAND_CLOAKS_ADD_DESCRIPTION;
     }
 }

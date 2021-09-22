@@ -3,9 +3,8 @@ package com.massivecraft.factions.zcore.persist;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.boosters.Booster;
 import com.massivecraft.factions.boosters.BoosterType;
-import com.massivecraft.factions.cloak.Cloak;
-import com.massivecraft.factions.cloak.CloakType;
-import com.massivecraft.factions.util.CloakChunk;
+import com.massivecraft.factions.cloaks.Cloak;
+import com.massivecraft.factions.cloaks.CloakType;
 import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent;
 import com.massivecraft.factions.event.FactionDisbandEvent.PlayerDisbandReason;
@@ -18,10 +17,7 @@ import com.massivecraft.factions.struct.BanInfo;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
-import com.massivecraft.factions.util.FastChunk;
-import com.massivecraft.factions.util.LazyLocation;
-import com.massivecraft.factions.util.MiscUtil;
-import com.massivecraft.factions.util.RelationUtil;
+import com.massivecraft.factions.util.*;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -43,7 +39,7 @@ import java.util.logging.Level;
 
 public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private final Map<BoosterType, Booster> boosters = new HashMap<>();
-    private finam Map<CloakType, Cloak> cloaks = new HashMap<>();
+    private final Map<CloakType, Cloak> cloaks = new HashMap<>();
     public HashMap<Integer, String> rules = new HashMap<>();
     public int tnt;
     public Location checkpoint;
@@ -96,7 +92,8 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private LocalTime shieldEnd;
     private int allowedSpawnerChunks;
     private Set<FastChunk> spawnerChunks;
-    private set<CloakChunk> cloakChunks;
+    private Set<CloakChunk> cloakChunks;
+    private int allowedChunkCloaks;
     private boolean protectedfac = true;
 
     // -------------------------------------------- //
@@ -163,6 +160,8 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         spawnerChunks = new HashSet<>();
         this.playerWallCheckCount = new ConcurrentHashMap<>();
         this.playerBufferCheckCount = new ConcurrentHashMap<>();
+        cloakChunks = new HashSet<>();
+        allowedChunkCloaks = FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getInt("Allowed-Cloaks");
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
@@ -177,6 +176,13 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     public boolean hasCloak(CloakType cloakType) {
         if (cloaks.containsKey(cloakType)) {
+
+        }
+        return false;
+    }
+/*
+    public boolean hasCloak(CloakType cloakType) {
+        if (cloaks.containsKey(cloakType)) {
             Cloak cloak = cloaks.get(cloakType);
             if (System.currentTimeMillis() > cloaks.getEndTimeStamp()) {
                 cloaks.remove(cloakType);
@@ -186,6 +192,8 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         }
         return false;
     }
+
+ */
 
     public void addCloak(Cloak cloak) {
         this.cloaks.put(cloak.getCloakType(), cloak);
@@ -224,11 +232,19 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     }
 
     public Set<CloakChunk> getCloakChunks() {
-        return this.spawnerChunks;
+        return this.cloakChunks;
     }
 
     public void setCloakChunks(Set<CloakChunk> cloakChunks) {
         this.cloakChunks = cloakChunks;
+    }
+
+    public void clearCloakChunks() {
+        this.cloakChunks.clear();
+    }
+
+    public int getCloakCount() {
+        return this.cloakChunks.size();
     }
 
 

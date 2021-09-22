@@ -4,7 +4,7 @@
 
     <groupId>com.manafia.factions</groupId>
     <artifactId>ManafiaFactions</artifactId>
-    <version>1.0.3-Stable</version>
+    <version>1.0.4-BETA</version>
     <packaging>jar</packaging>
 
     <name>Manafia-Factions</name>

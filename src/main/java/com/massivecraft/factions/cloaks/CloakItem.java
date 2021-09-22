@@ -2,6 +2,7 @@ package com.massivecraft.factions.cloaks;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
+import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.Util;
 import org.bukkit.inventory.ItemStack;
@@ -29,13 +30,13 @@ public class CloakItem {
     }
 
     public static void setupItems() {
-        for (String name : FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getBoolean("Enabled").getKeys(false)) {
+        for (String name : FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getConfigurationSection("Enabled").getKeys(false)) {
             CloakType cloakType = CloakType.getTypeFromString(name);
 
             if (cloakType == null)
                 continue;
 
-            ItemStack item = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getConfig().getString("Cloaks." + name + ".Type"))
+            ItemStack item = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getString("Cloaks." + name + ".Type"))
                     .get().parseItem();
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
@@ -45,7 +46,7 @@ public class CloakItem {
             }
 
             int slot = FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getInt("Cloaks." + name + ".Slot");
-            int price = FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getConfig().getInt("Cloaks." + name + ".price");
+            int price = FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getInt("Cloaks." + name + ".price");
             int lengthInSeconds = FactionsPlugin.getInstance().getFileManager().getCloaks().getConfig().getInt("Cloaks." + name + ".time");
 
             new CloakItem(cloakType, item, price, slot, lengthInSeconds);

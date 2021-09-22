@@ -35,12 +35,11 @@ public enum UpgradeType {
     TNT("TNT", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.TNT.Max-Level")),
     WARP("Warps", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.Warps.Max-Level")),
 
+    CLOAKEDCHUNKS("CloakChunks", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.CloakedChunks.Max-Level")),
     SPAWNERCHUNKS("SpawnerChunks", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.SpawnerChunks.Max-Level")),
     DAMAGEINCREASE("DamageIncrease", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.DamageIncrease.Max-Level")),
     DAMAGEDECREASE("DamageReduct", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.DamageReduct.Max-Level")),
     REINFORCEDARMOR("Armor", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.Armor.Max-Level"));
-  //CLOAKEDCHUNKS("CloakedChunks", FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.CloakedChunks.Max-Level")) ,
-
     private final String id;
     private final int maxLevel;
 
