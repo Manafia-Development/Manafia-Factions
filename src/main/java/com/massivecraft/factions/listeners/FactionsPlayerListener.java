@@ -371,6 +371,10 @@ public class FactionsPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin(PlayerJoinEvent event) {
         initPlayer(event.getPlayer());
+
+
+
+        
     }
 
     private void initPlayer(Player player) {

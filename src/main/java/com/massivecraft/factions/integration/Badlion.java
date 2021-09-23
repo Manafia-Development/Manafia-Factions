@@ -8,15 +8,8 @@ import java.util.List;
 
 
 
-public class Lunar {
-
-    public static void initLunar() {
+public class Badlion {
 
 
-    }
-
-    private void initialize() {
-
-}
 
 }

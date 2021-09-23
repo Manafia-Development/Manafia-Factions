@@ -9,3 +9,14 @@ Mechanics:
   Gen-Buckets:
      Enabled: false
      Cooldown: 10m
+  
+
+Menu: 
+  Enabled: true
+  Effects:
+    Speed:
+      Enabled: true
+      Integer: 2
+    Haste:
+      Enabled: true
+      Integer: 2

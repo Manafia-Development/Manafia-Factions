@@ -420,18 +420,19 @@
             <version>2.8.5</version>
             <scope>provided</scope>
         </dependency>
-
-
-
-
-
-
-
-
-
-
-
-
+        <dependency>
+            <groupId>net.badlion</groupId>
+            <artifactId>badlionclientmodapibukkit</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/dependencies/badlionclientmodapibukkit</systemPath>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>   
         <dependency>
             <groupId>com.lunarclient</groupId>
             <artifactId>bukkitapi</artifactId>
