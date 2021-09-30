@@ -8,8 +8,7 @@
 
 A new factions experience.
 
-## About
-
+## 🎮 What is Manafia factions
 
 
 We've optimized nearly every single class with performance in mind. We have fully stress-tested the entire plugin. In some cases, this plugin saves 1.8MB of RAM per player, starts up 200% faster and with the proper configuration, it can claim 1 million chunks in just 20 seconds! These results will vary depending on hardware.
@@ -21,8 +20,6 @@ Faction Boosters
 More configuration
 Condensed YML files
 Removed discord functionality as it was poorly optimized and ran on the main thread
-
-## Features
 
 - Raids
 - Lunar Client Integration
@@ -37,7 +34,7 @@ Removed discord functionality as it was poorly optimized and ran on the main thr
 
 
 
-## Installation
+## 🚀 Installation
 
 Install Vault, EssentialsX and Lunar-API if you wish to enable Lunar integration.
 
