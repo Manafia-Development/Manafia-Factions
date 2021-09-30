@@ -1,6 +1,11 @@
-[![](https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg)](https://jitpack.io/#Manafia-Development/Manafia-Factions) [![CodeFactor](https://www.codefactor.io/repository/github/manafia-development/manafia-factions/badge)](https://www.codefactor.io/repository/github/manafia-development/manafia-factions)
-
 # Manafia-Factions
+
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-java.svg)](https://forthebadge.com)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) 
+[![](https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg)](https://jitpack.io/#Manafia-Development/Manafia-Factions) 
+[![CodeFactor](https://www.codefactor.io/repository/github/manafia-development/manafia-factions/badge)](https://www.codefactor.io/repository/github/manafia-development/manafia-factions)
+
 A new factions experience.
 
 ## About
