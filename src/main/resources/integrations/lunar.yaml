@@ -4,6 +4,13 @@
 Integration:
   Enabled: false
 
+#Enable/Disable enhancements for Factions
+Factions:
+  Waypoints:
+    Faction-Home:
+      Enabled: true
+      Color: BLUE
+
 
 
 #Enable/Disable Staff modules

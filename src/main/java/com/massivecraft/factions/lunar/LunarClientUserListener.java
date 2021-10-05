@@ -13,41 +13,32 @@ import org.bukkit.event.player.PlayerJoinEvent;
 @RequiredArgsConstructor
 public class LunarClientUserListener implements Listener {
 
-    private final LunarMods client;
+  private final LunarMods client;
 
+  @EventHandler
+  private void onJoin(PlayerJoinEvent event) {
+    Player player = event.getPlayer();
+    Faction faction = fPlayer.getFaction();
+    Player1 player1 = fplayer.getPlayer()
 
-    @EventHandler
-    public void onPlayerRegister(PlayerJoinEvent event) {
-        if (client.getPacketModSettings() != null) {
-            LunarClientAPI.getInstance().sendPacket(event.getPlayer(), client.getPacketModSettings());
+    if (LunarClientAPI.getInstance().isRunningLunarClient(player)) {
+      LunarClientAPI.getInstance().registerPlayer(player);
+
+      if (FactionsPlugin.getInstance().getFileManager().getLunar().getConfig().getBoolean("Factions.Waypoints.Faction-Home.Enabled", true)) {
+        if (player1.hasFaction()) {
+          LCWaypoint waypoint = new LCWaypoint("Faction Home", faction.getHome(), Color.(FactionsPlugin.getInstance().getFileManager().getLunar().getConfig().getString("Factions.Waypoints.Factions-Home.Color")).asRGB(), true);
+          LunarClientAPI.getInstance().sendWaypoint(player, waypoint);
+
         }
 
-        LunarClientAPIServerRule.sendServerRule(event.getPlayer());
-    }
-
-
-    @EventHandler
-    private void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        long delay = 10;
-
+      }
+      if (fPlayer.isAdminBypassing()) {
 
         if (FactionsPlugin.getInstance().getFileManager().getLunar().getConfig().getBoolean("Staff.XRAY", true)) {
-            LunarClientAPI.getInstance().setStaffModuleState(player, StaffModule.XRAY, true);
+          LunarClientAPI.getInstance().setStaffModuleState(player, StaffModule.XRAY, true);
 
         }
+      }
     }
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
