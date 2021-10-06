@@ -19,7 +19,7 @@ public class LunarClientUserListener implements Listener {
   private void onJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     Faction faction = fPlayer.getFaction();
-    Player1 player1 = fplayer.getPlayer()
+    Player1 player1 = fplayer.getPlayer();
 
     if (LunarClientAPI.getInstance().isRunningLunarClient(player)) {
       LunarClientAPI.getInstance().registerPlayer(player);
@@ -41,4 +41,11 @@ public class LunarClientUserListener implements Listener {
       }
     }
   }
+
+  @EventHandler
+  public void onUnregister(PlayerQuitEvent event) {
+    lunarClientAPI.unregisterPlayer(event.getPlayer(), true);
+  }
+
 }
+//        Bukkit.getPluginManager().registerEvents(new LunarClientUserListener(this), this);
