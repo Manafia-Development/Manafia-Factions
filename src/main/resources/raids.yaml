@@ -1,6 +1,15 @@
 #Main configuration file for raids
+
+
+
+#              COMMING
+#               SOON
+
+
+
 #Basic raids functionality is here! Plenty more features and customizations to be added. Don't worry :)
 Enabled: false
+
 
 Mechanics:
   #Should players be able to mine spawners during a raid?
@@ -9,9 +18,9 @@ Mechanics:
   Gen-Buckets:
      Enabled: false
      Cooldown: 10m
-  
 
-Menu: 
+
+Menu:
   Enabled: true
   Effects:
     Speed:

@@ -4,7 +4,7 @@
 Integration:
   Enabled: false
 
-#Enable/Disable enhancements for Factions
+#Enable/Disable specific features that integrate into Manafia-Factions
 Factions:
   Waypoints:
     Faction-Home:
@@ -17,7 +17,7 @@ Factions:
 Staff:
   XRAY: false #This here is enabled in the plugin and is working
 
-# These haven't yet been enabled
+# These haven't yet been implemented
 Mods:
   FPS: true
   CPS: true

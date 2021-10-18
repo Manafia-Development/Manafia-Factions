@@ -282,7 +282,7 @@ public class Util {
 
         Util.sendBetaAlert();
 
-        System.out.println("WARNING: Shields may not work as intended! Beware");
+        System.out.println("WARNING: The following items are still in development and may have issues or even not work at all: Shields, LunarClient Integration, Raids, Cloaks, Badlion Integration.");
 
         PlaceholderUtil.setupPlaceholderAPI();
         FactionsPlugin.instance.postEnable();
