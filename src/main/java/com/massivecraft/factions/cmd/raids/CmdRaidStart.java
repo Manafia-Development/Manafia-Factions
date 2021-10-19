@@ -9,7 +9,7 @@ import com.massivecraft.factions.zcore.util.TL;
 
 public class CmdRaidStart extends FCommand {
 
-    public CmdRaidStart () {
+    public CmdRaidStart() {
         super();
         this.aliases.addAll(Aliases.raid_start);
 
@@ -20,12 +20,12 @@ public class CmdRaidStart extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_RAID_DESCRIPTION;
     }
 }

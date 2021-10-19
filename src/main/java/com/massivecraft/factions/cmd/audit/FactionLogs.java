@@ -20,10 +20,10 @@ public class FactionLogs {
     public static transient SimpleDateFormat format = new SimpleDateFormat("MM/dd hh:mmaa");
     private final Map<FLogType, LinkedList<FactionLog>> mostRecentLogs = new ConcurrentHashMap<>();
 
-    public FactionLogs () {
+    public FactionLogs() {
     }
 
-    public void log (FLogType type, String... arguments) {
+    public void log(FLogType type, String... arguments) {
         if (type.getRequiredArgs() > arguments.length) {
             Bukkit.getLogger().info("INVALID ARGUMENT COUNT MET: " + type.getRequiredArgs() + " REQUIRED: ");
             Thread.dumpStack();
@@ -36,11 +36,11 @@ public class FactionLogs {
         }
     }
 
-    public boolean isEmpty () {
+    public boolean isEmpty() {
         return this.mostRecentLogs.isEmpty();
     }
 
-    public void checkExpired () {
+    public void checkExpired() {
         long duration = TimeUnit.DAYS.toMillis(7L);
         List<FLogType> toRemove = Lists.newArrayList();
         mostRecentLogs.forEach((logType, logs) -> {
@@ -69,7 +69,7 @@ public class FactionLogs {
         toRemove.forEach((rem) -> mostRecentLogs.remove(rem));
     }
 
-    public Map<FLogType, LinkedList<FactionLog>> getMostRecentLogs () {
+    public Map<FLogType, LinkedList<FactionLog>> getMostRecentLogs() {
         return mostRecentLogs;
     }
 
@@ -77,16 +77,16 @@ public class FactionLogs {
         private final long t;
         private final List<String> a;
 
-        public FactionLog (long t, List<String> a) {
+        public FactionLog(long t, List<String> a) {
             this.t = t;
             this.a = a;
         }
 
-        public boolean isExpired (long duration) {
+        public boolean isExpired(long duration) {
             return System.currentTimeMillis() - t >= duration;
         }
 
-        public String getLogLine (FLogType type, boolean timestamp) {
+        public String getLogLine(FLogType type, boolean timestamp) {
             String[] args = a.toArray(new String[0]);
             String timeFormat = "";
             if (timestamp) {

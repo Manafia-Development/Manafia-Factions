@@ -162,7 +162,7 @@ public class Aliases {
     public static ArrayList<String> viewChest = new ArrayList<>(Arrays.asList("viewchest", "viewpv"));
 
 
-    public static void load () {
+    public static void load() {
         FactionsPlugin.getInstance().persist.loadOrSaveDefault(i, Aliases.class, "data/aliases");
     }
 }

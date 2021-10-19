@@ -11,7 +11,6 @@ import com.massivecraft.factions.cmd.check.CmdCheck;
 import com.massivecraft.factions.cmd.check.CmdWeeWoo;
 import com.massivecraft.factions.cmd.chest.CmdChest;
 import com.massivecraft.factions.cmd.claim.*;
-import com.massivecraft.factions.cmd.cloaks.CmdCloaks;
 import com.massivecraft.factions.cmd.cloaks.CmdCloaksAdd;
 import com.massivecraft.factions.cmd.econ.CmdMoney;
 import com.massivecraft.factions.cmd.grace.CmdGrace;
@@ -195,7 +194,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public Boolean raidEnabled = false;
     public boolean cloaksEnabled = false;
 
-    public FCmdRoot () {
+    public FCmdRoot() {
         super();
         instance = this;
 
@@ -322,7 +321,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     /**
      * Add sub commands to the root if they are enabled
      */
-    public void addVariableCommands () {
+    public void addVariableCommands() {
         //Reserve
         if (Conf.useReserveSystem)
             this.addSubCommand(this.cmdReserve);
@@ -414,24 +413,24 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         }
     }
 
-    public void rebuild () {
+    public void rebuild() {
         if (CommodoreProvider.isSupported()) brigadierManager.build();
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         context.commandChain.add(this);
         this.cmdHelp.execute(context);
     }
 
     @Override
-    public boolean onCommand (CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         this.execute(new CommandContext(sender, new ArrayList<>(Arrays.asList(args)), label));
         return true;
     }
 
     @Override
-    public void addSubCommand (FCommand subCommand) {
+    public void addSubCommand(FCommand subCommand) {
         super.addSubCommand(subCommand);
         // People were getting NPE's as somehow CommodoreProvider#isSupported returned true on legacy versions.
         if (CommodoreProvider.isSupported()) {
@@ -440,7 +439,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.GENERIC_PLACEHOLDER;
     }
 

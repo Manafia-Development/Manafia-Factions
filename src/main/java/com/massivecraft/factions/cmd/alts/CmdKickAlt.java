@@ -22,7 +22,7 @@ public class CmdKickAlt extends FCommand {
      * @author Driftay
      */
 
-    public CmdKickAlt () {
+    public CmdKickAlt() {
         super();
         this.aliases.addAll(Aliases.alts_kick);
         this.requiredArgs.add("player name");
@@ -35,7 +35,7 @@ public class CmdKickAlt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Enabled", false)) {
             context.msg(TL.GENERIC_DISABLED, "Faction Alts");
             return;
@@ -127,7 +127,7 @@ public class CmdKickAlt extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ALTKICK_DESCRIPTION;
     }
 

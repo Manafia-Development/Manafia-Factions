@@ -16,7 +16,7 @@ public class CmdPointsRemove extends FCommand {
      * @author Driftay
      */
 
-    public CmdPointsRemove () {
+    public CmdPointsRemove() {
         super();
         this.aliases.addAll(Aliases.points_remove);
 
@@ -30,7 +30,7 @@ public class CmdPointsRemove extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = Factions.getInstance().getByTag(context.args.get(0));
 
 
@@ -54,7 +54,7 @@ public class CmdPointsRemove extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_REMOVEPOINTS_DESCRIPTION;
     }
 

@@ -19,7 +19,7 @@ public class FPromoteCommand extends FCommand {
 
     public int relative = 0;
 
-    public FPromoteCommand () {
+    public FPromoteCommand() {
         super();
         this.requiredArgs.add("player");
 
@@ -31,7 +31,7 @@ public class FPromoteCommand extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer target = context.argAsBestFPlayerMatch(0);
         if (target == null) {
             context.msg(TL.GENERIC_NOPLAYERFOUND, context.argAsString(0));
@@ -106,7 +106,7 @@ public class FPromoteCommand extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_PROMOTE_DESCRIPTION;
     }
 

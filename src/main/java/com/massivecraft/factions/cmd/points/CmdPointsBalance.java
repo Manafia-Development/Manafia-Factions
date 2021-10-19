@@ -15,7 +15,7 @@ import com.massivecraft.factions.zcore.util.TL;
  */
 public class CmdPointsBalance extends FCommand {
 
-    public CmdPointsBalance () {
+    public CmdPointsBalance() {
         super();
         this.aliases.addAll(Aliases.points_balance);
 
@@ -27,7 +27,7 @@ public class CmdPointsBalance extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction;
 
         if (context.argIsSet(0))
@@ -50,7 +50,7 @@ public class CmdPointsBalance extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_POINTS_SHOW_DESCRIPTION;
     }
 }

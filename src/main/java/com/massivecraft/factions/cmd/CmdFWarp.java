@@ -18,7 +18,7 @@ public class CmdFWarp extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdFWarp () {
+    public CmdFWarp() {
         super();
         this.aliases.addAll(Aliases.warp);
         this.optionalArgs.put("warpname", "warpname");
@@ -32,7 +32,7 @@ public class CmdFWarp extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         if (context.args.size() == 0)
             new FactionWarpsFrame(context.faction).buildGUI(context.fPlayer);
@@ -67,12 +67,12 @@ public class CmdFWarp extends FCommand {
         }
     }
 
-    private boolean transact (FPlayer player, CommandContext context) {
+    private boolean transact(FPlayer player, CommandContext context) {
         return !FactionsPlugin.getInstance().getConfig().getBoolean("warp-cost.enabled", false) || player.isAdminBypassing() || context.payForCommand(FactionsPlugin.getInstance().getConfig().getDouble("warp-cost.warp", 5), TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString());
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_FWARP_DESCRIPTION;
     }
 }

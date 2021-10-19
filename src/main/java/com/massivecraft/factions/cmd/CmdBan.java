@@ -20,7 +20,7 @@ public class CmdBan extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdBan () {
+    public CmdBan() {
         super();
         this.aliases.addAll(Aliases.ban_ban);
 
@@ -33,7 +33,7 @@ public class CmdBan extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         // Good on permission checks. Now lets just ban the player.
         FPlayer target = context.argAsFPlayer(0);
@@ -86,7 +86,7 @@ public class CmdBan extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_BAN_DESCRIPTION;
     }
 }

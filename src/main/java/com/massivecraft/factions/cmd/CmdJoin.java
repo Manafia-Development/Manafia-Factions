@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 
 public class CmdJoin extends FCommand {
 
-    public CmdJoin () {
+    public CmdJoin() {
         super();
         this.aliases.addAll(Aliases.join);
         this.requiredArgs.add("faction name");
@@ -21,7 +21,7 @@ public class CmdJoin extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.argAsFaction(0);
         if (faction == null)
             return;
@@ -118,13 +118,13 @@ public class CmdJoin extends FCommand {
                 FactionsPlugin.getInstance().log(TL.COMMAND_JOIN_MOVEDLOG.toString(), context.fPlayer.getName(), fplayer.getName(), faction.getTag());
     }
 
-    private int getFactionMemberLimit (Faction f) {
+    private int getFactionMemberLimit(Faction f) {
         if (f.getUpgrade(UpgradeType.MEMBERS) == 0) return Conf.factionMemberLimit;
         return Conf.factionMemberLimit + FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.Members.Members-Limit.level-" + f.getUpgrade(UpgradeType.MEMBERS));
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_JOIN_DESCRIPTION;
     }
 }

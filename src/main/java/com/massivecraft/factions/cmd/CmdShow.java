@@ -28,7 +28,7 @@ public class CmdShow extends FCommand {
             LangUtil.getLangMap().get("command_show_membersonline"), LangUtil.getLangMap().get("command_show_membersoffline"),
             LangUtil.getLangMap().get("command_show_alts"), LangUtil.getLangMap().get("command_show_bans"));
 
-    public CmdShow () {
+    public CmdShow() {
         this.aliases.addAll(Aliases.show_show);
 
         // add defaults to /f show in case config doesnt have it
@@ -56,7 +56,7 @@ public class CmdShow extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.faction;
         FactionsPlugin instance = FactionsPlugin.getInstance();
         if (context.argIsSet(0))
@@ -127,7 +127,7 @@ public class CmdShow extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SHOW_COMMANDDESCRIPTION;
     }
 

@@ -17,7 +17,7 @@ public class CmdVault extends FCommand {
      * @author Illyria Team
      */
 
-    public CmdVault () {
+    public CmdVault() {
         this.aliases.addAll(Aliases.vault);
 
         this.requirements = new CommandRequirements.Builder(Permission.VAULT)
@@ -29,7 +29,7 @@ public class CmdVault extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("fvault.Enabled")) {
             context.fPlayer.msg(TL.GENERIC_DISABLED, "Faction Vaults");
@@ -67,7 +67,7 @@ public class CmdVault extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_VAULT_DESCRIPTION;
     }
 

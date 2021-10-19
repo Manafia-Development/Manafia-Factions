@@ -14,7 +14,7 @@ import com.massivecraft.factions.zcore.util.TL;
 
 public class CmdReserve extends FCommand {
 
-    public CmdReserve () {
+    public CmdReserve() {
         this.aliases.addAll(Aliases.reserve);
         this.requiredArgs.add("tag");
         this.requiredArgs.add("player");
@@ -23,7 +23,7 @@ public class CmdReserve extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         ReserveObject reserve = Util.getFactionReserves().stream().filter(faction -> faction.getFactionName().equalsIgnoreCase(context.argAsString(0))).findFirst().orElse(null);
         if (reserve != null) {
             context.msg(TL.COMMAND_RESERVE_ALREADYRESERVED, context.argAsString(0));
@@ -34,7 +34,7 @@ public class CmdReserve extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_RESERVE_DESCRIPTION;
     }
 }

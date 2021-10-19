@@ -14,7 +14,7 @@ import org.bukkit.Bukkit;
 
 public class CmdBoosterAdd extends FCommand {
 
-    public CmdBoosterAdd () {
+    public CmdBoosterAdd() {
         super();
         this.aliases.addAll(Aliases.boostersAdd);
 
@@ -27,7 +27,7 @@ public class CmdBoosterAdd extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction target = context.argAsFaction(0);
 
         if (target == null) {
@@ -77,7 +77,7 @@ public class CmdBoosterAdd extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_BOOSTERS_ADD_DESCRIPTION;
     }
 }

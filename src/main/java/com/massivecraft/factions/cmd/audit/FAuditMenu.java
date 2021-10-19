@@ -26,13 +26,13 @@ public class FAuditMenu extends GUIMenu {
     private final Faction faction;
     private boolean showTimestamps = true;
 
-    public FAuditMenu (Player player, Faction faction) {
+    public FAuditMenu(Player player, Faction faction) {
         super("Faction Logs", 18);
         this.faction = faction;
         this.player = player;
     }
 
-    public void drawItems () {
+    public void drawItems() {
         for (FLogType type : FLogType.values()) {
             if (type.getSlot() == -1) continue;
             if (type != FLogType.F_TNT || FactionsPlugin.getInstance().getConfig().getBoolean("f-points.Enabled")) {
@@ -80,14 +80,14 @@ public class FAuditMenu extends GUIMenu {
         private final FLogType logType;
         private boolean timeStamp = false;
 
-        public FAuditLogMenu (Player player, Faction faction, FLogType type) {
+        public FAuditLogMenu(Player player, Faction faction, FLogType type) {
             super("Faction Logs", 9);
             this.player = player;
             this.faction = faction;
             this.logType = type;
         }
 
-        public void drawItems () {
+        public void drawItems() {
             FactionLogs logs = Util.getFlogManager().getFactionLogMap().get(faction.getId());
             int perPage = logType == FLogType.F_TNT ? 25 : 20;
             if (logs != null) {

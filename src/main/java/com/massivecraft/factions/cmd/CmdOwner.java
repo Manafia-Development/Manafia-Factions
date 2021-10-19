@@ -12,7 +12,7 @@ public class CmdOwner extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdOwner () {
+    public CmdOwner() {
         super();
         this.aliases.addAll(Aliases.owner_owner);
         this.optionalArgs.put("player name", "you");
@@ -27,7 +27,7 @@ public class CmdOwner extends FCommand {
     // TODO: Fix colors!
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         boolean hasBypass = context.fPlayer.isAdminBypassing();
 
         if (!hasBypass && !context.assertHasFaction())
@@ -92,7 +92,7 @@ public class CmdOwner extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_OWNER_DESCRIPTION;
     }
 }

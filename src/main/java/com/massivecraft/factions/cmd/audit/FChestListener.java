@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class FChestListener implements Listener {
 
     @EventHandler
-    public void onInventoryDrag (InventoryDragEvent e) {
+    public void onInventoryDrag(InventoryDragEvent e) {
 
         Player player = (Player) e.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
@@ -35,11 +35,11 @@ public class FChestListener implements Listener {
     }
 
 
-    @EventHandler (
+    @EventHandler(
             priority = EventPriority.HIGHEST,
             ignoreCancelled = true
     )
-    public void onPlayerClickInventory (InventoryClickEvent event) {
+    public void onPlayerClickInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         Faction faction;
@@ -82,12 +82,12 @@ public class FChestListener implements Listener {
                 logAddItem(currentItem, fPlayer, player);
     }
 
-    private void logAddItem (ItemStack cursorItem, FPlayer fplayer, Player player) {
+    private void logAddItem(ItemStack cursorItem, FPlayer fplayer, Player player) {
         String itemName = cursorItem.hasItemMeta() && cursorItem.getItemMeta().hasDisplayName() ? cursorItem.getItemMeta().getDisplayName() : StringUtils.capitaliseAllWords(cursorItem.getType().name().replace("_", " ").toLowerCase());
         Util.logFactionEvent(fplayer.getFaction(), FLogType.FCHEST_EDIT, player.getName(), CC.GreenB + "ADDED", itemName);
     }
 
-    private void logRemoveItem (ItemStack currentItem, FPlayer fplayer, Player player) {
+    private void logRemoveItem(ItemStack currentItem, FPlayer fplayer, Player player) {
         String itemName = currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName() ? currentItem.getItemMeta().getDisplayName() : StringUtils.capitaliseAllWords(currentItem.getType().name().replace("_", " ").toLowerCase());
         Util.logFactionEvent(fplayer.getFaction(), FLogType.FCHEST_EDIT, player.getName(), CC.RedB + "TOOK", itemName);
     }

@@ -2,7 +2,6 @@ package com.massivecraft.factions.zcore.util;
 
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.integration.Econ;
-import com.massivecraft.factions.shield.ShieldTimes;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.util.timer.TimerManager;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -241,37 +240,23 @@ public enum TagReplacer {
 
 
             case SHIELD_STATUS:
-                if(fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_ALREADY_RUNNING);
-                if(fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
+                if (fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_ALREADY_RUNNING);
+                if (fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
                 return TL.SHIELD_NOT_ENABLED.toString();
 
 
-
             case SHIELD_TIME:
-                if(fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_INFO);
-                if(fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
+                if (fac.isProtected() && fac.getShieldStart() != null) return String.valueOf(TL.SHIELD_INFO);
+                if (fac.getShieldStart() == null) return String.valueOf(TL.SHIELD_NOT_SET);
                 return TL.SHIELD_NOT_ENABLED.toString();
 
             case LUNAR_STATUS:
 
 
-
-
-
-
-
-
-            //case SHIELD_STATUS:
-            //if(fac.isProtected() && fac.getShieldFrame() != null) return String.valueOf(TL.SHIELD_CURRENTLY_ENABLE);
-            //if(fac.getShieldFrame() == null) return String.valueOf(TL.SHIELD_NOT_SET);
-            //return TL.SHIELD_CURRENTLY_NOT_ENABLED.toString();
-
-
-
-
-
-
-
+                //case SHIELD_STATUS:
+                //if(fac.isProtected() && fac.getShieldFrame() != null) return String.valueOf(TL.SHIELD_CURRENTLY_ENABLE);
+                //if(fac.getShieldFrame() == null) return String.valueOf(TL.SHIELD_NOT_SET);
+                //return TL.SHIELD_CURRENTLY_NOT_ENABLED.toString();
 
 
             case LAND_VALUE:

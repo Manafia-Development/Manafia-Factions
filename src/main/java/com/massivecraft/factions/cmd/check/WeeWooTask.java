@@ -13,12 +13,12 @@ public class WeeWooTask implements Runnable {
 
     private final FactionsPlugin plugin;
 
-    public WeeWooTask (FactionsPlugin plugin) {
+    public WeeWooTask(FactionsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public void run () {
+    public void run() {
         for (Faction faction : Factions.getInstance().getAllFactions()) {
             if (!faction.isWeeWoo())
                 continue;

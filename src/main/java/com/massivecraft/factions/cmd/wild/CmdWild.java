@@ -30,7 +30,7 @@ public class CmdWild extends FCommand implements WaitedTask {
     public static HashSet<Player> teleporting;
     public static CmdWild instance;
 
-    public CmdWild () {
+    public CmdWild() {
         super();
         if (instance == null) instance = this;
         this.aliases.addAll(Aliases.wild);
@@ -42,13 +42,13 @@ public class CmdWild extends FCommand implements WaitedTask {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!teleportRange.containsKey(context.player))
             context.player.openInventory(new WildGUI(context.player, context.fPlayer).getInventory());
     }
 
 
-    public void attemptTeleport (Player p) {
+    public void attemptTeleport(Player p) {
         boolean success = false;
         int tries = 0;
         ConfigurationSection c = FactionsPlugin.getInstance().getConfig().getConfigurationSection("Wild.Zones." + teleportRange.get(p));
@@ -76,7 +76,7 @@ public class CmdWild extends FCommand implements WaitedTask {
         }
     }
 
-    public void teleportPlayer (Player p, FLocation loc) {
+    public void teleportPlayer(Player p, FLocation loc) {
         Location finalLoc;
         if (FactionsPlugin.getInstance().getConfig().getBoolean("Wild.Arrival.SpawnAbove"))
             finalLoc = new Location(loc.getWorld(), loc.getX(), loc.getWorld().getHighestBlockYAt(Math.round(loc.getX()), Math.round(loc.getZ())) + FactionsPlugin.getInstance().getConfig().getInt("Wild.Arrival.SpawnAboveBlocks", 1), loc.getZ());
@@ -87,28 +87,28 @@ public class CmdWild extends FCommand implements WaitedTask {
         applyEffects(p);
     }
 
-    public void applyEffects (Player p) {
+    public void applyEffects(Player p) {
         for (String s : FactionsPlugin.getInstance().getConfig().getStringList("Wild.Arrival.Effects"))
             p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(s)), 40, 1));
     }
 
-    public void setTeleporting (Player p) {
+    public void setTeleporting(Player p) {
         teleporting.add(p);
         Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.getInstance(), () -> teleporting.remove(p), FactionsPlugin.getInstance().getConfig().getInt("Wild.Arrival.FallDamageWindow") * 20);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_WILD_DESCRIPTION;
     }
 
     @Override
-    public void handleSuccess (Player player) {
+    public void handleSuccess(Player player) {
         attemptTeleport(player);
     }
 
     @Override
-    public void handleFailure (Player player) {
+    public void handleFailure(Player player) {
         player.sendMessage(TL.COMMAND_WILD_INTERUPTED.toString());
         teleportRange.remove(player);
     }

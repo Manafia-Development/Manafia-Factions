@@ -20,7 +20,7 @@ public class CmdList extends FCommand {
 
     private final String[] defaults = new String[3];
 
-    public CmdList () {
+    public CmdList() {
         super();
         this.aliases.addAll(Aliases.list);
 
@@ -38,7 +38,7 @@ public class CmdList extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
         if (!context.payForCommand(Conf.econCostList, "to list the factions", "for listing the factions"))
             return;
@@ -109,7 +109,7 @@ public class CmdList extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_LIST_DESCRIPTION;
     }
 }

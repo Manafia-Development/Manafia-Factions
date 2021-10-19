@@ -19,7 +19,7 @@ public class CmdAutoClaim extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdAutoClaim () {
+    public CmdAutoClaim() {
         super();
         this.aliases.addAll(Aliases.claim_auto);
 
@@ -33,7 +33,7 @@ public class CmdAutoClaim extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction forFaction = context.argAsFaction(0, context.faction);
 
         if (forFaction != context.fPlayer.getFaction())
@@ -86,7 +86,7 @@ public class CmdAutoClaim extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_AUTOCLAIM_DESCRIPTION;
     }
 

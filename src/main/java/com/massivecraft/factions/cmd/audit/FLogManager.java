@@ -25,15 +25,15 @@ public class FLogManager {
     private File logFile;
     private boolean saving = false;
 
-    public FLogManager () {
+    public FLogManager() {
     }
 
-    public void log (Faction faction, FLogType type, String... arguments) {
+    public void log(Faction faction, FLogType type, String... arguments) {
         FactionLogs logs = factionLogMap.computeIfAbsent(faction.getId(), (n) -> new FactionLogs());
         logs.log(type, arguments);
     }
 
-    public void loadLogs (FactionsPlugin plugin) {
+    public void loadLogs(FactionsPlugin plugin) {
         try {
             logFile = new File("plugins/Factions/data", "factionLogs.json");
             if (!logFile.exists())
@@ -76,7 +76,7 @@ public class FLogManager {
         }, 20L, 400L);
     }
 
-    public void pushPendingLogs (LogTimer.TimerType type) {
+    public void pushPendingLogs(LogTimer.TimerType type) {
         Faction faction = null;
 
         for (Map.Entry<UUID, LogTimer> uuidLogTimerEntry : getLogTimers().entrySet()) {
@@ -101,7 +101,7 @@ public class FLogManager {
 
     }
 
-    public void saveLogs () {
+    public void saveLogs() {
         if (saving)
             Bukkit.getLogger().info("Ignoring saveLogs due to saving==true!");
         else {
@@ -124,11 +124,11 @@ public class FLogManager {
         }
     }
 
-    public Map<String, FactionLogs> getFactionLogMap () {
+    public Map<String, FactionLogs> getFactionLogMap() {
         return factionLogMap;
     }
 
-    public Map<UUID, LogTimer> getLogTimers () {
+    public Map<UUID, LogTimer> getLogTimers() {
         return logTimers;
     }
 }

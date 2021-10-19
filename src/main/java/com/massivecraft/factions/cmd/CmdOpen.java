@@ -15,7 +15,7 @@ public class CmdOpen extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdOpen () {
+    public CmdOpen() {
         super();
         this.aliases.addAll(Aliases.open);
         this.optionalArgs.put("yes/no", "flip");
@@ -28,7 +28,7 @@ public class CmdOpen extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.getInstance(), () -> {
             // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
             if (!context.payForCommand(Conf.econCostOpen, TL.COMMAND_OPEN_TOOPEN, TL.COMMAND_OPEN_FOROPEN))
@@ -61,7 +61,7 @@ public class CmdOpen extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_OPEN_DESCRIPTION;
     }
 

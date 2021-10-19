@@ -6,14 +6,14 @@ import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
 
 public class CmdDebug extends FCommand {
-    public CmdDebug () {
+    public CmdDebug() {
         super();
         this.aliases.add("debug");
         this.requirements = new CommandRequirements.Builder(Permission.DEBUG).build();
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         System.out.print("----------Debug Info----------");
         System.out.print("-------Main-------");
         System.out.print("Server com.massivecraft.factions.Version: " + FactionsPlugin.getInstance().getServer().getVersion());
@@ -42,7 +42,7 @@ public class CmdDebug extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_DEBUG_DESCRIPTION;
     }
 }

@@ -22,7 +22,7 @@ public class CmdClaimLine extends FCommand {
 
     public static final BlockFace[] axis = {BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST};
 
-    public CmdClaimLine () {
+    public CmdClaimLine() {
 
         // Aliases
         this.aliases.addAll(Aliases.claim_line);
@@ -40,7 +40,7 @@ public class CmdClaimLine extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // Args
         Integer amount = context.argAsInt(0, 1); // Default to 1
 
@@ -99,7 +99,7 @@ public class CmdClaimLine extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CLAIMLINE_DESCRIPTION;
     }
 }

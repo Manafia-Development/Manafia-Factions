@@ -1,6 +1,5 @@
 package com.massivecraft.factions.lunar;
 
-import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.Util;
 
 

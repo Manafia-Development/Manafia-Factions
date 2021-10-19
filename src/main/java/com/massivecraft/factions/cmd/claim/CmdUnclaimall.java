@@ -21,7 +21,7 @@ public class CmdUnclaimall extends FCommand {
      */
 
     //TODO: Add UnclaimAll Confirmation GUI
-    public CmdUnclaimall () {
+    public CmdUnclaimall() {
         this.aliases.addAll(Aliases.unclaim_all_unsafe);
 
         this.optionalArgs.put("faction", "yours");
@@ -34,7 +34,7 @@ public class CmdUnclaimall extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction target = context.faction;
         if (context.args.size() == 1) {
             target = context.argAsFaction(0);
@@ -77,7 +77,7 @@ public class CmdUnclaimall extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_UNCLAIMALL_DESCRIPTION;
     }
 

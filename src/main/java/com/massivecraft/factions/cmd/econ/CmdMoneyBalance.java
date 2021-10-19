@@ -15,7 +15,7 @@ public class CmdMoneyBalance extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdMoneyBalance () {
+    public CmdMoneyBalance() {
         super();
         this.aliases.addAll(Aliases.money_balance);
 
@@ -28,7 +28,7 @@ public class CmdMoneyBalance extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.faction;
         if (context.argIsSet(0))
             faction = context.argAsFaction(0);
@@ -40,7 +40,7 @@ public class CmdMoneyBalance extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MONEYBALANCE_DESCRIPTION;
     }
 

@@ -20,7 +20,7 @@ public class CmdGrace extends FCommand {
      * @author Driftay
      */
 
-    public CmdGrace () {
+    public CmdGrace() {
         super();
         this.aliases.addAll(Aliases.grace);
 
@@ -31,7 +31,7 @@ public class CmdGrace extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!Conf.useGraceSystem) {
             context.msg(TL.GENERIC_DISABLED, "factions grace");
             return;
@@ -66,7 +66,7 @@ public class CmdGrace extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_GRACE_DESCRIPTION;
     }
 

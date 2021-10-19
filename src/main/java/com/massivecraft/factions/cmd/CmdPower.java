@@ -11,7 +11,7 @@ public class CmdPower extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdPower () {
+    public CmdPower() {
         super();
         this.aliases.addAll(Aliases.power_power);
         this.optionalArgs.put("player name", "you");
@@ -22,7 +22,7 @@ public class CmdPower extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer target = context.argAsBestFPlayerMatch(0, context.fPlayer);
         if (target == null)
             return;
@@ -42,7 +42,7 @@ public class CmdPower extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_POWER_DESCRIPTION;
     }
 

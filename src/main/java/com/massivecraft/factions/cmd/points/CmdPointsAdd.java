@@ -16,7 +16,7 @@ public class CmdPointsAdd extends FCommand {
      * @author Driftay
      */
 
-    public CmdPointsAdd () {
+    public CmdPointsAdd() {
         super();
         this.aliases.addAll(Aliases.points_add);
 
@@ -30,7 +30,7 @@ public class CmdPointsAdd extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = Factions.getInstance().getByTag(context.args.get(0));
 
         if (faction == null) {
@@ -55,7 +55,7 @@ public class CmdPointsAdd extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ADDPOINTS_DESCRIPTION;
     }
 

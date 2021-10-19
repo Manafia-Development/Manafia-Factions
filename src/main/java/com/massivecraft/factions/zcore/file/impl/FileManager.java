@@ -20,8 +20,6 @@ public class FileManager {
     private final CustomFile raids = new CustomFile(new File(FactionsPlugin.getInstance().getDataFolder() + "/raids.yaml"));
 
 
-
-
     public void setupFiles() {
         shop.setup(true, "");
         permissions.setup(true, "configurations");
@@ -52,9 +50,8 @@ public class FileManager {
     }
 
     public CustomFile getCloaks() {
-      return cloaks;
+        return cloaks;
     }
-
 
 
 }

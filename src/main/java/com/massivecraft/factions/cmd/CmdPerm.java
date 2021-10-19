@@ -21,7 +21,7 @@ public class CmdPerm extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdPerm () {
+    public CmdPerm() {
         super();
         this.aliases.addAll(Aliases.perm);
 
@@ -37,7 +37,7 @@ public class CmdPerm extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         if (context.args.size() == 0) {
             new PermissableRelationFrame(context.faction).buildGUI(context.fPlayer);
@@ -99,7 +99,7 @@ public class CmdPerm extends FCommand {
         FactionsPlugin.getInstance().log(String.format(TL.COMMAND_PERM_SET.toString(), context.argAsString(1), access.name(), context.argAsString(0)) + " for faction " + context.fPlayer.getTag());
     }
 
-    private Permissable getPermissable (String name) {
+    private Permissable getPermissable(String name) {
         if (Role.fromString(name.toUpperCase()) != null)
             return Role.fromString(name.toUpperCase());
         else if (Relation.fromString(name.toUpperCase()) != null)
@@ -109,7 +109,7 @@ public class CmdPerm extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_PERM_DESCRIPTION;
     }
 

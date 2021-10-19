@@ -10,7 +10,7 @@ public class CmdBoom extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdBoom () {
+    public CmdBoom() {
         super();
         this.aliases.addAll(Aliases.boom);
 
@@ -23,7 +23,7 @@ public class CmdBoom extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!context.faction.isPeaceful()) {
             context.msg(TL.COMMAND_BOOM_PEACEFULONLY);
             return;
@@ -42,7 +42,7 @@ public class CmdBoom extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_BOOM_DESCRIPTION;
     }
 }

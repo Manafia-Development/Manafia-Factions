@@ -19,7 +19,7 @@ public class CmdWarunclaimall extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdWarunclaimall () {
+    public CmdWarunclaimall() {
         this.aliases.addAll(Aliases.unclaim_all_war);
         this.optionalArgs.put("world", "all");
 
@@ -28,7 +28,7 @@ public class CmdWarunclaimall extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         String worldName = context.argAsString(0);
         World world = null;
 
@@ -47,7 +47,7 @@ public class CmdWarunclaimall extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_WARUNCLAIMALL_DESCRIPTION;
     }
 

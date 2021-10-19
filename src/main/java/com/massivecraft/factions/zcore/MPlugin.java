@@ -87,7 +87,7 @@ public abstract class MPlugin extends JavaPlugin {
     }
 
     public void postEnable() {
-     //   log("- Plugin Successfully Enabled (Process took: " + (System.currentTimeMillis() - timeEnableStart) + "ms) -");
+        //   log("- Plugin Successfully Enabled (Process took: " + (System.currentTimeMillis() - timeEnableStart) + "ms) -");
     }
 
     public void onDisable() {

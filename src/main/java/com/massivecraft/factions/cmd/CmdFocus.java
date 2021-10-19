@@ -12,7 +12,7 @@ public class CmdFocus extends FCommand {
      * @author Driftay
      */
 
-    public CmdFocus () {
+    public CmdFocus() {
         aliases.addAll(Aliases.focus);
 
         requiredArgs.add("player");
@@ -24,7 +24,7 @@ public class CmdFocus extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("ffocus.Enabled")) {
             context.msg(TL.GENERIC_DISABLED, "Faction Focus");
             return;
@@ -47,7 +47,7 @@ public class CmdFocus extends FCommand {
         FTeamWrapper.updatePrefixes(target.getFaction());
     }
 
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_FOCUS_DESCRIPTION;
     }
 }

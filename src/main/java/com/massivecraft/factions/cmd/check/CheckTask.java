@@ -24,12 +24,12 @@ public class CheckTask implements Runnable {
     private final FactionsPlugin plugin;
     private final int minute;
 
-    public CheckTask (FactionsPlugin plugin, int minute) {
+    public CheckTask(FactionsPlugin plugin, int minute) {
         this.plugin = plugin;
         this.minute = minute;
     }
 
-    public static void cleanupTask () {
+    public static void cleanupTask() {
         for (Faction faction : Factions.getInstance().getAllFactions()) {
             if (!faction.isNormal())
                 continue;
@@ -46,16 +46,16 @@ public class CheckTask implements Runnable {
         }
     }
 
-    public static boolean wallCheck (String factionId) {
+    public static boolean wallCheck(String factionId) {
         return CheckTask.wallChecks.remove(factionId);
     }
 
-    public static boolean bufferCheck (String factionId) {
+    public static boolean bufferCheck(String factionId) {
         return CheckTask.bufferChecks.remove(factionId);
     }
 
     @Override
-    public void run () {
+    public void run() {
         long currentTime = System.currentTimeMillis();
         for (Faction faction : Factions.getInstance().getAllFactions()) {
             if (!faction.isNormal())

@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
  * @author Saser
  */
 public class CmdDrain extends FCommand {
-    public CmdDrain () {
+    public CmdDrain() {
         this.aliases.addAll(Aliases.drain);
         this.requirements = new CommandRequirements.Builder(Permission.DRAIN)
                 .playerOnly()
@@ -25,7 +25,7 @@ public class CmdDrain extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!Conf.factionsDrainEnabled) {
             context.fPlayer.msg(TL.GENERIC_DISABLED, "Factions Drain");
             return;
@@ -50,13 +50,13 @@ public class CmdDrain extends FCommand {
         context.fPlayer.msg(TL.COMMAND_DRAIN_RECIEVED_AMOUNT, commas(totalBalance));
     }
 
-    public String commas (final double amount) {
+    public String commas(final double amount) {
         final DecimalFormat formatter = new DecimalFormat("#,###.00");
         return formatter.format(amount);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_DRAIN_DESCRIPTION;
     }
 }

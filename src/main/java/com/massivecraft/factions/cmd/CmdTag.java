@@ -19,7 +19,7 @@ public class CmdTag extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdTag () {
+    public CmdTag() {
         this.aliases.addAll(Aliases.tag);
 
         this.requiredArgs.add("faction tag");
@@ -32,7 +32,7 @@ public class CmdTag extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         String tag = context.argAsString(0);
 
@@ -91,7 +91,7 @@ public class CmdTag extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_TAG_DESCRIPTION;
     }
 

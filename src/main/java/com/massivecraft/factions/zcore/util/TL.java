@@ -1349,8 +1349,6 @@ public enum TL {
     COMMAND_CLOAKS_PAST_LIMIT(" "),
 
 
-    
-
     PLACEHOLDERAPI_NULL("");
 
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();

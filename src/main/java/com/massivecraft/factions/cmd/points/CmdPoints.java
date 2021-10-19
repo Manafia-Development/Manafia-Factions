@@ -19,7 +19,7 @@ public class CmdPoints extends FCommand {
     public CmdPointsAdd cmdPointsAdd = new CmdPointsAdd();
     public CmdPointsBalance cmdPointsBalance = new CmdPointsBalance();
 
-    public CmdPoints () {
+    public CmdPoints() {
         super();
         this.aliases.addAll(Aliases.points_points);
 
@@ -35,7 +35,7 @@ public class CmdPoints extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("f-points.Enabled", true)) {
             context.msg(TL.GENERIC_DISABLED, "Faction Points");
             return;
@@ -45,7 +45,7 @@ public class CmdPoints extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_POINTS_DESCRIPTION;
     }
 

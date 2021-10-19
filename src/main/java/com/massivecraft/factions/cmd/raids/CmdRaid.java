@@ -2,17 +2,11 @@ package com.massivecraft.factions.cmd.raids;
 
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.FactionsPlugin;
-import com.massivecraft.factions.Util;
 import com.massivecraft.factions.cmd.*;
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
-
-import java.security.PublicKey;
-import java.util.List;
 
 public class CmdRaid extends FCommand {
 
@@ -53,10 +47,10 @@ public class CmdRaid extends FCommand {
             context.msg(TL.COMMAND_RAID_HELP_2);
             return;
         }
-    
-        if(context.faction.isProtected()) {
+
+        if (context.faction.isProtected()) {
             context.sender.sendMessage(TL.COMMAND_RAID_DENIED.format(target, me));
-        }    
+        }
         if (context.faction.isPeaceful()) {
             context.sender.sendMessage(TL.COMMAND_RAID_DENIED.format(target));
             return;
@@ -76,22 +70,22 @@ public class CmdRaid extends FCommand {
 
         if (context.faction.isNormal()) {
             Bukkit.broadcastMessage(TL.COMMAND_RAID_STARTED_BROADCAST.format(me, target.getTag()));
-        //    boolean RaidStarted = true;
+            //    boolean RaidStarted = true;
 
-        if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Mechanics.Spawner-Break", false)) {
+            if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Mechanics.Spawner-Break", false)) {
 
-             boolean raidSpawners = true;
+                boolean raidSpawners = true;
 
-            //TODO add a timer!
+                //TODO add a timer!
 
-        }
+            }
             return;
         }
     }
 
 
-        @Override
-        public TL getUsageTranslation() {
-            return TL.COMMAND_RAID_DESCRIPTION;
-        }
+    @Override
+    public TL getUsageTranslation() {
+        return TL.COMMAND_RAID_DESCRIPTION;
     }
+}

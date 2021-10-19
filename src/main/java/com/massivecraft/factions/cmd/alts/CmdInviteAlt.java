@@ -24,7 +24,7 @@ public class CmdInviteAlt extends FCommand {
      * @author Driftay
      */
 
-    public CmdInviteAlt () {
+    public CmdInviteAlt() {
         super();
         this.aliases.addAll(Aliases.alts_invite);
         this.requiredArgs.add("player name");
@@ -36,7 +36,7 @@ public class CmdInviteAlt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Enabled", false)) {
             context.msg(TL.GENERIC_DISABLED, "Faction Alts");
             return;
@@ -90,7 +90,7 @@ public class CmdInviteAlt extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ALTINVITE_DESCRIPTION;
     }
 }

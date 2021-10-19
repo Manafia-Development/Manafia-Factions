@@ -19,7 +19,7 @@ public class CmdMoneyTransferFp extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdMoneyTransferFp () {
+    public CmdMoneyTransferFp() {
         this.aliases.addAll(Aliases.money_transfer_Fp);
 
         this.requiredArgs.add("amount");
@@ -30,7 +30,7 @@ public class CmdMoneyTransferFp extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         double amount = context.argAsDouble(0, 0d);
 
         if (amount <= 0)
@@ -48,7 +48,7 @@ public class CmdMoneyTransferFp extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MONEYTRANSFERFP_DESCRIPTION;
     }
 }

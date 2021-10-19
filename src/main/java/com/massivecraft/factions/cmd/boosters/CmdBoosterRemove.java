@@ -11,7 +11,7 @@ import com.massivecraft.factions.zcore.util.TL;
 
 public class CmdBoosterRemove extends FCommand {
 
-    public CmdBoosterRemove () {
+    public CmdBoosterRemove() {
         super();
         this.aliases.addAll(Aliases.boostersRemove);
 
@@ -22,7 +22,7 @@ public class CmdBoosterRemove extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction target = context.argAsFaction(0);
 
         if (target == null) {
@@ -48,7 +48,7 @@ public class CmdBoosterRemove extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_BOOSTERS_REMOVE_DESCRIPTION;
     }
 }

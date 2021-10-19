@@ -29,7 +29,7 @@ public class TNTFillTask extends BukkitRunnable {
 
     private boolean isRunning = true;
 
-    public TNTFillTask (CmdTntFill cmdTntFill, TNTProvider tntProvider, Collection<Block> dispensers, int count) {
+    public TNTFillTask(CmdTntFill cmdTntFill, TNTProvider tntProvider, Collection<Block> dispensers, int count) {
         this.cmdTntFill = cmdTntFill;
         this.tntProvider = tntProvider;
         this.dispensers = new ArrayDeque<>(dispensers);
@@ -37,18 +37,18 @@ public class TNTFillTask extends BukkitRunnable {
         this.initialSize = dispensers.size();
     }
 
-    public boolean isCancelled () {
+    public boolean isCancelled() {
         return !isRunning;
     }
 
     @Override
-    public synchronized void cancel () throws IllegalStateException {
+    public synchronized void cancel() throws IllegalStateException {
         super.cancel();
         this.isRunning = false;
     }
 
     @Override
-    public void run () {
+    public void run() {
         if (dispensers.isEmpty() || !tntProvider.isAvailable()) {
             tntProvider.sendMessage(TL.COMMAND_TNTFILL_SUCCESS.toString().replace("{amount}", (initialSize * count) + "").replace("{dispensers}", initialSize + ""));
             cancel();

@@ -14,7 +14,7 @@ public class CmdChat extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdChat () {
+    public CmdChat() {
         super();
         this.aliases.addAll(Aliases.chat);
 
@@ -29,7 +29,7 @@ public class CmdChat extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!Conf.factionOnlyChat) {
             context.msg(TL.COMMAND_CHAT_DISABLED.toString());
             return;
@@ -82,13 +82,13 @@ public class CmdChat extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CHAT_DESCRIPTION;
     }
 
     protected class ChatBrigadier implements BrigadierProvider {
         @Override
-        public ArgumentBuilder<Object, ?> get (ArgumentBuilder<Object, ?> parent) {
+        public ArgumentBuilder<Object, ?> get(ArgumentBuilder<Object, ?> parent) {
             return parent.then(LiteralArgumentBuilder.literal("public"))
                     .then(LiteralArgumentBuilder.literal("mod"))
                     .then(LiteralArgumentBuilder.literal("alliance"))

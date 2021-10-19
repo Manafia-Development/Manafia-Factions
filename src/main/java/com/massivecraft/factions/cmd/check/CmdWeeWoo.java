@@ -13,7 +13,7 @@ public class CmdWeeWoo extends FCommand {
      * @author Vankka
      */
 
-    public CmdWeeWoo () {
+    public CmdWeeWoo() {
         this.aliases.addAll(Aliases.weewoo);
         this.requiredArgs.add("start/stop");
 
@@ -23,7 +23,7 @@ public class CmdWeeWoo extends FCommand {
                 .build();
     }
 
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (context.faction == null || !context.faction.isNormal())
             return;
         String argument = context.argAsString(0);
@@ -46,7 +46,7 @@ public class CmdWeeWoo extends FCommand {
             context.msg("/f weewoo <start/stop>");
     }
 
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_WEEWOO_DESCRIPTION;
     }
 }

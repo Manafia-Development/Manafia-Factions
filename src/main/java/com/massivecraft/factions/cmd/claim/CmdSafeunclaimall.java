@@ -19,7 +19,7 @@ public class CmdSafeunclaimall extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdSafeunclaimall () {
+    public CmdSafeunclaimall() {
         this.aliases.addAll(Aliases.unclaim_all_safe);
         this.optionalArgs.put("world", "all");
 
@@ -28,7 +28,7 @@ public class CmdSafeunclaimall extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         String worldName = context.argAsString(0);
         World world = null;
 
@@ -49,7 +49,7 @@ public class CmdSafeunclaimall extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SAFEUNCLAIMALL_DESCRIPTION;
     }
 

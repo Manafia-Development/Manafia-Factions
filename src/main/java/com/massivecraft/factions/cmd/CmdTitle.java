@@ -13,7 +13,7 @@ public class CmdTitle extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdTitle () {
+    public CmdTitle() {
         this.aliases.addAll(Aliases.title);
         this.requiredArgs.add("player name");
         this.optionalArgs.put("title", "");
@@ -24,7 +24,7 @@ public class CmdTitle extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.getInstance(), () -> {
             FPlayer you = context.argAsBestFPlayerMatch(0);
             if (you == null) return;
@@ -41,7 +41,7 @@ public class CmdTitle extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_TITLE_DESCRIPTION;
     }
 

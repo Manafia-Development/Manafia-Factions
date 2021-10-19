@@ -8,7 +8,7 @@ public class CmdPromote extends FPromoteCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdPromote () {
+    public CmdPromote() {
         aliases.addAll(Aliases.roles_promote);
         this.relative = 1;
     }

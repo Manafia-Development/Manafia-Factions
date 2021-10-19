@@ -2,7 +2,6 @@ package com.massivecraft.factions.cmd.cloaks;
 
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.cloaks.Cloak;
 import com.massivecraft.factions.cloaks.CloakType;
 import com.massivecraft.factions.cmd.Aliases;
 import com.massivecraft.factions.cmd.CommandContext;
@@ -10,7 +9,6 @@ import com.massivecraft.factions.cmd.CommandRequirements;
 import com.massivecraft.factions.cmd.FCommand;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.CloakChunk;
-import com.massivecraft.factions.util.TimeUtil;
 import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,13 +17,13 @@ import java.util.Objects;
 
 public class CmdCloaksAdd extends FCommand {
 
-    public CmdCloaksAdd () {
+    public CmdCloaksAdd() {
         super();
         this.aliases.addAll(Aliases.CloakAdd);
 
         this.requiredArgs.add("faction");
         this.requiredArgs.add("CloakType");
-     //   this.requiredArgs.add("time");
+        //   this.requiredArgs.add("time");
 
         this.requirements = new CommandRequirements.Builder(Permission.CLOAK_ADD).playerOnly().memberOnly().build();
     }
@@ -42,12 +40,12 @@ public class CmdCloaksAdd extends FCommand {
 
 
         if (target == null) {
-              context.sender.sendMessage(TL.COMMAND_CLOAKS_ADD_INVALID_FAC.format(context.argAsString(0)));
+            context.sender.sendMessage(TL.COMMAND_CLOAKS_ADD_INVALID_FAC.format(context.argAsString(0)));
             return;
         }
 
-     //   String timeLength = context.argAsString(3);
-     //   TimeUtil timeUtil;
+        //   String timeLength = context.argAsString(3);
+        //   TimeUtil timeUtil;
 /*
         try {
             timeUtil = TimeUtil.parseString(timeLength);
@@ -63,7 +61,6 @@ public class CmdCloaksAdd extends FCommand {
         target.addCloak(cloak);
 
  */
-
 
 
         CloakChunk cloakChunk = new CloakChunk(Objects.requireNonNull(location.getWorld()).getName(), location.getChunk().getX(), location.getChunk().getZ());
@@ -90,7 +87,7 @@ public class CmdCloaksAdd extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CLOAKS_ADD_DESCRIPTION;
     }
 }

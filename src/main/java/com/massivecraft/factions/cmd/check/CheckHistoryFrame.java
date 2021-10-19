@@ -31,17 +31,17 @@ public class CheckHistoryFrame implements FactionGUI {
     private final Inventory inventory;
     private final SimpleDateFormat simpleDateFormat;
 
-    public CheckHistoryFrame (FactionsPlugin plugin, Faction faction) {
+    public CheckHistoryFrame(FactionsPlugin plugin, Faction faction) {
         this.simpleDateFormat = new SimpleDateFormat(Conf.dateFormat);
         this.plugin = plugin;
         this.faction = faction;
         this.inventory = plugin.getServer().createInventory(this, 54, TL.CHECK_HISTORY_GUI_TITLE.toString());
     }
 
-    public void onClick (int slot, ClickType action) {
+    public void onClick(int slot, ClickType action) {
     }
 
-    public void build () {
+    public void build() {
         int currentSlot = 0;
         for (Map.Entry<Long, String> entry : Lists.reverse(new ArrayList<>(faction.getChecks().entrySet()))) {
             if (currentSlot >= 54)
@@ -74,7 +74,7 @@ public class CheckHistoryFrame implements FactionGUI {
         }
     }
 
-    public Inventory getInventory () {
+    public Inventory getInventory() {
         return inventory;
     }
 }

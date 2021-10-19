@@ -2,7 +2,6 @@ package com.massivecraft.factions.cloaks;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
-import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FactionsPlugin;
 import com.massivecraft.factions.Util;
 import org.bukkit.inventory.ItemStack;

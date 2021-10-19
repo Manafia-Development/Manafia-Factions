@@ -17,7 +17,7 @@ public class CmdClaimAt extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdClaimAt () {
+    public CmdClaimAt() {
         super();
         this.aliases.addAll(Aliases.claim_at);
 
@@ -33,7 +33,7 @@ public class CmdClaimAt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         int x = context.argAsInt(1);
         int z = context.argAsInt(2);
         FLocation location = new FLocation(context.argAsString(0), x, z);
@@ -51,13 +51,13 @@ public class CmdClaimAt extends FCommand {
         showMap(context);
     }
 
-    public void showMap (CommandContext context) {
+    public void showMap(CommandContext context) {
         context.sendFancyMessage(Board.getInstance().getMap(context.fPlayer, new FLocation(context.fPlayer), context.player.getLocation().getYaw()));
     }
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return null;
     }
 }

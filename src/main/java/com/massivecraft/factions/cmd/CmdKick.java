@@ -19,7 +19,7 @@ public class CmdKick extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdKick () {
+    public CmdKick() {
         super();
         this.aliases.addAll(Aliases.kick);
         this.optionalArgs.put("player name", "player name");
@@ -32,7 +32,7 @@ public class CmdKick extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer toKick = context.argIsSet(0) ? context.argAsBestFPlayerMatch(0) : null;
         if (toKick == null) {
             FancyMessage msg = new FancyMessage(TL.COMMAND_KICK_CANDIDATES.toString()).color(ChatColor.GOLD);
@@ -119,7 +119,7 @@ public class CmdKick extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_KICK_DESCRIPTION;
     }
 

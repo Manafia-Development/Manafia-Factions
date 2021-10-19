@@ -19,7 +19,7 @@ public class AntiChestListener implements Listener {
      */
 
     @EventHandler
-    public void onInventoryClick (InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         if (!fPlayer.isInFactionsChest()) return;
@@ -54,7 +54,7 @@ public class AntiChestListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryDrag (InventoryDragEvent e) {
+    public void onInventoryDrag(InventoryDragEvent e) {
         Player p = (Player) e.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(p);
 

@@ -24,7 +24,7 @@ public class CmdCheck extends FCommand {
 
     private final SimpleDateFormat simpleDateFormat;
 
-    public CmdCheck () {
+    public CmdCheck() {
         this.simpleDateFormat = new SimpleDateFormat(Conf.dateFormat);
         this.aliases.addAll(Aliases.check);
         this.requiredArgs.add("walls/buffers/settings/leaderboard");
@@ -37,7 +37,7 @@ public class CmdCheck extends FCommand {
     }
 
 
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (context.faction == null || !context.faction.isNormal()) {
             return;
         }
@@ -110,7 +110,7 @@ public class CmdCheck extends FCommand {
         }
     }
 
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CHECK_DESCRIPTION;
     }
 }

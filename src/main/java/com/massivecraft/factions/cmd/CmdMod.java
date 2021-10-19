@@ -17,7 +17,7 @@ public class CmdMod extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdMod () {
+    public CmdMod() {
         super();
         this.aliases.addAll(Aliases.mod);
 
@@ -30,7 +30,7 @@ public class CmdMod extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer you = context.argAsBestFPlayerMatch(0);
         if (you == null) {
             FancyMessage msg = new FancyMessage(TL.COMMAND_MOD_CANDIDATES.toString()).color(ChatColor.GOLD);
@@ -82,7 +82,7 @@ public class CmdMod extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MOD_DESCRIPTION;
     }
 

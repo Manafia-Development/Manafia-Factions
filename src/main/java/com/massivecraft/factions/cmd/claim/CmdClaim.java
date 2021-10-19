@@ -25,7 +25,7 @@ public class CmdClaim extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdClaim () {
+    public CmdClaim() {
         super();
         this.aliases.addAll(Aliases.claim_claim);
 
@@ -39,7 +39,7 @@ public class CmdClaim extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         // Read and validate input
         int radius = context.argAsInt(0, 1); // Default to 1
@@ -89,7 +89,7 @@ public class CmdClaim extends FCommand {
                     private int successfulClaims = 0;
 
                     @Override
-                    public boolean work () {
+                    public boolean work() {
                         boolean success = context.fPlayer.attemptClaim(forFaction, this.currentLocation(), true);
                         if (success) {
                             failCount = 0;
@@ -102,7 +102,7 @@ public class CmdClaim extends FCommand {
                         return true;
                     }
 
-                    public void finish () {
+                    public void finish() {
                         sw.stop();
                         if (FactionsPlugin.cachedRadiusClaim) {
                             if (successfulClaims > 0) {
@@ -121,7 +121,7 @@ public class CmdClaim extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CLAIM_DESCRIPTION;
     }
 

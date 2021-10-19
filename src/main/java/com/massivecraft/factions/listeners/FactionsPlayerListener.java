@@ -373,8 +373,6 @@ public class FactionsPlayerListener implements Listener {
         initPlayer(event.getPlayer());
 
 
-
-        
     }
 
     private void initPlayer(Player player) {
@@ -481,7 +479,7 @@ public class FactionsPlayerListener implements Listener {
     public String parseAllPlaceholders(String string, Faction faction, Player player) {
         string = TagUtil.parsePlaceholders(player, string);
         string = string.replace("{Faction}", faction.getTag()).replace("{online}", faction.getOnlinePlayers().size() + "").replace("{offline}",
-                        faction.getFPlayers().size() - faction.getOnlinePlayers().size() + "").replace("{chunks}", faction.getAllClaims().size() + "")
+                faction.getFPlayers().size() - faction.getOnlinePlayers().size() + "").replace("{chunks}", faction.getAllClaims().size() + "")
                 .replace("{power}", faction.getPower() + "").replace("{leader}", faction.getFPlayerAdmin() + "");
         return string;
     }
@@ -739,7 +737,7 @@ public class FactionsPlayerListener implements Listener {
 
     // if (FactionsPlugin.getInstance().version == 17) {
 
-    
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         FPlayer me = FPlayers.getInstance().getByPlayer(event.getPlayer());

@@ -115,8 +115,6 @@ public class Util {
     }
 
 
-
-
     public static void addFPlayers() {
         for (FPlayer fPlayer : FPlayers.getInstance().getAllFPlayers()) {
             Faction faction = Factions.getInstance().getFactionById(fPlayer.getFactionId());

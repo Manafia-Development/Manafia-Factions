@@ -17,7 +17,7 @@ public class CmdStuck extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdStuck () {
+    public CmdStuck() {
         super();
         this.aliases.addAll(Aliases.stuck);
 
@@ -28,7 +28,7 @@ public class CmdStuck extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         final Player player = context.player;
         final Location sentAt = player.getLocation();
         final FLocation chunk = context.fPlayer.getLastStoodAt();
@@ -54,7 +54,7 @@ public class CmdStuck extends FCommand {
             final int id = Bukkit.getScheduler().runTaskLater(FactionsPlugin.getInstance(), new Runnable() {
 
                 @Override
-                public void run () {
+                public void run() {
                     if (!FactionsPlugin.getInstance().getStuckMap().containsKey(player.getUniqueId()))
                         return;
 
@@ -71,7 +71,7 @@ public class CmdStuck extends FCommand {
                     // spiral task to find nearest wilderness chunk
                     new SpiralTask(new FLocation(context.player), radius * 2) {
                         @Override
-                        public boolean work () {
+                        public boolean work() {
                             FLocation chunk = currentFLocation();
                             Faction faction = board.getFactionAt(chunk);
                             int buffer = FactionsPlugin.getInstance().getConfig().getInt("world-border.buffer", 0) - 1;
@@ -105,7 +105,7 @@ public class CmdStuck extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_STUCK_DESCRIPTION;
     }
 }

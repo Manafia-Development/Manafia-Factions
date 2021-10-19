@@ -18,7 +18,7 @@ public class CmdHelp extends FCommand {
     public ArrayList<ArrayList<String>> helpPages;
 
     //TODO: Add Help GUI
-    public CmdHelp () {
+    public CmdHelp() {
         super();
         this.aliases.addAll(Aliases.help);
 
@@ -34,7 +34,7 @@ public class CmdHelp extends FCommand {
     //----------------------------------------------//
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (FactionsPlugin.getInstance().getConfig().getBoolean("use-old-help", true)) {
 
             int page = context.argAsInt(0, 1);
@@ -204,7 +204,7 @@ public class CmdHelp extends FCommand {
      */
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_HELP_DESCRIPTION;
     }
 }

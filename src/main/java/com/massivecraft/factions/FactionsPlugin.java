@@ -12,9 +12,6 @@ import com.massivecraft.factions.cmd.chest.AntiChestListener;
 import com.massivecraft.factions.cmd.reserve.ReserveAdapter;
 import com.massivecraft.factions.cmd.reserve.ReserveObject;
 import com.massivecraft.factions.listeners.*;
-import com.massivecraft.factions.lunar.Lunar;
-import com.massivecraft.factions.lunar.LunarClientUserListener;
-import com.massivecraft.factions.lunar.LunarMods;
 import com.massivecraft.factions.missions.MissionHandler;
 import com.massivecraft.factions.shield.ShieldListener;
 import com.massivecraft.factions.struct.Relation;
@@ -32,7 +29,6 @@ import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.frame.fupgrades.UpgradesListener;
 import com.massivecraft.factions.zcore.util.LangUtil;
-import dev.rosewood.rosestacker.listener.RaidListener;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -96,6 +92,22 @@ public class FactionsPlugin extends MPlugin {
         return instance;
     }
 
+    public static void registerEvents() {
+        FactionsPlugin.instance.eventsListener = new Listener[]{
+                new FactionsChatListener(),
+                new FactionsEntityListener(),
+                new FactionsExploitListener(),
+                new FactionsBlockListener(),
+                new UpgradesListener(),
+                new MissionHandler(FactionsPlugin.instance),
+                new FChestListener(),
+                new MenuListener(),
+                new AntiChestListener(),
+                new ShieldListener(),
+                //new RaidListener()
+        };
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -123,7 +135,6 @@ public class FactionsPlugin extends MPlugin {
         this.loadSuccessful = true;
     }
 
-
     @Override
     public void onDisable() {
         if (this.AutoLeaveTask != null) {
@@ -135,22 +146,6 @@ public class FactionsPlugin extends MPlugin {
         fLogManager.saveLogs();
         DataUtils.saveReserves();
         super.onDisable();
-    }
-
-    public static void registerEvents() {
-        FactionsPlugin.instance.eventsListener = new Listener[]{
-                new FactionsChatListener(),
-                new FactionsEntityListener(),
-                new FactionsExploitListener(),
-                new FactionsBlockListener(),
-                new UpgradesListener(),
-                new MissionHandler(FactionsPlugin.instance),
-                new FChestListener(),
-                new MenuListener(),
-                new AntiChestListener(),
-                new ShieldListener(),
-                //new RaidListener()
-        };
     }
 
     public void startAutoLeaveTask(boolean restartIfRunning) {

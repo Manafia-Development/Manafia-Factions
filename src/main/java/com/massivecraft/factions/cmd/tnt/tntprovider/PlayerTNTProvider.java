@@ -10,12 +10,12 @@ public class PlayerTNTProvider implements TNTProvider {
 
     private final FPlayer fPlayer;
 
-    public PlayerTNTProvider (FPlayer fPlayer) {
+    public PlayerTNTProvider(FPlayer fPlayer) {
         this.fPlayer = fPlayer;
     }
 
     @Override
-    public int getTnt () {
+    public int getTnt() {
         int result = 0;
         PlayerInventory pi = fPlayer.getPlayer().getInventory();
         ItemStack[] contents;
@@ -30,12 +30,12 @@ public class PlayerTNTProvider implements TNTProvider {
     }
 
     @Override
-    public void sendMessage (String message) {
+    public void sendMessage(String message) {
         fPlayer.msg(message);
     }
 
     @Override
-    public void takeTnt (int toRemove) {
+    public void takeTnt(int toRemove) {
         Inventory inventory = fPlayer.getPlayer().getInventory();
         ItemStack item = new ItemStack(Material.TNT);
 
@@ -55,7 +55,7 @@ public class PlayerTNTProvider implements TNTProvider {
     }
 
     @Override
-    public boolean isAvailable () {
+    public boolean isAvailable() {
         return fPlayer.isOnline();
     }
 }

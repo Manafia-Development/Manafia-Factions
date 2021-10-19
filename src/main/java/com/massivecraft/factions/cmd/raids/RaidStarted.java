@@ -7,5 +7,5 @@ public class RaidStarted {
 
     public void raidStart() {
 
-        }
     }
+}

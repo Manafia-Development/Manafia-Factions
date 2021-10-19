@@ -26,7 +26,7 @@ public abstract class FRelationCommand extends FCommand {
 
     public Relation targetRelation;
 
-    public FRelationCommand () {
+    public FRelationCommand() {
         super();
         this.requiredArgs.add("faction tag");
 
@@ -38,7 +38,7 @@ public abstract class FRelationCommand extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction them = context.argAsFaction(0);
         if (them == null) return;
 
@@ -108,7 +108,7 @@ public abstract class FRelationCommand extends FCommand {
         FTeamWrapper.updatePrefixes(them);
     }
 
-    private boolean hasMaxRelations (Faction us, Faction them, Relation targetRelation) {
+    private boolean hasMaxRelations(Faction us, Faction them, Relation targetRelation) {
         int max = FactionsPlugin.getInstance().getConfig().getInt("max-relations." + targetRelation.toString(), -1);
         if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", false))
 
@@ -132,7 +132,7 @@ public abstract class FRelationCommand extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_RELATIONS_DESCRIPTION;
     }
 }

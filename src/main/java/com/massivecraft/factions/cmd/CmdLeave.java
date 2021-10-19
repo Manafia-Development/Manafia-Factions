@@ -9,7 +9,7 @@ public class CmdLeave extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdLeave () {
+    public CmdLeave() {
         super();
         this.aliases.addAll(Aliases.leave);
 
@@ -20,12 +20,12 @@ public class CmdLeave extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         context.fPlayer.leave(true);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.LEAVE_DESCRIPTION;
     }
 

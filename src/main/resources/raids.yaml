@@ -16,8 +16,8 @@ Mechanics:
   Spawner-Break: false
   #Do you want to enable a genbucket cooldown during a raid
   Gen-Buckets:
-     Enabled: false
-     Cooldown: 10m
+    Enabled: false
+    Cooldown: 10m
 
 
 Menu:

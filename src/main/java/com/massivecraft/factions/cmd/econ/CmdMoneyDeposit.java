@@ -21,7 +21,7 @@ public class CmdMoneyDeposit extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdMoneyDeposit () {
+    public CmdMoneyDeposit() {
         super();
         this.aliases.addAll(Aliases.money_deposit);
 
@@ -34,7 +34,7 @@ public class CmdMoneyDeposit extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         double amount = context.argAsDouble(0, 0d);
         EconomyParticipator faction = context.argAsFaction(1, context.faction);
 
@@ -52,7 +52,7 @@ public class CmdMoneyDeposit extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MONEYDEPOSIT_DESCRIPTION;
     }
 

@@ -23,7 +23,7 @@ public class CmdUnclaim extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdUnclaim () {
+    public CmdUnclaim() {
         this.aliases.addAll(Aliases.unclaim_unclaim);
 
         this.optionalArgs.put("radius", "1");
@@ -36,7 +36,7 @@ public class CmdUnclaim extends FCommand {
     }
 
     @Override
-    public void perform (final CommandContext context) {
+    public void perform(final CommandContext context) {
         // Read and validate input
         int radius = context.argAsInt(0, 1); // Default to 1
         final Faction forFaction = context.argAsFaction(1, context.faction); // Default to own
@@ -61,7 +61,7 @@ public class CmdUnclaim extends FCommand {
                 private int failCount = 0;
 
                 @Override
-                public boolean work () {
+                public boolean work() {
                     boolean success = unClaim(this.currentFLocation(), context, forFaction);
                     if (success)
                         failCount = 0;
@@ -76,7 +76,7 @@ public class CmdUnclaim extends FCommand {
         }
     }
 
-    private boolean unClaim (FLocation target, CommandContext context, Faction faction) {
+    private boolean unClaim(FLocation target, CommandContext context, Faction faction) {
         Faction targetFaction = Board.getInstance().getFactionAt(target);
 
         if (context.faction != targetFaction && !context.fPlayer.isAdminBypassing()) {
@@ -183,7 +183,7 @@ public class CmdUnclaim extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_UNCLAIM_DESCRIPTION;
     }
 

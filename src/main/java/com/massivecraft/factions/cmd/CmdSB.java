@@ -10,7 +10,7 @@ public class CmdSB extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdSB () {
+    public CmdSB() {
         this.aliases.addAll(Aliases.scoreboard);
 
         this.requirements = new CommandRequirements.Builder(Permission.SCOREBOARD)
@@ -19,7 +19,7 @@ public class CmdSB extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         boolean toggleTo = !context.fPlayer.showScoreboard();
         FScoreboard board = FScoreboard.get(context.fPlayer);
         if (board == null)
@@ -32,7 +32,7 @@ public class CmdSB extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SCOREBOARD_DESCRIPTION;
     }
 }

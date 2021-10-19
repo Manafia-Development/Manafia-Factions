@@ -14,7 +14,7 @@ public class CmdNear extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdNear () {
+    public CmdNear() {
         super();
         this.aliases.addAll(Aliases.near);
 
@@ -25,7 +25,7 @@ public class CmdNear extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("fnear.Enabled")) {
             context.msg(TL.COMMAND_NEAR_DISABLED_MSG);
             return;
@@ -46,7 +46,7 @@ public class CmdNear extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_NEAR_DESCRIPTION;
     }
 }

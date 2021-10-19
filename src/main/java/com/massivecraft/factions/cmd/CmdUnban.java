@@ -12,7 +12,7 @@ public class CmdUnban extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdUnban () {
+    public CmdUnban() {
         super();
         this.aliases.addAll(Aliases.unban);
         this.requiredArgs.add("target");
@@ -25,7 +25,7 @@ public class CmdUnban extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // Good on permission checks. Now lets just ban the player.
         FPlayer target = context.argAsFPlayer(0);
         if (target == null)
@@ -48,7 +48,7 @@ public class CmdUnban extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_UNBAN_DESCRIPTION;
     }
 }

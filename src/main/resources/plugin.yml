@@ -385,11 +385,11 @@ permissions:
   factions.showclaims:
     description: View all you faction claims.
   factions.shield:
-    description: Opens the shield menu  
+    description: Opens the shield menu
   factions.booster.add:
     description: Gives a booster to a faction
   factions.booster.remove:
-    description: Removed a booster 
+    description: Removed a booster
   faction.boosters:
     description: Opens up the boosters menu
   faction.raid.start:

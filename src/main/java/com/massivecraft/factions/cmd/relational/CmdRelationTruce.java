@@ -9,7 +9,7 @@ public class CmdRelationTruce extends FRelationCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdRelationTruce () {
+    public CmdRelationTruce() {
         aliases.addAll(Aliases.relation_truce);
         targetRelation = Relation.TRUCE;
     }

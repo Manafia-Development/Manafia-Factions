@@ -24,7 +24,7 @@ public class CmdHome extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdHome () {
+    public CmdHome() {
         super();
         this.aliases.addAll(Aliases.home);
         this.optionalArgs.put("faction", "yours");
@@ -37,7 +37,7 @@ public class CmdHome extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // TODO: Hide this command on help also.
         if (!Conf.homesEnabled) {
             context.msg(TL.COMMAND_HOME_DISABLED);
@@ -145,7 +145,7 @@ public class CmdHome extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_HOME_DESCRIPTION;
     }
 

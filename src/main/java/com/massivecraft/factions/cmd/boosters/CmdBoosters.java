@@ -11,19 +11,19 @@ import com.massivecraft.factions.zcore.util.TL;
 
 public class CmdBoosters extends FCommand {
 
-    public CmdBoosters () {
+    public CmdBoosters() {
         super();
         this.aliases.addAll(Aliases.boostersGUI);
         this.requirements = new CommandRequirements.Builder(Permission.BOOSTER_GUI).playerOnly().memberOnly().withRole(Role.MODERATOR).build();
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         new BoostersGUIFrame(context.fPlayer).open(context.player);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_BOOSTERS_DESCRIPTION;
     }
 }

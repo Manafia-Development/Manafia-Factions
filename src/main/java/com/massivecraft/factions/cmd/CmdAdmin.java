@@ -15,7 +15,7 @@ public class CmdAdmin extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdAdmin () {
+    public CmdAdmin() {
         super();
         this.aliases.addAll(Aliases.admin);
 
@@ -25,7 +25,7 @@ public class CmdAdmin extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.getInstance(), () -> {
             if (context.player == null) {
                 context.msg(TL.GENERIC_PLAYERONLY);
@@ -89,15 +89,15 @@ public class CmdAdmin extends FCommand {
         });
     }
 
-    private void setRole (FPlayer fp, Role r) {
+    private void setRole(FPlayer fp, Role r) {
         FactionsPlugin.getInstance().getServer().getScheduler().runTask(FactionsPlugin.getInstance(), () -> fp.setRole(r));
     }
 
-    private void promoteNewLeader (Faction f) {
+    private void promoteNewLeader(Faction f) {
         FactionsPlugin.getInstance().getServer().getScheduler().runTask(FactionsPlugin.getInstance(), (Runnable) f::promoteNewLeader);
     }
 
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ADMIN_DESCRIPTION;
     }
 

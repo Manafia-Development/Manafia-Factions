@@ -22,7 +22,7 @@ public class CmdTnt extends FCommand {
      * @author Illyria Team
      */
 
-    public CmdTnt () {
+    public CmdTnt() {
         super();
         this.aliases.addAll(Aliases.tnt_tnt);
         this.optionalArgs.put("add/take/addall", "");
@@ -35,7 +35,7 @@ public class CmdTnt extends FCommand {
                 .build();
     }
 
-    public static void removeItems (Inventory inventory, ItemStack item, int toRemove) {
+    public static void removeItems(Inventory inventory, ItemStack item, int toRemove) {
         if (toRemove <= 0 || inventory == null || item == null)
             return;
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -54,7 +54,7 @@ public class CmdTnt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("ftnt.Enabled")) {
             context.msg(TL.COMMAND_TNT_DISABLED_MSG);
             return;
@@ -174,7 +174,7 @@ public class CmdTnt extends FCommand {
         context.sendMessage(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + ""));
     }
 
-    public boolean inventoryContains (Inventory inventory, ItemStack item) {
+    public boolean inventoryContains(Inventory inventory, ItemStack item) {
         int count = 0;
         ItemStack[] items = inventory.getContents();
         for (ItemStack item1 : items)
@@ -183,7 +183,7 @@ public class CmdTnt extends FCommand {
         return count >= item.getAmount();
     }
 
-    public boolean hasAvaliableSlot (Player player, int howmany) {
+    public boolean hasAvaliableSlot(Player player, int howmany) {
         int check = 0;
         for (ItemStack item : player.getInventory().getContents())
             if (item == null)
@@ -191,7 +191,7 @@ public class CmdTnt extends FCommand {
         return check >= howmany;
     }
 
-    public void removeFromInventory (Inventory inventory, ItemStack item) {
+    public void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();
         ItemStack[] items = inventory.getContents();
         for (int i = 0; i < items.length; i++)
@@ -213,7 +213,7 @@ public class CmdTnt extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_TNT_DESCRIPTION;
     }
 }

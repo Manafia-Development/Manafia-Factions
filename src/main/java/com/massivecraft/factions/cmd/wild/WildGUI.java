@@ -31,14 +31,14 @@ public class WildGUI implements FactionGUI {
     HashMap<Integer, String> map;
     Inventory inv;
 
-    public WildGUI (Player player, FPlayer fplayer) {
+    public WildGUI(Player player, FPlayer fplayer) {
         this.player = player;
         this.fplayer = fplayer;
         map = new HashMap<>();
     }
 
     @Override
-    public void onClick (int slot, ClickType action) {
+    public void onClick(int slot, ClickType action) {
         if (map.containsKey(slot)) {
             String zone = map.get(slot);
             if (fplayer.hasMoney(FactionsPlugin.getInstance().getConfig().getInt("Wild.Zones." + zone + ".Cost"))) {
@@ -51,7 +51,7 @@ public class WildGUI implements FactionGUI {
     }
 
     @Override
-    public void build () {
+    public void build() {
         inv = Bukkit.createInventory(this, FactionsPlugin.getInstance().getConfig().getInt("Wild.GUI.Size"), Util.color(FactionsPlugin.getInstance().getConfig().getString("Wild.GUI.Name")));
         ItemStack fillItem = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getConfig().getString("Wild.GUI.FillMaterial.Type")).get().parseItem();
         ItemMeta meta = fillItem.getItemMeta();
@@ -80,7 +80,7 @@ public class WildGUI implements FactionGUI {
 
     @NotNull
     @Override
-    public Inventory getInventory () {
+    public Inventory getInventory() {
         if (inv == null)
             build();
         return inv;

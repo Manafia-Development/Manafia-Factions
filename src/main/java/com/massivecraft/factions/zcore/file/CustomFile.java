@@ -29,7 +29,7 @@ public class CustomFile {
             if (loadFromProject)
                 if (!inFolder.equalsIgnoreCase(""))
                     FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
-                   // FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
+                    // FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
                 else
                     FactionsPlugin.getInstance().saveResource(file.getName(), false);
             else

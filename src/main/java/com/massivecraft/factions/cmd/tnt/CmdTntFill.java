@@ -28,7 +28,7 @@ public class CmdTntFill extends FCommand {
 
     private final Map<Player, TNTFillTask> fillTaskMap;
 
-    public CmdTntFill () {
+    public CmdTntFill() {
         super();
         this.fillTaskMap = new WeakHashMap<>();
         this.aliases.addAll(Aliases.tnt_tntfill);
@@ -40,7 +40,7 @@ public class CmdTntFill extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.instance.getConfig().getBoolean("Tntfill.enabled")) {
             context.msg(TL.COMMAND_TNT_DISABLED_MSG);
             return;
@@ -125,18 +125,18 @@ public class CmdTntFill extends FCommand {
         //context.sendMessage(TL.COMMAND_TNTFILL_SUCCESS.toString().replace("{amount}", requiredTnt + "").replace("{dispensers}", opDispensers.size() + ""));
     }
 
-    private boolean hasRunningTask (Player player) {
+    private boolean hasRunningTask(Player player) {
         this.fillTaskMap.values().removeIf(TNTFillTask::isCancelled);
         return this.fillTaskMap.containsKey(player);
     }
 
-    public void fillDispensers (Player player, TNTProvider tntProvider, Collection<Dispenser> dispensers, int amount) {
+    public void fillDispensers(Player player, TNTProvider tntProvider, Collection<Dispenser> dispensers, int amount) {
         TNTFillTask tntFillTask = new TNTFillTask(this, tntProvider, dispensers.stream().map(d -> d.getBlock()).collect(Collectors.toList()), amount);
         tntFillTask.runTaskTimer(FactionsPlugin.getInstance(), 0, 1);
         fillTaskMap.put(player, tntFillTask);
     }
 
-    public int getAddable (Inventory inv, Material material) {
+    public int getAddable(Inventory inv, Material material) {
         int output = 0;
         int notempty = 0;
         for (int i = 0; i < inv.getSize(); ++i) {
@@ -152,11 +152,11 @@ public class CmdTntFill extends FCommand {
         return output + (inv.getSize() - notempty) * 64;
     }
 
-    public boolean isInvFull (Inventory inv) {
+    public boolean isInvFull(Inventory inv) {
         return inv.firstEmpty() == -1;
     }
 
-    public int getTNTInside (Player p) {
+    public int getTNTInside(Player p) {
         int result = 0;
         PlayerInventory pi = p.getInventory();
         ItemStack[] contents;
@@ -171,7 +171,7 @@ public class CmdTntFill extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_TNTFILL_DESCRIPTION;
     }
 

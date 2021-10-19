@@ -14,7 +14,7 @@ public class CmdRules extends FCommand {
      * @author Illyria Team
      */
 
-    public CmdRules () {
+    public CmdRules() {
         super();
         aliases.addAll(Aliases.rules);
 
@@ -28,7 +28,7 @@ public class CmdRules extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("frules.Enabled")) {
             context.msg(TL.COMMAND_RULES_DISABLED_MSG);
             return;
@@ -81,7 +81,7 @@ public class CmdRules extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_RULES_DESCRIPTION;
     }
 }

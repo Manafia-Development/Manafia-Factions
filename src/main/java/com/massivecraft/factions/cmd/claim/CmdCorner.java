@@ -21,7 +21,7 @@ public class CmdCorner extends FCommand {
      * @author Driftay
      */
 
-    public CmdCorner () {
+    public CmdCorner() {
         this.aliases.addAll(Aliases.claim_corner);
 
 
@@ -33,7 +33,7 @@ public class CmdCorner extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (FactionsPlugin.getInstance().version == 7) {
             context.msg(TL.GENERIC_DISABLED, "Faction Corners");
             return;
@@ -66,7 +66,7 @@ public class CmdCorner extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CORNER_DESCRIPTION;
     }
 }

@@ -7,16 +7,16 @@ public class ReserveObject {
     private final String name;
     private final String factionName;
 
-    public ReserveObject (String name, String factionName) {
+    public ReserveObject(String name, String factionName) {
         this.name = name;
         this.factionName = factionName;
     }
 
-    public String getName () {
+    public String getName() {
         return this.name;
     }
 
-    public String getFactionName () {
+    public String getFactionName() {
         return this.factionName;
     }
 }

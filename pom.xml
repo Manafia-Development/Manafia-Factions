@@ -432,7 +432,7 @@
                     <artifactId>spigot</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>   
+        </dependency>
         <dependency>
             <groupId>com.lunarclient</groupId>
             <artifactId>bukkitapi</artifactId>

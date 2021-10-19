@@ -17,25 +17,25 @@ public class LogoutHandler {
     private final Map<UUID, Long> logoutCooldown = new HashMap<>();
     private final String name;
 
-    public LogoutHandler (String name) {
+    public LogoutHandler(String name) {
         this.name = name;
         factionDatas.put(name, this);
     }
 
-    public static LogoutHandler getByName (String name) {
+    public static LogoutHandler getByName(String name) {
         LogoutHandler logoutHandler = factionDatas.get(name);
         return logoutHandler == null ? new LogoutHandler(name) : factionDatas.get(name);
     }
 
-    public boolean isLogoutActive (Player player) {
+    public boolean isLogoutActive(Player player) {
         return logoutCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < logoutCooldown.get(player.getUniqueId());
     }
 
-    public void cancelLogout (Player player) {
+    public void cancelLogout(Player player) {
         logoutCooldown.remove(player.getUniqueId());
     }
 
-    public void applyLogoutCooldown (Player player) {
+    public void applyLogoutCooldown(Player player) {
         logoutCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (30 * 1000));
 
         Bukkit.getScheduler().runTaskLater(FactionsPlugin.getInstance(), () -> {
@@ -47,7 +47,7 @@ public class LogoutHandler {
         }, Conf.logoutCooldown * 20L);
     }
 
-    public String getName () {
+    public String getName() {
         return name;
     }
 }

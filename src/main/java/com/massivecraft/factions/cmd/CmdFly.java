@@ -22,7 +22,7 @@ public class CmdFly extends FCommand {
      */
 
 
-    public CmdFly () {
+    public CmdFly() {
         super();
         this.aliases.addAll(Aliases.fly);
         this.optionalArgs.put("on/off/auto", "flip");
@@ -33,7 +33,7 @@ public class CmdFly extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (context.args.size() == 0)
             toggleFlight(context, !context.fPlayer.isFlying(), true);
         else if (context.args.size() == 1) {
@@ -47,7 +47,7 @@ public class CmdFly extends FCommand {
         }
     }
 
-    private void toggleFlight (final CommandContext context, final boolean toggle, boolean notify) {
+    private void toggleFlight(final CommandContext context, final boolean toggle, boolean notify) {
         // If false do nothing besides set
         if (!toggle) {
             context.fPlayer.setFlying(false);
@@ -66,7 +66,7 @@ public class CmdFly extends FCommand {
         }, FactionsPlugin.getInstance().getConfig().getInt("warmups.f-fly", 0));
     }
 
-    private boolean flyTest (final CommandContext context, boolean notify) {
+    private boolean flyTest(final CommandContext context, boolean notify) {
         if (!context.fPlayer.canFlyAtLocation()) {
             if (notify) {
                 Faction factionAtLocation = Board.getInstance().getFactionAt(context.fPlayer.getLastStoodAt());
@@ -81,7 +81,7 @@ public class CmdFly extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_FLY_DESCRIPTION;
     }
 
