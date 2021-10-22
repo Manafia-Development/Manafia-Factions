@@ -38,6 +38,11 @@ public class CloakChunk {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(worldName, x, z);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -45,11 +50,6 @@ public class CloakChunk {
         return x == cloakChunk.x &&
                 z == cloakChunk.z &&
                 worldName.equals(cloakChunk.worldName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(worldName, x, z);
     }
 
     public String getWorldName() {

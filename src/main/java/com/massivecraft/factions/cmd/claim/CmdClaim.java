@@ -61,7 +61,7 @@ public class CmdClaim extends FCommand {
         int i = 0;
         if (radius >= 2) i = 1;
 
-        if(radius > Conf.claimRadiusLimit && Conf.claimRadiusLimit != -1 && !context.fPlayer.isAdminBypassing()) {
+        if (radius > Conf.claimRadiusLimit && Conf.claimRadiusLimit != -1 && !context.fPlayer.isAdminBypassing()) {
             context.msg(TL.COMMAND_CLAIM_RADIUSOVER, Conf.claimRadiusLimit);
             return;
         }

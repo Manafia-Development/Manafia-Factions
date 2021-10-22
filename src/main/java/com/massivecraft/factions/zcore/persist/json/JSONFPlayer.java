@@ -14,12 +14,12 @@ public class JSONFPlayer extends MemoryFPlayer {
         super(id);
     }
 
+    public boolean shouldBeSaved() {
+        return this.hasFaction() || (this.getPowerRounded() != this.getPowerMaxRounded() && this.getPowerRounded() != (int) Math.round(Conf.powerPlayerStarting));
+    }
+
     @Override
     public void remove() {
         ((JSONFPlayers) FPlayers.getInstance()).fPlayers.remove(getId());
-    }
-
-    public boolean shouldBeSaved() {
-        return this.hasFaction() || (this.getPowerRounded() != this.getPowerMaxRounded() && this.getPowerRounded() != (int) Math.round(Conf.powerPlayerStarting));
     }
 }

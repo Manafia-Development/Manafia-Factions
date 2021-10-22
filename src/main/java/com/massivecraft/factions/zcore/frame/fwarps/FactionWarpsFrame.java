@@ -71,16 +71,6 @@ public class FactionWarpsFrame {
         gui.show(fplayer.getPlayer());
     }
 
-    private ItemStack buildWarpAsset(final Map.Entry<String, LazyLocation> warp, final Faction faction) {
-        final ConfigurationSection config = this.section.getConfigurationSection("warp-item");
-        final ItemStack item = XMaterial.matchXMaterial(config.getString("Type")).get().parseItem();
-        final ItemMeta meta = item.getItemMeta();
-        meta.setLore(Util.colorList(PlaceholderUtil.replacePlaceholders(config.getStringList("Lore"), new Placeholder("{warp-protected}", faction.hasWarpPassword(warp.getKey()) ? "Enabled" : "Disabled"), new Placeholder("{warp-cost}", FactionsPlugin.getInstance().getConfig().getBoolean("warp-cost.enabled", false) ? Integer.toString(FactionsPlugin.getInstance().getConfig().getInt("warp-cost.warp", 5)) : "Disabled"))));
-        meta.setDisplayName(Util.color(config.getString("Name").replace("{warp}", warp.getKey())));
-        item.setItemMeta(meta);
-        return item;
-    }
-
     private ItemStack buildDummyItem() {
         final ConfigurationSection config = this.section.getConfigurationSection("dummy-item");
         final ItemStack item = XMaterial.matchXMaterial(config.getString("Type")).get().parseItem();
@@ -91,14 +81,14 @@ public class FactionWarpsFrame {
         return item;
     }
 
-    private void doWarmup(final String warp, FPlayer fme) {
-        WarmUpUtil.process(fme, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
-            Player player = Bukkit.getPlayer(fme.getPlayer().getUniqueId());
-            if (player != null) {
-                player.teleport(fme.getFaction().getWarp(warp).getLocation());
-                fme.msg(TL.COMMAND_FWARP_WARPED, warp);
-            }
-        }, FactionsPlugin.getInstance().getConfig().getLong("warmups.f-warp", 10));
+    private ItemStack buildWarpAsset(final Map.Entry<String, LazyLocation> warp, final Faction faction) {
+        final ConfigurationSection config = this.section.getConfigurationSection("warp-item");
+        final ItemStack item = XMaterial.matchXMaterial(config.getString("Type")).get().parseItem();
+        final ItemMeta meta = item.getItemMeta();
+        meta.setLore(Util.colorList(PlaceholderUtil.replacePlaceholders(config.getStringList("Lore"), new Placeholder("{warp-protected}", faction.hasWarpPassword(warp.getKey()) ? "Enabled" : "Disabled"), new Placeholder("{warp-cost}", FactionsPlugin.getInstance().getConfig().getBoolean("warp-cost.enabled", false) ? Integer.toString(FactionsPlugin.getInstance().getConfig().getInt("warp-cost.warp", 5)) : "Disabled"))));
+        meta.setDisplayName(Util.color(config.getString("Name").replace("{warp}", warp.getKey())));
+        item.setItemMeta(meta);
+        return item;
     }
 
     private boolean transact(FPlayer player) {
@@ -111,6 +101,16 @@ public class FactionWarpsFrame {
             return Econ.modifyMoney(player.getFaction(), -cost, TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString());
         else
             return Econ.modifyMoney(player, -cost, TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString());
+    }
+
+    private void doWarmup(final String warp, FPlayer fme) {
+        WarmUpUtil.process(fme, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
+            Player player = Bukkit.getPlayer(fme.getPlayer().getUniqueId());
+            if (player != null) {
+                player.teleport(fme.getFaction().getWarp(warp).getLocation());
+                fme.msg(TL.COMMAND_FWARP_WARPED, warp);
+            }
+        }, FactionsPlugin.getInstance().getConfig().getLong("warmups.f-warp", 10));
     }
 
 }

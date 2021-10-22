@@ -51,8 +51,6 @@ public abstract class SaberGUI {
     public void onUnknownItemClick(InventoryClickEvent event) {
     }
 
-    public abstract void redraw();
-
     public void openGUI(JavaPlugin owning) {
         this.owningPluginName = owning.getName();
         SaberGUI currentlyActive = activeGUIs.get(this.player.getUniqueId());
@@ -71,14 +69,19 @@ public abstract class SaberGUI {
         }
     }
 
-    public void setItem(int slot, InventoryItem inventoryItem) {
-        if (inventoryItem != null && inventoryItem.getItem() != null) {
-            this.inventoryItems.put(slot, inventoryItem);
-            this.inventory.setItem(slot, inventoryItem.getItem());
-        } else {
-            this.removeItem(slot);
-        }
+    public void close() {
+        this.onInventoryClose();
+        this.player.closeInventory();
     }
+
+    public void onInventoryClose() {
+        if (this.closeRunnable != null) {
+            this.closeRunnable.run();
+        }
+
+    }
+
+    public abstract void redraw();
 
     public void closeWithDelay() {
         this.closeWithDelay(null);
@@ -98,16 +101,13 @@ public abstract class SaberGUI {
         this.setItem(slot, (new InventoryItem(item)).click(runnable));
     }
 
-    public void onInventoryClose() {
-        if (this.closeRunnable != null) {
-            this.closeRunnable.run();
+    public void setItem(int slot, InventoryItem inventoryItem) {
+        if (inventoryItem != null && inventoryItem.getItem() != null) {
+            this.inventoryItems.put(slot, inventoryItem);
+            this.inventory.setItem(slot, inventoryItem.getItem());
+        } else {
+            this.removeItem(slot);
         }
-
-    }
-
-    public void close() {
-        this.onInventoryClose();
-        this.player.closeInventory();
     }
 
     public void removeItem(int slot) {

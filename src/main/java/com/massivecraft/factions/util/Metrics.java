@@ -140,95 +140,6 @@ public class Metrics {
     }
 
     /**
-     * Sends the data to the bStats server.
-     *
-     * @param plugin Any plugin. It's just used to get a logger instance.
-     * @param data   The data to send.
-     * @throws Exception If the request failed.
-     */
-    private static void sendData(Plugin plugin, JsonObject data) throws Exception {
-        if (data == null) {
-            throw new IllegalArgumentException("Data cannot be null!");
-        }
-        if (Bukkit.isPrimaryThread()) {
-            throw new IllegalAccessException("This method must not be called from the main thread!");
-        }
-        if (logSentData) {
-            plugin.getLogger().info("Sending data to bStats: " + data);
-        }
-        HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
-
-        // Compress the data to save bandwidth
-        byte[] compressedData = compress(data.toString());
-
-        // Add headers
-        connection.setRequestMethod("POST");
-        connection.addRequestProperty("Accept", "application/json");
-        connection.addRequestProperty("Connection", "close");
-        connection.addRequestProperty("Content-Encoding", "gzip"); // We gzip our request
-        connection.addRequestProperty("Content-Length", String.valueOf(compressedData.length));
-        connection.setRequestProperty("Content-Type", "application/json"); // We send our data in JSON format
-        connection.setRequestProperty("User-Agent", "MC-Server/" + B_STATS_VERSION);
-
-        // Send data
-        connection.setDoOutput(true);
-        try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
-            outputStream.write(compressedData);
-        }
-
-        StringBuilder builder = new StringBuilder();
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                builder.append(line);
-            }
-        }
-
-        if (logResponseStatusText) {
-            plugin.getLogger().info("Sent data to bStats and received response: " + builder);
-        }
-    }
-
-    /**
-     * Gzips the given String.
-     *
-     * @param str The string to gzip.
-     * @return The gzipped String.
-     * @throws IOException If the compression failed.
-     */
-    private static byte[] compress(final String str) throws IOException {
-        if (str == null) {
-            return null;
-        }
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (GZIPOutputStream gzip = new GZIPOutputStream(outputStream)) {
-            gzip.write(str.getBytes(StandardCharsets.UTF_8));
-        }
-        return outputStream.toByteArray();
-    }
-
-    /**
-     * Checks if bStats is enabled.
-     *
-     * @return Whether bStats is enabled or not.
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * Adds a custom chart.
-     *
-     * @param chart The chart to add.
-     */
-    public void addCustomChart(CustomChart chart) {
-        if (chart == null) {
-            throw new IllegalArgumentException("Chart cannot be null!");
-        }
-        charts.add(chart);
-    }
-
-    /**
      * Starts the Scheduler which submits our data every 30 minutes.
      */
     private void startSubmitting() {
@@ -248,82 +159,6 @@ public class Metrics {
         // Submit the data every 30 minutes, first time after 5 minutes to give other plugins enough time to start
         // WARNING: Changing the frequency has no effect but your plugin WILL be blocked/deleted!
         // WARNING: Just don't do it!
-    }
-
-    /**
-     * Gets the plugin specific data.
-     * This method is called using Reflection.
-     *
-     * @return The plugin specific data.
-     */
-    public JsonObject getPluginData() {
-        JsonObject data = new JsonObject();
-
-        String pluginName = plugin.getDescription().getName();
-        String pluginVersion = plugin.getDescription().getVersion();
-
-        data.addProperty("pluginName", pluginName); // Append the name of the plugin
-        data.addProperty("id", pluginId); // Append the id of the plugin
-        data.addProperty("pluginVersion", pluginVersion); // Append the version of the plugin
-        JsonArray customCharts = new JsonArray();
-        for (CustomChart customChart : charts) {
-            // Add the data of the custom charts
-            JsonObject chart = customChart.getRequestJsonObject();
-            if (chart == null) { // If the chart is null, we skip it
-                continue;
-            }
-            customCharts.add(chart);
-        }
-        data.add("customCharts", customCharts);
-
-        return data;
-    }
-
-    /**
-     * Gets the server specific data.
-     *
-     * @return The server specific data.
-     */
-    private JsonObject getServerData() {
-        // Minecraft specific data
-        int playerAmount;
-        try {
-            // Around MC 1.8 the return type was changed to a collection from an array,
-            // This fixes java.lang.NoSuchMethodError: org.bukkit.Bukkit.getOnlinePlayers()Ljava/util/Collection;
-            Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
-            playerAmount = onlinePlayersMethod.getReturnType().equals(Collection.class)
-                    ? ((Collection<?>) onlinePlayersMethod.invoke(Bukkit.getServer())).size()
-                    : ((Player[]) onlinePlayersMethod.invoke(Bukkit.getServer())).length;
-        } catch (Exception e) {
-            playerAmount = Bukkit.getOnlinePlayers().size(); // Just use the new method if the Reflection failed
-        }
-        int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
-        String bukkitVersion = Bukkit.getVersion();
-        String bukkitName = Bukkit.getName();
-
-        // OS/Java specific data
-        String javaVersion = System.getProperty("java.version");
-        String osName = System.getProperty("os.name");
-        String osArch = System.getProperty("os.arch");
-        String osVersion = System.getProperty("os.version");
-        int coreCount = Runtime.getRuntime().availableProcessors();
-
-        JsonObject data = new JsonObject();
-
-        data.addProperty("serverUUID", serverUUID);
-
-        data.addProperty("playerAmount", playerAmount);
-        data.addProperty("onlineMode", onlineMode);
-        data.addProperty("bukkitVersion", bukkitVersion);
-        data.addProperty("bukkitName", bukkitName);
-
-        data.addProperty("javaVersion", javaVersion);
-        data.addProperty("osName", osName);
-        data.addProperty("osArch", osArch);
-        data.addProperty("osVersion", osVersion);
-        data.addProperty("coreCount", coreCount);
-
-        return data;
     }
 
     /**
@@ -381,6 +216,174 @@ public class Metrics {
                 }
             }
         }).start();
+    }
+
+    /**
+     * Gets the server specific data.
+     *
+     * @return The server specific data.
+     */
+    private JsonObject getServerData() {
+        // Minecraft specific data
+        int playerAmount;
+        try {
+            // Around MC 1.8 the return type was changed to a collection from an array,
+            // This fixes java.lang.NoSuchMethodError: org.bukkit.Bukkit.getOnlinePlayers()Ljava/util/Collection;
+            Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
+            playerAmount = onlinePlayersMethod.getReturnType().equals(Collection.class)
+                    ? ((Collection<?>) onlinePlayersMethod.invoke(Bukkit.getServer())).size()
+                    : ((Player[]) onlinePlayersMethod.invoke(Bukkit.getServer())).length;
+        } catch (Exception e) {
+            playerAmount = Bukkit.getOnlinePlayers().size(); // Just use the new method if the Reflection failed
+        }
+        int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
+        String bukkitVersion = Bukkit.getVersion();
+        String bukkitName = Bukkit.getName();
+
+        // OS/Java specific data
+        String javaVersion = System.getProperty("java.version");
+        String osName = System.getProperty("os.name");
+        String osArch = System.getProperty("os.arch");
+        String osVersion = System.getProperty("os.version");
+        int coreCount = Runtime.getRuntime().availableProcessors();
+
+        JsonObject data = new JsonObject();
+
+        data.addProperty("serverUUID", serverUUID);
+
+        data.addProperty("playerAmount", playerAmount);
+        data.addProperty("onlineMode", onlineMode);
+        data.addProperty("bukkitVersion", bukkitVersion);
+        data.addProperty("bukkitName", bukkitName);
+
+        data.addProperty("javaVersion", javaVersion);
+        data.addProperty("osName", osName);
+        data.addProperty("osArch", osArch);
+        data.addProperty("osVersion", osVersion);
+        data.addProperty("coreCount", coreCount);
+
+        return data;
+    }
+
+    /**
+     * Sends the data to the bStats server.
+     *
+     * @param plugin Any plugin. It's just used to get a logger instance.
+     * @param data   The data to send.
+     *
+     * @throws Exception If the request failed.
+     */
+    private static void sendData(Plugin plugin, JsonObject data) throws Exception {
+        if (data == null) {
+            throw new IllegalArgumentException("Data cannot be null!");
+        }
+        if (Bukkit.isPrimaryThread()) {
+            throw new IllegalAccessException("This method must not be called from the main thread!");
+        }
+        if (logSentData) {
+            plugin.getLogger().info("Sending data to bStats: " + data);
+        }
+        HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
+
+        // Compress the data to save bandwidth
+        byte[] compressedData = compress(data.toString());
+
+        // Add headers
+        connection.setRequestMethod("POST");
+        connection.addRequestProperty("Accept", "application/json");
+        connection.addRequestProperty("Connection", "close");
+        connection.addRequestProperty("Content-Encoding", "gzip"); // We gzip our request
+        connection.addRequestProperty("Content-Length", String.valueOf(compressedData.length));
+        connection.setRequestProperty("Content-Type", "application/json"); // We send our data in JSON format
+        connection.setRequestProperty("User-Agent", "MC-Server/" + B_STATS_VERSION);
+
+        // Send data
+        connection.setDoOutput(true);
+        try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+            outputStream.write(compressedData);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line);
+            }
+        }
+
+        if (logResponseStatusText) {
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder);
+        }
+    }
+
+    /**
+     * Gzips the given String.
+     *
+     * @param str The string to gzip.
+     *
+     * @return The gzipped String.
+     *
+     * @throws IOException If the compression failed.
+     */
+    private static byte[] compress(final String str) throws IOException {
+        if (str == null) {
+            return null;
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(outputStream)) {
+            gzip.write(str.getBytes(StandardCharsets.UTF_8));
+        }
+        return outputStream.toByteArray();
+    }
+
+    /**
+     * Checks if bStats is enabled.
+     *
+     * @return Whether bStats is enabled or not.
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Adds a custom chart.
+     *
+     * @param chart The chart to add.
+     */
+    public void addCustomChart(CustomChart chart) {
+        if (chart == null) {
+            throw new IllegalArgumentException("Chart cannot be null!");
+        }
+        charts.add(chart);
+    }
+
+    /**
+     * Gets the plugin specific data.
+     * This method is called using Reflection.
+     *
+     * @return The plugin specific data.
+     */
+    public JsonObject getPluginData() {
+        JsonObject data = new JsonObject();
+
+        String pluginName = plugin.getDescription().getName();
+        String pluginVersion = plugin.getDescription().getVersion();
+
+        data.addProperty("pluginName", pluginName); // Append the name of the plugin
+        data.addProperty("id", pluginId); // Append the id of the plugin
+        data.addProperty("pluginVersion", pluginVersion); // Append the version of the plugin
+        JsonArray customCharts = new JsonArray();
+        for (CustomChart customChart : charts) {
+            // Add the data of the custom charts
+            JsonObject chart = customChart.getRequestJsonObject();
+            if (chart == null) { // If the chart is null, we skip it
+                continue;
+            }
+            customCharts.add(chart);
+        }
+        data.add("customCharts", customCharts);
+
+        return data;
     }
 
     /**

@@ -22,6 +22,7 @@ public class FactionRenameEvent extends FactionPlayerEvent implements Cancellabl
      * Get the player involved in the event.
      *
      * @return Player involved in the event.
+     *
      * @deprecated use getfPlayer().getPlayer() instead.
      */
     @Deprecated
@@ -33,6 +34,7 @@ public class FactionRenameEvent extends FactionPlayerEvent implements Cancellabl
      * Get the faction tag before it was renamed.
      *
      * @return old faction tag.
+     *
      * @deprecated use getFaction().getTag() instead.
      */
     @Deprecated

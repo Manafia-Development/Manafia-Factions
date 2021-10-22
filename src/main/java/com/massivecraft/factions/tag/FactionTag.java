@@ -122,10 +122,21 @@ public enum FactionTag implements Tag {
         return text;
     }
 
+    public String replace(String text, Faction faction) {
+        return this.replace(text, faction, null);
+    }
+
     public static String parse(String text, Faction faction) {
         for (FactionTag tag : FactionTag.values())
             text = tag.replace(text, faction);
         return text;
+    }
+
+    public String replace(String text, Faction faction, FPlayer player) {
+        if (!this.foundInString(text))
+            return text;
+        String result = this.function == null ? this.biFunction.apply(faction, player) : this.function.apply(faction);
+        return result == null ? null : text.replace(this.tag, result);
     }
 
     @Override
@@ -136,16 +147,5 @@ public enum FactionTag implements Tag {
     @Override
     public boolean foundInString(String test) {
         return test != null && test.contains(this.tag);
-    }
-
-    public String replace(String text, Faction faction, FPlayer player) {
-        if (!this.foundInString(text))
-            return text;
-        String result = this.function == null ? this.biFunction.apply(faction, player) : this.function.apply(faction);
-        return result == null ? null : text.replace(this.tag, result);
-    }
-
-    public String replace(String text, Faction faction) {
-        return this.replace(text, faction, null);
     }
 }

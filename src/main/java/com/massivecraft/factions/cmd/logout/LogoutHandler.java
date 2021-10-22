@@ -27,14 +27,6 @@ public class LogoutHandler {
         return logoutHandler == null ? new LogoutHandler(name) : factionDatas.get(name);
     }
 
-    public boolean isLogoutActive(Player player) {
-        return logoutCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < logoutCooldown.get(player.getUniqueId());
-    }
-
-    public void cancelLogout(Player player) {
-        logoutCooldown.remove(player.getUniqueId());
-    }
-
     public void applyLogoutCooldown(Player player) {
         logoutCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (30 * 1000));
 
@@ -45,6 +37,14 @@ public class LogoutHandler {
                 cancelLogout(player);
             }
         }, Conf.logoutCooldown * 20L);
+    }
+
+    public boolean isLogoutActive(Player player) {
+        return logoutCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < logoutCooldown.get(player.getUniqueId());
+    }
+
+    public void cancelLogout(Player player) {
+        logoutCooldown.remove(player.getUniqueId());
     }
 
     public String getName() {

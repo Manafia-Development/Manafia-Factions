@@ -45,10 +45,6 @@ public abstract class MPlugin extends JavaPlugin {
         this.autoSave = val;
     }
 
-    public List<MCommand<?>> getBaseCommands() {
-        return this.baseCommands;
-    }
-
     public boolean preEnable() {
         instance = this;
         log("- Initiating Plugin Start -");
@@ -86,40 +82,12 @@ public abstract class MPlugin extends JavaPlugin {
         return true;
     }
 
-    public void postEnable() {
-        //   log("- Plugin Successfully Enabled (Process took: " + (System.currentTimeMillis() - timeEnableStart) + "ms) -");
+    public void log(Object msg) {
+        log(Level.INFO, msg);
     }
 
-    public void onDisable() {
-        if (saveTask != null) {
-            this.getServer().getScheduler().cancelTask(saveTask);
-            saveTask = null;
-        }
-        if (loadSuccessful) {
-            Factions.getInstance().forceSave();
-            FPlayers.getInstance().forceSave();
-            Board.getInstance().forceSave();
-        }
-        log("Disabled");
-    }
-
-    // -------------------------------------------- //
-    // Some inits...
-    // You are supposed to override these in the plugin if you aren't satisfied with the defaults
-    // The goal is that you always will be satisfied though.
-    // -------------------------------------------- //
-
-    public void suicide() {
-        log("Now I suicide!");
-        this.getServer().getPluginManager().disablePlugin(this);
-    }
-
-    // -------------------------------------------- //
-    // LANG AND TAGS
-    // -------------------------------------------- //
-
-    public GsonBuilder getGsonBuilder() {
-        return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.VOLATILE);
+    public void log(Level level, Object msg) {
+        getLogger().log(level, "" + " " + msg); // Full name is really ugly
     }
 
     public void initTXT() {
@@ -137,8 +105,48 @@ public abstract class MPlugin extends JavaPlugin {
             this.txt.tags.put(rawTag.getKey(), TextUtil.parseColor(rawTag.getValue()));
     }
 
+    // -------------------------------------------- //
+    // Some inits...
+    // You are supposed to override these in the plugin if you aren't satisfied with the defaults
+    // The goal is that you always will be satisfied though.
+    // -------------------------------------------- //
+
+    public void postEnable() {
+        //   log("- Plugin Successfully Enabled (Process took: " + (System.currentTimeMillis() - timeEnableStart) + "ms) -");
+    }
+
+    // -------------------------------------------- //
+    // LANG AND TAGS
+    // -------------------------------------------- //
+
+    public void onDisable() {
+        if (saveTask != null) {
+            this.getServer().getScheduler().cancelTask(saveTask);
+            saveTask = null;
+        }
+        if (loadSuccessful) {
+            Factions.getInstance().forceSave();
+            FPlayers.getInstance().forceSave();
+            Board.getInstance().forceSave();
+        }
+        log("Disabled");
+    }
+
+    public void suicide() {
+        log("Now I suicide!");
+        this.getServer().getPluginManager().disablePlugin(this);
+    }
+
+    public GsonBuilder getGsonBuilder() {
+        return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.VOLATILE);
+    }
+
     public boolean logPlayerCommands() {
         return true;
+    }
+
+    public boolean handleCommand(CommandSender sender, String commandString) {
+        return this.handleCommand(sender, commandString, false);
     }
 
     public boolean handleCommand(CommandSender sender, String commandString, boolean testOnly) {
@@ -174,8 +182,8 @@ public abstract class MPlugin extends JavaPlugin {
         return false;
     }
 
-    public boolean handleCommand(CommandSender sender, String commandString) {
-        return this.handleCommand(sender, commandString, false);
+    public List<MCommand<?>> getBaseCommands() {
+        return this.baseCommands;
     }
 
     // -------------------------------------------- //
@@ -189,6 +197,10 @@ public abstract class MPlugin extends JavaPlugin {
 
     }
 
+    // -------------------------------------------- //
+    // LOGGING
+    // -------------------------------------------- //
+
     public Map<UUID, Integer> getStuckMap() {
         return this.stuckMap;
     }
@@ -197,23 +209,11 @@ public abstract class MPlugin extends JavaPlugin {
         return this.timers;
     }
 
-    // -------------------------------------------- //
-    // LOGGING
-    // -------------------------------------------- //
-
-    public void log(Object msg) {
-        log(Level.INFO, msg);
-    }
-
     public void log(String str, Object... args) {
         log(Level.INFO, this.txt.parse(str, args));
     }
 
     public void log(Level level, String str, Object... args) {
         log(level, this.txt.parse(str, args));
-    }
-
-    public void log(Level level, Object msg) {
-        getLogger().log(level, "" + " " + msg); // Full name is really ugly
     }
 }

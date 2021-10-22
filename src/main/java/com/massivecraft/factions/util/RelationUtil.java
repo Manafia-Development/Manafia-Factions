@@ -11,6 +11,10 @@ import org.bukkit.ChatColor;
 
 public class RelationUtil {
 
+    public static String describeThatToMe(RelationParticipator that, RelationParticipator me) {
+        return describeThatToMe(that, me, false);
+    }
+
     public static String describeThatToMe(RelationParticipator that, RelationParticipator me, boolean ucfirst) {
         String ret = "";
 
@@ -41,8 +45,31 @@ public class RelationUtil {
         return "" + getColorOfThatToMe(that, me) + ret;
     }
 
-    public static String describeThatToMe(RelationParticipator that, RelationParticipator me) {
-        return describeThatToMe(that, me, false);
+    public static Faction getFaction(RelationParticipator rp) {
+        if (rp instanceof Faction)
+            return (Faction) rp;
+
+        if (rp instanceof FPlayer)
+            return ((FPlayer) rp).getFaction();
+
+        // ERROR
+        return null;
+    }
+
+    public static ChatColor getColorOfThatToMe(RelationParticipator that, RelationParticipator me) {
+        Faction thatFaction = getFaction(that);
+
+        if (thatFaction != null && thatFaction != getFaction(me)) {
+            if (thatFaction.isPeaceful())
+                return Conf.colorPeaceful;
+            else if (thatFaction.isSafeZone())
+                return Conf.colorPeaceful;
+            else if (thatFaction.isWarZone())
+                return Conf.colorWar;
+        }
+        // 3 elifs dont really require a switch statement
+        // using lookup table is overkill
+        return getRelationTo(that, me).getColor();
     }
 
     public static Relation getRelationTo(RelationParticipator me, RelationParticipator that) {
@@ -69,32 +96,5 @@ public class RelationUtil {
             return fthat.getRelationWish(fme);
 
         return fme.getRelationWish(fthat);
-    }
-
-    public static Faction getFaction(RelationParticipator rp) {
-        if (rp instanceof Faction)
-            return (Faction) rp;
-
-        if (rp instanceof FPlayer)
-            return ((FPlayer) rp).getFaction();
-
-        // ERROR
-        return null;
-    }
-
-    public static ChatColor getColorOfThatToMe(RelationParticipator that, RelationParticipator me) {
-        Faction thatFaction = getFaction(that);
-
-        if (thatFaction != null && thatFaction != getFaction(me)) {
-            if (thatFaction.isPeaceful())
-                return Conf.colorPeaceful;
-            else if (thatFaction.isSafeZone())
-                return Conf.colorPeaceful;
-            else if (thatFaction.isWarZone())
-                return Conf.colorWar;
-        }
-        // 3 elifs dont really require a switch statement
-        // using lookup table is overkill
-        return getRelationTo(that, me).getColor();
     }
 }

@@ -60,6 +60,27 @@ public abstract class SpiralTask implements Runnable {
         this.setTaskID(Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(FactionsPlugin.getInstance(), this, 2, 2));
     }
 
+    public final void setTaskID(int ID) {
+        if (ID == -1)
+            this.stop();
+        taskID = ID;
+    }
+
+    // we're done, whether finished or cancelled
+    public final void stop() {
+        if (!this.valid())
+            return;
+
+        readyToGo = false;
+        Bukkit.getServer().getScheduler().cancelTask(taskID);
+        taskID = -1;
+    }
+
+    // is this task still valid/workable?
+    public final boolean valid() {
+        return taskID != -1;
+    }
+
     private static long now() {
         return System.currentTimeMillis();
     }
@@ -77,6 +98,12 @@ public abstract class SpiralTask implements Runnable {
     public final FLocation currentFLocation() {
         return new FLocation(world.getName(), x, z);
     }
+
+
+
+    /*
+     * Below are the guts of the class, which you normally wouldn't need to mess with.
+     */
 
     public final CompletableFuture getFutureTask() {
         return new CompletableFuture();
@@ -97,20 +124,8 @@ public abstract class SpiralTask implements Runnable {
         return x;
     }
 
-
-
-    /*
-     * Below are the guts of the class, which you normally wouldn't need to mess with.
-     */
-
     public final int getZ() {
         return z;
-    }
-
-    public final void setTaskID(int ID) {
-        if (ID == -1)
-            this.stop();
-        taskID = ID;
     }
 
     void whileTask() throws ExecutionException, InterruptedException {
@@ -175,20 +190,5 @@ public abstract class SpiralTask implements Runnable {
     public void finish() {
 //		FactionsPlugin.getInstance().log("SpiralTask successfully completed!");
         this.stop();
-    }
-
-    // we're done, whether finished or cancelled
-    public final void stop() {
-        if (!this.valid())
-            return;
-
-        readyToGo = false;
-        Bukkit.getServer().getScheduler().cancelTask(taskID);
-        taskID = -1;
-    }
-
-    // is this task still valid/workable?
-    public final boolean valid() {
-        return taskID != -1;
     }
 }

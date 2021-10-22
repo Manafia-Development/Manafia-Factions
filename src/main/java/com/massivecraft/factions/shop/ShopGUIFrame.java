@@ -137,6 +137,7 @@ public class ShopGUIFrame {
     /**
      * @param list The list of commands to be ran.
      * @param p    The player that is using the shop
+     *
      * @return if all commands are able to be ran or if they did run.
      */
     public boolean runCommands(List<String> list, Player p) {

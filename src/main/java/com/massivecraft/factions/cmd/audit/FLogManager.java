@@ -76,6 +76,29 @@ public class FLogManager {
         }, 20L, 400L);
     }
 
+    public void saveLogs() {
+        if (saving)
+            Bukkit.getLogger().info("Ignoring saveLogs due to saving==true!");
+        else {
+            saving = true;
+            try {
+                pushPendingLogs(null);
+            } catch (Exception e) {
+                Bukkit.getLogger().info("error pushing pending logs: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            try {
+                JSONUtils.saveJSONToFile(logFile, factionLogMap, logToken);
+            } catch (Exception e1) {
+                Bukkit.getLogger().info("ERROR SAVING JSON LOGS: " + e1.getMessage());
+                e1.printStackTrace();
+            }
+
+            saving = false;
+        }
+    }
+
     public void pushPendingLogs(LogTimer.TimerType type) {
         Faction faction = null;
 
@@ -101,34 +124,11 @@ public class FLogManager {
 
     }
 
-    public void saveLogs() {
-        if (saving)
-            Bukkit.getLogger().info("Ignoring saveLogs due to saving==true!");
-        else {
-            saving = true;
-            try {
-                pushPendingLogs(null);
-            } catch (Exception e) {
-                Bukkit.getLogger().info("error pushing pending logs: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            try {
-                JSONUtils.saveJSONToFile(logFile, factionLogMap, logToken);
-            } catch (Exception e1) {
-                Bukkit.getLogger().info("ERROR SAVING JSON LOGS: " + e1.getMessage());
-                e1.printStackTrace();
-            }
-
-            saving = false;
-        }
+    public Map<UUID, LogTimer> getLogTimers() {
+        return logTimers;
     }
 
     public Map<String, FactionLogs> getFactionLogMap() {
         return factionLogMap;
-    }
-
-    public Map<UUID, LogTimer> getLogTimers() {
-        return logTimers;
     }
 }

@@ -67,18 +67,11 @@ public abstract class GUIMenu {
         this.menuItems.put(slot, item);
     }
 
-    public abstract void drawItems();
-
     public ClickableItemStack getBackButton(Material data, String name, String... lore) {
         return (new ClickableItemStack(new ItemStack(data != null ? data : Material.RED_STAINED_GLASS_PANE, 1, data != null ? (short) 0 : 0))).setDisplayName(name != null ? name : ChatColor.RED + ChatColor.BOLD.toString() + "Back").setLore(lore != null ? Lists.newArrayList(lore) : Lists.newArrayList(ChatColor.GRAY + "Click to return to previous menu.")).setClickCallback((e) -> {
             if (this.previousMenu != null)
                 this.previousMenu.open((Player) e.getWhoClicked());
         });
-    }
-
-    protected void clearItems() {
-        this.getMenuItems().clear();
-        this.menu.clear();
     }
 
     public void open(Player player) {
@@ -96,6 +89,13 @@ public abstract class GUIMenu {
             menus.put(player.getUniqueId(), this);
         }
 
+    }
+
+    public abstract void drawItems();
+
+    protected void clearItems() {
+        this.getMenuItems().clear();
+        this.menu.clear();
     }
 
     public Map<Integer, ClickableItemStack> getMenuItems() {

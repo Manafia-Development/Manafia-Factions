@@ -15,24 +15,17 @@ public class ItemBuilder {
     private final ItemMeta meta;
     private final ItemStack item;
 
-    public ItemBuilder(ItemStack item) {
-        this.item = item;
-        this.meta = item.getItemMeta();
+    public ItemBuilder(Material material) {
+        this(material, 1);
     }
 
     public ItemBuilder(Material material, int amount) {
         this(new ItemStack(material, amount));
     }
 
-    public ItemBuilder(Material material) {
-        this(material, 1);
-    }
-
-    public static List<String> color(List<String> string) {
-        List<String> colored = new ArrayList<>();
-        for (String line : string)
-            colored.add(Util.color(line));
-        return colored;
+    public ItemBuilder(ItemStack item) {
+        this.item = item;
+        this.meta = item.getItemMeta();
     }
 
     public ItemBuilder durability(short durability) {
@@ -53,6 +46,13 @@ public class ItemBuilder {
     public ItemBuilder lore(List<String> lore) {
         this.meta.setLore(color(lore));
         return this;
+    }
+
+    public static List<String> color(List<String> string) {
+        List<String> colored = new ArrayList<>();
+        for (String line : string)
+            colored.add(Util.color(line));
+        return colored;
     }
 
     public ItemBuilder name(String name) {

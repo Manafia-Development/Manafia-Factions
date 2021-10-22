@@ -47,26 +47,26 @@ public class Util {
         FactionsPlugin.getInstance().fLogManager.log(faction, type, arguments);
     }
 
-    public static String color(String line) {
-        line = ChatColor.translateAlternateColorCodes('&', line);
-        return line;
-    }
-
     public static List<String> colorList(List<String> lore) {
         for (int i = 0; i <= lore.size() - 1; i++) lore.set(i, Util.color(lore.get(i)));
         return lore;
+    }
+
+    public static String color(String line) {
+        line = ChatColor.translateAlternateColorCodes('&', line);
+        return line;
     }
 
     public static List<ReserveObject> getFactionReserves() {
         return FactionsPlugin.getInstance().reserveObjects;
     }
 
-    public static void debug(Level level, String s) {
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("debug", false)) Bukkit.getLogger().log(level, s);
-    }
-
     public static void debug(String s) {
         debug(Level.INFO, s);
+    }
+
+    public static void debug(Level level, String s) {
+        if (FactionsPlugin.getInstance().getConfig().getBoolean("debug", false)) Bukkit.getLogger().log(level, s);
     }
 
     public static void handleFactionTagExternally(boolean notByFactions) {
@@ -114,61 +114,6 @@ public class Util {
         }
     }
 
-
-    public static void addFPlayers() {
-        for (FPlayer fPlayer : FPlayers.getInstance().getAllFPlayers()) {
-            Faction faction = Factions.getInstance().getFactionById(fPlayer.getFactionId());
-            if (faction == null) {
-                FactionsPlugin.getInstance().log("Invalid faction id on " + fPlayer.getName() + ":" + fPlayer.getFactionId());
-                fPlayer.resetFactionData(false);
-                continue;
-            }
-            if (fPlayer.isAlt()) faction.addAltPlayer(fPlayer);
-            else faction.addFPlayer(fPlayer);
-        }
-    }
-
-    public static void registerChecks() {
-        if (Conf.useCheckSystem) {
-            int minute = 1200;
-            FactionsPlugin.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.getInstance(), new CheckTask(FactionsPlugin.getInstance(), 3), 0L, minute * 3);
-            FactionsPlugin.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.getInstance(), new CheckTask(FactionsPlugin.getInstance(), 5), 0L, minute * 5);
-            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new CheckTask(FactionsPlugin.instance, 10), 0L, minute * 10);
-            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new CheckTask(FactionsPlugin.instance, 15), 0L, minute * 15);
-            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new CheckTask(FactionsPlugin.instance, 30), 0L, minute * 30);
-            FactionsPlugin.instance.getServer().getScheduler().runTaskTimer(FactionsPlugin.instance, CheckTask::cleanupTask, 0L, 1200L);
-            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new WeeWooTask(FactionsPlugin.instance), 600L, 600L);
-        }
-    }
-
-    public static void registerEvents() {
-        FactionsPlugin.instance.eventsListener = new Listener[]{
-                new FactionsChatListener(),
-                new FactionsEntityListener(),
-                new FactionsExploitListener(),
-                new FactionsBlockListener(),
-                new UpgradesListener(),
-                new MissionHandler(FactionsPlugin.instance),
-                new FChestListener(),
-                new MenuListener(),
-                new AntiChestListener(),
-                new ShieldListener(),
-                new LunarClientUserListener(LunarMods.getInstance()),
-                //new RaidListener(),
-        };
-
-        for (Listener eventListener : FactionsPlugin.instance.eventsListener)
-            Bukkit.getServer().getPluginManager().registerEvents(eventListener, FactionsPlugin.instance);
-    }
-
-    public static void registerSeeChunk() {
-        if (FactionsPlugin.instance.getConfig().getBoolean("see-chunk.particles")) {
-            double delay = Math.floor(FactionsPlugin.instance.getConfig().getDouble("see-chunk.interval") * 20);
-            FactionsPlugin.instance.seeChunkUtil = new SeeChunkUtil();
-            FactionsPlugin.instance.seeChunkUtil.runTaskTimer(FactionsPlugin.instance, 0, (long) delay);
-        }
-    }
-
     public static void migrateFPlayerLeaders() {
         List<String> lines = new ArrayList<>();
         File fplayerFile = new File("plugins" + File.pathSeparator + "Factions" + File.pathSeparator + "data" + File.pathSeparator + "players.json");
@@ -199,14 +144,6 @@ public class Util {
     public static Economy getEcon() {
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         return rsp.getProvider();
-    }
-
-    public static void sendBetaAlert() {
-        if (Bukkit.getPluginManager().getPlugin("Factions").getDescription().getFullName().contains("BETA")) {
-            System.out.println("You are using a BETA version of the plugin!");
-            System.out.println("This comes with risks of small bugs in newer features!");
-            System.out.println("Our discord support: https://discord.gg/GjFdmVm96t");
-        }
     }
 
     public static void addRawTags() {
@@ -285,6 +222,68 @@ public class Util {
         PlaceholderUtil.setupPlaceholderAPI();
         FactionsPlugin.instance.postEnable();
         FactionsPlugin.startupFinished = true;
+    }
+
+    public static void addFPlayers() {
+        for (FPlayer fPlayer : FPlayers.getInstance().getAllFPlayers()) {
+            Faction faction = Factions.getInstance().getFactionById(fPlayer.getFactionId());
+            if (faction == null) {
+                FactionsPlugin.getInstance().log("Invalid faction id on " + fPlayer.getName() + ":" + fPlayer.getFactionId());
+                fPlayer.resetFactionData(false);
+                continue;
+            }
+            if (fPlayer.isAlt()) faction.addAltPlayer(fPlayer);
+            else faction.addFPlayer(fPlayer);
+        }
+    }
+
+    public static void registerSeeChunk() {
+        if (FactionsPlugin.instance.getConfig().getBoolean("see-chunk.particles")) {
+            double delay = Math.floor(FactionsPlugin.instance.getConfig().getDouble("see-chunk.interval") * 20);
+            FactionsPlugin.instance.seeChunkUtil = new SeeChunkUtil();
+            FactionsPlugin.instance.seeChunkUtil.runTaskTimer(FactionsPlugin.instance, 0, (long) delay);
+        }
+    }
+
+    public static void registerChecks() {
+        if (Conf.useCheckSystem) {
+            int minute = 1200;
+            FactionsPlugin.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.getInstance(), new CheckTask(FactionsPlugin.getInstance(), 3), 0L, minute * 3);
+            FactionsPlugin.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.getInstance(), new CheckTask(FactionsPlugin.getInstance(), 5), 0L, minute * 5);
+            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new CheckTask(FactionsPlugin.instance, 10), 0L, minute * 10);
+            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new CheckTask(FactionsPlugin.instance, 15), 0L, minute * 15);
+            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new CheckTask(FactionsPlugin.instance, 30), 0L, minute * 30);
+            FactionsPlugin.instance.getServer().getScheduler().runTaskTimer(FactionsPlugin.instance, CheckTask::cleanupTask, 0L, 1200L);
+            FactionsPlugin.instance.getServer().getScheduler().runTaskTimerAsynchronously(FactionsPlugin.instance, new WeeWooTask(FactionsPlugin.instance), 600L, 600L);
+        }
+    }
+
+    public static void registerEvents() {
+        FactionsPlugin.instance.eventsListener = new Listener[]{
+                new FactionsChatListener(),
+                new FactionsEntityListener(),
+                new FactionsExploitListener(),
+                new FactionsBlockListener(),
+                new UpgradesListener(),
+                new MissionHandler(FactionsPlugin.instance),
+                new FChestListener(),
+                new MenuListener(),
+                new AntiChestListener(),
+                new ShieldListener(),
+                new LunarClientUserListener(LunarMods.getInstance()),
+                //new RaidListener(),
+        };
+
+        for (Listener eventListener : FactionsPlugin.instance.eventsListener)
+            Bukkit.getServer().getPluginManager().registerEvents(eventListener, FactionsPlugin.instance);
+    }
+
+    public static void sendBetaAlert() {
+        if (Bukkit.getPluginManager().getPlugin("Factions").getDescription().getFullName().contains("BETA")) {
+            System.out.println("You are using a BETA version of the plugin!");
+            System.out.println("This comes with risks of small bugs in newer features!");
+            System.out.println("Our discord support: https://discord.gg/GjFdmVm96t");
+        }
     }
 
 }

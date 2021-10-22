@@ -24,13 +24,6 @@ public abstract class FSidebarProvider {
         return qualityAssure(Tag.parsePlain(fPlayer, s));
     }
 
-    public String replaceTags(Faction faction, FPlayer fPlayer, String s) {
-        // Run through Placeholder API first
-        s = Tag.parsePlaceholders(fPlayer.getPlayer(), s);
-
-        return qualityAssure(Tag.parsePlain(faction, fPlayer, s));
-    }
-
     private String qualityAssure(String line) {
         if (line.contains("{notFrozen}") || line.contains("{notPermanent}"))
             return "n/a"; // we dont support support these error variables in scoreboards
@@ -39,5 +32,12 @@ public abstract class FSidebarProvider {
             // we assume it's broken up into two lines, so returning our tl will suffice.
             return TL.COMMAND_SHOW_NOHOME.toString();
         return FactionsPlugin.instance.txt.parse(line); // finally add color :)
+    }
+
+    public String replaceTags(Faction faction, FPlayer fPlayer, String s) {
+        // Run through Placeholder API first
+        s = Tag.parsePlaceholders(fPlayer.getPlayer(), s);
+
+        return qualityAssure(Tag.parsePlain(faction, fPlayer, s));
     }
 }

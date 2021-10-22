@@ -142,6 +142,36 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.notificationsEnabled = true;
     }
 
+    @Override
+    public void setNotificationsEnabled(boolean enabled) {
+        this.notificationsEnabled = enabled;
+    }
+
+    @Override
+    public boolean hasNotificationsEnabled() {
+        return this.notificationsEnabled;
+    }
+
+    public boolean hasEnemiesNearby() {
+        return this.enemiesNearby;
+    }
+
+    public boolean hasTitlesEnabled() {
+        return this.titlesEnabled;
+    }
+
+    public void setTitlesEnabled(Boolean b) {
+        this.titlesEnabled = b;
+    }
+
+    public boolean isInFactionsChest() {
+        return inChest;
+    }
+
+    public void setInFactionsChest(boolean b) {
+        inChest = b;
+    }
+
     public boolean isAlt() {
         return isAlt;
     }
@@ -168,31 +198,6 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.deaths = getPlayer().getStatistic(Statistic.DEATHS);
     }
 
-    public int getCooldown(String cmd) {
-        int seconds = 0;
-        if (this.getPlayer().isOp())
-            return 0;
-        if (commandCooldown.containsKey(cmd))
-            seconds = (int) ((this.commandCooldown.get(cmd) - System.currentTimeMillis()) / 1000);
-        return seconds;
-    }
-
-    public void setCooldown(String cmd, long cooldown) {
-        if (this.getPlayer().isOp())
-            return;
-
-        this.commandCooldown.put(cmd, cooldown);
-    }
-
-    public boolean isCooldownEnded(String cmd) {
-        if (this.getPlayer().isOp())
-            return true;
-        if (!commandCooldown.containsKey(cmd))
-            return true;
-        else return commandCooldown.containsKey(cmd) && commandCooldown.get(cmd) <= System.currentTimeMillis();
-    }
-
-
     public Faction getFaction() {
         if (this.factionId == null)
             this.factionId = "0";
@@ -210,38 +215,29 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.factionId = faction.getId();
     }
 
-    @Override
-    public void setNotificationsEnabled(boolean enabled) {
-        this.notificationsEnabled = enabled;
-    }
-
-    @Override
-    public boolean hasNotificationsEnabled() {
-        return this.notificationsEnabled;
-    }
-
-    public boolean hasEnemiesNearby() {
-        return this.enemiesNearby;
-    }
-
-    public void setEnemiesNearby(Boolean b) {
-        this.enemiesNearby = b;
-    }
-
-    public boolean hasTitlesEnabled() {
-        return this.titlesEnabled;
-    }
-
-    public void setTitlesEnabled(Boolean b) {
-        this.titlesEnabled = b;
-    }
-
     public String getFactionId() {
         return this.factionId;
     }
 
     public boolean hasFaction() {
         return !factionId.equals("0");
+    }
+
+    public boolean willAutoLeave() {
+        return this.willAutoLeave;
+    }
+
+    public void setAutoLeave(boolean willLeave) {
+        this.willAutoLeave = willLeave;
+        Util.debug(name + " set autoLeave to " + willLeave);
+    }
+
+    public long getLastFrostwalkerMessage() {
+        return this.lastFrostwalkerMessage;
+    }
+
+    public void setLastFrostwalkerMessage() {
+        this.lastFrostwalkerMessage = System.currentTimeMillis();
     }
 
     public void setMonitorJoins(boolean monitor) {
@@ -272,29 +268,20 @@ public abstract class MemoryFPlayer implements FPlayer {
         }
     }
 
+    public boolean shouldTakeFallDamage() {
+        return this.shouldTakeFallDamage;
+    }
+
+    public void setTakeFallDamage(boolean fallDamage) {
+        this.shouldTakeFallDamage = fallDamage;
+    }
+
     public double getPowerBoost() {
         return this.powerBoost;
     }
 
     public void setPowerBoost(double powerBoost) {
         this.powerBoost = powerBoost;
-    }
-
-    public boolean willAutoLeave() {
-        return this.willAutoLeave;
-    }
-
-    public void setAutoLeave(boolean willLeave) {
-        this.willAutoLeave = willLeave;
-        Util.debug(name + " set autoLeave to " + willLeave);
-    }
-
-    public long getLastFrostwalkerMessage() {
-        return this.lastFrostwalkerMessage;
-    }
-
-    public void setLastFrostwalkerMessage() {
-        this.lastFrostwalkerMessage = System.currentTimeMillis();
     }
 
     public Faction getAutoClaimFor() {
@@ -371,6 +358,16 @@ public abstract class MemoryFPlayer implements FPlayer {
     // Getters And Setters
     // -------------------------------------------- //
 
+    @Override
+    public boolean showScoreboard() {
+        return this.showScoreboard;
+    }
+
+    @Override
+    public void setShowScoreboard(boolean show) {
+        this.showScoreboard = show;
+    }
+
     // FIELD: account
     public String getAccountId() {
         return this.getId();
@@ -408,6 +405,12 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     }
 
+    //----------------------------------------------//
+    // Title, Name, Faction Tag and Chat
+    //----------------------------------------------//
+
+    // Base:
+
     public boolean isMapAutoUpdating() {
         return mapAutoUpdating;
     }
@@ -415,12 +418,6 @@ public abstract class MemoryFPlayer implements FPlayer {
     public void setMapAutoUpdating(boolean mapAutoUpdating) {
         this.mapAutoUpdating = mapAutoUpdating;
     }
-
-    //----------------------------------------------//
-    // Title, Name, Faction Tag and Chat
-    //----------------------------------------------//
-
-    // Base:
 
     public boolean hasLoginPvpDisabled() {
         if (!loginPvpDisabled) return false;
@@ -439,6 +436,8 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.lastStoodAt = flocation;
     }
 
+    // Base concatenations:
+
     public String getTitle() {
         return this.hasFaction() ? title : TL.NOFACTION_PREFIX.toString();
     }
@@ -449,8 +448,6 @@ public abstract class MemoryFPlayer implements FPlayer {
             title = ChatColor.translateAlternateColorCodes('&', title);
         this.title = title;
     }
-
-    // Base concatenations:
 
     public String getName() {
         if (this.name == null) {
@@ -463,6 +460,9 @@ public abstract class MemoryFPlayer implements FPlayer {
         return name;
     }
 
+    // Colored concatenations:
+    // These are used in information messages
+
     public void setName(String name) {
         this.name = name;
     }
@@ -471,8 +471,8 @@ public abstract class MemoryFPlayer implements FPlayer {
         return this.hasFaction() ? this.getFaction().getTag() : "";
     }
 
-    // Colored concatenations:
-    // These are used in information messages
+    // Chat Tag:
+    // These are injected into the format of global chat messages.
 
     public String getNameAndSomething(String something) {
         String ret = this.role.getPrefix();
@@ -485,9 +485,6 @@ public abstract class MemoryFPlayer implements FPlayer {
         return this.getNameAndSomething(this.getTitle());
     }
 
-    // Chat Tag:
-    // These are injected into the format of global chat messages.
-
     public String getNameAndTag() {
         return this.getNameAndSomething(this.getTag());
     }
@@ -496,9 +493,13 @@ public abstract class MemoryFPlayer implements FPlayer {
         return this.getColorTo(faction) + this.getNameAndTitle();
     }
 
-    public String getNameAndTitle(MemoryFPlayer fplayer) {
+    public String getNameAndTitle(FPlayer fplayer) {
         return this.getColorTo(fplayer) + this.getNameAndTitle();
     }
+
+    // -------------------------------
+    // Relation and relation colors
+    // -------------------------------
 
     public String getChatTag() {
         return this.hasFaction() ? String.format(Conf.chatTagFormat, this.getRole().getPrefix() + this.getTag()) : TL.NOFACTION_PREFIX.toString();
@@ -509,12 +510,9 @@ public abstract class MemoryFPlayer implements FPlayer {
         return this.hasFaction() ? this.getRelationTo(faction).getColor() + getChatTag() : "";
     }
 
-    // -------------------------------
-    // Relation and relation colors
-    // -------------------------------
-
-    public String getChatTag(MemoryFPlayer fplayer) {
-        return this.hasFaction() ? this.getColorTo(fplayer) + getChatTag() : "";
+    @Override
+    public String getChatTag(FPlayer fplayer) {
+        return this.hasFaction() ? this.getRelationTo(fplayer).getColor() + getChatTag() : "";
     }
 
     public int getKills() {
@@ -523,6 +521,89 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public int getDeaths() {
         return isOnline() ? getPlayer().getStatistic(Statistic.DEATHS) : this.deaths;
+    }
+
+    @Override
+    public boolean takeMoney(int amt) {
+        if (hasMoney(amt)) {
+            Economy econ = Util.getEcon();
+            if (econ.withdrawPlayer(getPlayer(), amt).transactionSuccess()) {
+                sendMessage(TL.GENERIC_MONEYTAKE.toString().replace("{amount}", commas(amt)));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasMoney(int amt) {
+        Economy econ = Util.getEcon();
+        if (econ.getBalance(getPlayer()) >= amt)
+            return true;
+        else {
+            getPlayer().closeInventory();
+            msg(TL.GENERIC_NOTENOUGHMONEY);
+            return false;
+        }
+    }
+
+    public boolean hasFriendlyFire() {
+        return friendlyFire;
+    }
+
+    public void setFriendlyFire(boolean status) {
+        friendlyFire = status;
+    }
+
+    @Override
+    public boolean isInspectMode() {
+        return inspectMode;
+    }
+
+    @Override
+    public void setInspectMode(boolean status) {
+        inspectMode = status;
+    }
+
+    @Override
+    public Boolean canflyinWilderness() {
+        return getPlayer().hasPermission(Permission.FLY_WILDERNESS.node);
+    }
+
+    @Override
+    public Boolean canflyinWarzone() {
+        return getPlayer().hasPermission(Permission.FLY_WARZONE.node);
+
+    }
+
+    @Override
+    public Boolean canflyinSafezone() {
+        return getPlayer().hasPermission(Permission.FLY_SAFEZONE.node);
+
+    }
+
+    @Override
+    public Boolean canflyinEnemy() {
+        return getPlayer().hasPermission(Permission.FLY_ENEMY.node);
+
+    }
+
+    @Override
+    public Boolean canflyinAlly() {
+        return getPlayer().hasPermission(Permission.FLY_ALLY.node);
+
+    }
+
+    @Override
+    public Boolean canflyinTruce() {
+        return getPlayer().hasPermission(Permission.FLY_TRUCE.node);
+
+    }
+
+    @Override
+    public Boolean canflyinNeutral() {
+        return getPlayer().hasPermission(Permission.FLY_NEUTRAL.node);
+
     }
 
     @Override
@@ -554,6 +635,24 @@ public abstract class MemoryFPlayer implements FPlayer {
         return RelationUtil.getColorOfThatToMe(this, rp);
     }
 
+    @Override
+    public String getRolePrefix() {
+
+        switch (getRole()) {
+            case RECRUIT:
+                return Conf.prefixRecruit;
+            case NORMAL:
+                return Conf.prefixNormal;
+            case MODERATOR:
+                return Conf.prefixMod;
+            case COLEADER:
+                return Conf.prefixCoLeader;
+            case LEADER:
+                return Conf.prefixLeader;
+        }
+        return null;
+    }
+
     //----------------------------------------------//
     // Health
     //----------------------------------------------//
@@ -582,6 +681,10 @@ public abstract class MemoryFPlayer implements FPlayer {
     public double getPowerMax() {
         return Conf.powerPlayerMax + this.powerBoost;
     }
+
+    // -------------------------------
+    // Actions
+    // -------------------------------
 
     public double getPowerMin() {
         return Conf.powerPlayerMin + this.powerBoost;
@@ -690,30 +793,6 @@ public abstract class MemoryFPlayer implements FPlayer {
             FScoreboard.get(this).setTemporarySidebar(new FInfoSidebar(toShow));
         if (FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.also-send-chat", true))
             this.sendMessage(FactionsPlugin.getInstance().txt.parse(TL.FACTION_LEAVE.format(from.getTag(this), toShow.getTag(this))));
-    }
-
-    // -------------------------------
-    // Actions
-    // -------------------------------
-
-    /**
-     * Check if the scoreboard should be shown. Simple method to be used by above method.
-     *
-     * @param toShow Faction to be shown.
-     * @return true if should show, otherwise false.
-     */
-    public boolean showInfoBoard(Faction toShow) {
-        return showScoreboard && !toShow.isWarZone() && !toShow.isWilderness() && !toShow.isSafeZone() && FactionsPlugin.getInstance().getConfig().contains("scoreboard.finfo") && FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.finfo-enabled", false) && FScoreboard.get(this) != null;
-    }
-
-    @Override
-    public boolean showScoreboard() {
-        return this.showScoreboard;
-    }
-
-    @Override
-    public void setShowScoreboard(boolean show) {
-        this.showScoreboard = show;
     }
 
     public void leave(boolean makePay) {
@@ -874,347 +953,6 @@ public abstract class MemoryFPlayer implements FPlayer {
         return attemptClaim(forFaction, new FLocation(location), notifyFailure);
     }
 
-
-    public boolean shouldBeSaved() {
-        return this.hasFaction() || (this.getPowerRounded() != this.getPowerMaxRounded() && this.getPowerRounded() != (int) Math.round(Conf.powerPlayerStarting));
-    }
-
-    public void msg(String str, Object... args) {
-        this.sendMessage(FactionsPlugin.getInstance().txt.parse(str, args));
-    }
-
-    public void msg(TL translation, Object... args) {
-        this.msg(translation.toString(), args);
-    }
-
-    public Player getPlayer() {
-        return Bukkit.getPlayer(UUID.fromString(this.getId()));
-    }
-
-    public boolean isOnline() {
-        return this.getPlayer() != null;
-    }
-
-    // make sure target player should be able to detect that this player is online
-    public boolean isOnlineAndVisibleTo(Player player) {
-        Player target = this.getPlayer();
-        return target != null && player.canSee(target);
-    }
-
-    public boolean isOffline() {
-        return !isOnline();
-    }
-
-    public boolean isFlying() {
-        return isFlying;
-    }
-
-    public void setFlying(boolean fly) {
-        setFlying(fly, false);
-    }
-
-    public void setFlying(boolean fly, boolean damage) {
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("enable-faction-flight")) {
-            Player player = getPlayer();
-            if (player != null) {
-                player.setAllowFlight(fly);
-                player.setFlying(fly);
-            }
-
-            if (!damage)
-                msg(TL.COMMAND_FLY_CHANGE, fly ? "enabled" : "disabled");
-            else
-                msg(TL.COMMAND_FLY_DAMAGE);
-
-            // If leaving fly mode, don't let them take fall damage for x seconds.
-            if (!fly) {
-                int cooldown = FactionsPlugin.getInstance().getConfig().getInt("fly-falldamage-cooldown");
-
-                // If the value is 0 or lower, make them take fall damage.
-                // Otherwise, start a timer and have this cancel after a few seconds.
-                // Short task so we're just doing it in method. Not clean but eh.
-                if (cooldown > 0) {
-                    setTakeFallDamage(false);
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            setTakeFallDamage(true);
-                        }
-                    }.runTaskLater(FactionsPlugin.getInstance(), 20L * cooldown);
-                }
-            }
-            isFlying = fly;
-        }
-    }
-
-    public boolean isInFactionsChest() {
-        return inChest;
-    }
-
-    public void setInFactionsChest(boolean b) {
-        inChest = b;
-    }
-
-    public boolean isInVault() {
-        return inVault;
-    }
-
-    public void setInVault(boolean status) {
-        inVault = status;
-    }
-
-    public boolean canFlyAtLocation() {
-        return canFlyAtLocation(lastStoodAt);
-    }
-
-    public boolean canFlyAtLocation(FLocation location) {
-        Faction faction = Board.getInstance().getFactionAt(location);
-        Relation relation = faction.getRelationTo(getFaction());
-
-        switch (faction.getId()) {
-            case "0":
-                return Permission.FLY_WILDERNESS.has(getPlayer());
-            case "-1":
-                return Permission.FLY_SAFEZONE.has(getPlayer());
-            case "-2":
-                return Permission.FLY_WARZONE.has(getPlayer());
-        }
-        switch (relation) {
-            case ENEMY:
-                return Permission.FLY_ENEMY.has(getPlayer());
-            case ALLY:
-                return Permission.FLY_ALLY.has(getPlayer());
-            case TRUCE:
-                return Permission.FLY_TRUCE.has(getPlayer());
-            case NEUTRAL:
-                if (faction.isSystemFaction()) return false;
-                return Permission.FLY_NEUTRAL.has(getPlayer());
-        }
-        if (isAdminBypassing)
-            return true;
-        return faction.getAccess(this, PermissableAction.FLY) == Access.ALLOW;
-    }
-
-    public boolean isAutoFlying() {
-        return isAutoFlying;
-    }
-
-    public void setAutoFlying(boolean autoFly) {
-        this.isAutoFlying = autoFly;
-    }
-
-    public boolean shouldTakeFallDamage() {
-        return this.shouldTakeFallDamage;
-    }
-
-    public void setTakeFallDamage(boolean fallDamage) {
-        this.shouldTakeFallDamage = fallDamage;
-    }
-
-    public boolean isSeeingChunk() {
-        return seeingChunk;
-    }
-
-    public void setSeeingChunk(boolean seeingChunk) {
-        this.seeingChunk = seeingChunk;
-        Util.getSeeChunkUtil().updatePlayerInfo(UUID.fromString(getId()), seeingChunk);
-    }
-
-
-    public boolean isEnteringPassword() {
-        return enteringPassword;
-    }
-
-    public void setEnteringPassword(boolean toggle, String warp) {
-        enteringPassword = toggle;
-        enteringPasswordWarp = warp;
-    }
-
-    // -------------------------------------------- //
-    // Message Sending Helpers
-    // -------------------------------------------- //
-
-    public String getEnteringWarp() {
-        return enteringPasswordWarp;
-    }
-
-    public void sendMessage(String msg) {
-        if (msg.contains("{null}")) return; // user wants this message to not send
-
-        if (msg.contains("/n/")) {
-            for (String s : msg.split("/n/")) sendMessage(s);
-            return;
-        }
-        Player player = this.getPlayer();
-        if (player == null) return;
-        player.sendMessage(msg);
-    }
-
-    public void sendMessage(List<String> msgs) {
-        for (String msg : msgs) this.sendMessage(msg);
-    }
-
-    public void sendFancyMessage(FancyMessage message) {
-        Player player = getPlayer();
-        if (player == null || !player.isOnGround()) return;
-        message.send(player);
-    }
-
-    public void sendFancyMessage(List<FancyMessage> messages) {
-        Player player = getPlayer();
-        if (player == null) return;
-        for (FancyMessage msg : messages) msg.send(player);
-    }
-
-    public int getMapHeight() {
-        if (this.mapHeight < 1) this.mapHeight = Conf.mapHeight;
-        return this.mapHeight;
-    }
-
-    public void setMapHeight(int height) {
-        this.mapHeight = Math.min(height, (Conf.mapHeight * 2));
-    }
-
-    public String getNameAndTitle(FPlayer fplayer) {
-        return this.getColorTo(fplayer) + this.getNameAndTitle();
-    }
-
-    @Override
-    public String getChatTag(FPlayer fplayer) {
-        return this.hasFaction() ? this.getRelationTo(fplayer).getColor() + getChatTag() : "";
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public abstract void remove();
-
-    @Override
-    public void clearWarmup() {
-        if (warmup != null) {
-            Bukkit.getScheduler().cancelTask(warmupTask);
-            this.stopWarmup();
-        }
-    }
-
-    @Override
-    public void stopWarmup() {
-        warmup = null;
-    }
-
-    @Override
-    public boolean isWarmingUp() {
-        return warmup != null;
-    }
-
-    @Override
-    public WarmUpUtil.Warmup getWarmupType() {
-        return warmup;
-    }
-
-    @Override
-    public void addWarmup(WarmUpUtil.Warmup warmup, int taskId) {
-        if (this.warmup != null) this.clearWarmup();
-        this.warmup = warmup;
-        this.warmupTask = taskId;
-    }
-
-    @Override
-    public void checkIfNearbyEnemies() {
-        Player me = this.getPlayer();
-
-        if (me == null) return;
-        if (me.hasPermission("factions.fly.bypassnearbyenemycheck")) return;
-        int radius = Conf.stealthFlyCheckRadius;
-        for (Entity e : me.getNearbyEntities(radius, 255, radius)) {
-            if (e == null) continue;
-            if (e instanceof Player) {
-                Player eplayer = (((Player) e).getPlayer());
-                if (eplayer == null) continue;
-                if (eplayer.hasMetadata("NPC")) continue;
-                FPlayer efplayer = FPlayers.getInstance().getByPlayer(eplayer);
-                if (efplayer == null) continue;
-                if (!me.canSee(eplayer) || efplayer.isVanished() || efplayer.getPlayer().getGameMode() == GameMode.CREATIVE || efplayer.getPlayer().getGameMode() == GameMode.SPECTATOR)
-                    continue;
-                if (this.getRelationTo(efplayer).equals(Relation.ENEMY) && !efplayer.isStealthEnabled()) {
-                    setFlying(false);
-                    msg(TL.COMMAND_FLY_ENEMY_NEAR);
-                    Bukkit.getServer().getPluginManager().callEvent(new FPlayerStoppedFlying(this));
-                    this.enemiesNearby = true;
-                    return;
-                }
-            }
-        }
-        this.enemiesNearby = false;
-    }
-
-    @Override
-    public Boolean canflyinWilderness() {
-        return getPlayer().hasPermission(Permission.FLY_WILDERNESS.node);
-    }
-
-    @Override
-    public Boolean canflyinWarzone() {
-        return getPlayer().hasPermission(Permission.FLY_WARZONE.node);
-
-    }
-
-    @Override
-    public Boolean canflyinSafezone() {
-        return getPlayer().hasPermission(Permission.FLY_SAFEZONE.node);
-
-    }
-
-    @Override
-    public Boolean canflyinEnemy() {
-        return getPlayer().hasPermission(Permission.FLY_ENEMY.node);
-
-    }
-
-    @Override
-    public Boolean canflyinAlly() {
-        return getPlayer().hasPermission(Permission.FLY_ALLY.node);
-
-    }
-
-    @Override
-    public Boolean canflyinTruce() {
-        return getPlayer().hasPermission(Permission.FLY_TRUCE.node);
-
-    }
-
-    @Override
-    public Boolean canflyinNeutral() {
-        return getPlayer().hasPermission(Permission.FLY_NEUTRAL.node);
-
-    }
-
-
-    public boolean hasFriendlyFire() {
-        return friendlyFire;
-    }
-
-    public void setFriendlyFire(boolean status) {
-        friendlyFire = status;
-    }
-
-    @Override
-    public boolean isInspectMode() {
-        return inspectMode;
-    }
-
-    @Override
-    public void setInspectMode(boolean status) {
-        inspectMode = status;
-    }
-
     public boolean attemptClaim(Faction forFaction, FLocation flocation, boolean notifyFailure) {
         // notifyFailure is false if called by auto-claim; no need to notify on every failure for it
         // return value is false on failure, true on success
@@ -1288,51 +1026,309 @@ public abstract class MemoryFPlayer implements FPlayer {
         return true;
     }
 
+    public boolean isInVault() {
+        return inVault;
+    }
 
-    @Override
-    public String getRolePrefix() {
+    public void setInVault(boolean status) {
+        inVault = status;
+    }
 
-        switch (getRole()) {
-            case RECRUIT:
-                return Conf.prefixRecruit;
-            case NORMAL:
-                return Conf.prefixNormal;
-            case MODERATOR:
-                return Conf.prefixMod;
-            case COLEADER:
-                return Conf.prefixCoLeader;
-            case LEADER:
-                return Conf.prefixLeader;
-        }
-        return null;
+    public void msg(String str, Object... args) {
+        this.sendMessage(FactionsPlugin.getInstance().txt.parse(str, args));
     }
 
     @Override
-    public boolean hasMoney(int amt) {
-        Economy econ = Util.getEcon();
-        if (econ.getBalance(getPlayer()) >= amt)
-            return true;
-        else {
-            getPlayer().closeInventory();
-            msg(TL.GENERIC_NOTENOUGHMONEY);
-            return false;
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Player getPlayer() {
+        return Bukkit.getPlayer(UUID.fromString(this.getId()));
+    }
+
+    public boolean isOnline() {
+        return this.getPlayer() != null;
+    }
+
+    public void sendMessage(String msg) {
+        if (msg.contains("{null}")) return; // user wants this message to not send
+
+        if (msg.contains("/n/")) {
+            for (String s : msg.split("/n/")) sendMessage(s);
+            return;
         }
+        Player player = this.getPlayer();
+        if (player == null) return;
+        player.sendMessage(msg);
+    }
+
+    public void sendMessage(List<String> msgs) {
+        for (String msg : msgs) this.sendMessage(msg);
+    }
+
+    public void sendFancyMessage(FancyMessage message) {
+        Player player = getPlayer();
+        if (player == null || !player.isOnGround()) return;
+        message.send(player);
+    }
+
+    // -------------------------------------------- //
+    // Message Sending Helpers
+    // -------------------------------------------- //
+
+    public void sendFancyMessage(List<FancyMessage> messages) {
+        Player player = getPlayer();
+        if (player == null) return;
+        for (FancyMessage msg : messages) msg.send(player);
+    }
+
+    public int getMapHeight() {
+        if (this.mapHeight < 1) this.mapHeight = Conf.mapHeight;
+        return this.mapHeight;
+    }
+
+    public void setMapHeight(int height) {
+        this.mapHeight = Math.min(height, (Conf.mapHeight * 2));
+    }
+
+    // make sure target player should be able to detect that this player is online
+    public boolean isOnlineAndVisibleTo(Player player) {
+        Player target = this.getPlayer();
+        return target != null && player.canSee(target);
+    }
+
+    public abstract void remove();
+
+    public boolean isOffline() {
+        return !isOnline();
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    public void setFlying(boolean fly) {
+        setFlying(fly, false);
+    }
+
+    public void setFlying(boolean fly, boolean damage) {
+        if (FactionsPlugin.getInstance().getConfig().getBoolean("enable-faction-flight")) {
+            Player player = getPlayer();
+            if (player != null) {
+                player.setAllowFlight(fly);
+                player.setFlying(fly);
+            }
+
+            if (!damage)
+                msg(TL.COMMAND_FLY_CHANGE, fly ? "enabled" : "disabled");
+            else
+                msg(TL.COMMAND_FLY_DAMAGE);
+
+            // If leaving fly mode, don't let them take fall damage for x seconds.
+            if (!fly) {
+                int cooldown = FactionsPlugin.getInstance().getConfig().getInt("fly-falldamage-cooldown");
+
+                // If the value is 0 or lower, make them take fall damage.
+                // Otherwise, start a timer and have this cancel after a few seconds.
+                // Short task so we're just doing it in method. Not clean but eh.
+                if (cooldown > 0) {
+                    setTakeFallDamage(false);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            setTakeFallDamage(true);
+                        }
+                    }.runTaskLater(FactionsPlugin.getInstance(), 20L * cooldown);
+                }
+            }
+            isFlying = fly;
+        }
+    }
+
+    public boolean isAutoFlying() {
+        return isAutoFlying;
+    }
+
+    public void setAutoFlying(boolean autoFly) {
+        this.isAutoFlying = autoFly;
+    }
+
+    public boolean canFlyAtLocation() {
+        return canFlyAtLocation(lastStoodAt);
+    }
+
+    public boolean canFlyAtLocation(FLocation location) {
+        Faction faction = Board.getInstance().getFactionAt(location);
+        Relation relation = faction.getRelationTo(getFaction());
+
+        switch (faction.getId()) {
+            case "0":
+                return Permission.FLY_WILDERNESS.has(getPlayer());
+            case "-1":
+                return Permission.FLY_SAFEZONE.has(getPlayer());
+            case "-2":
+                return Permission.FLY_WARZONE.has(getPlayer());
+        }
+        switch (relation) {
+            case ENEMY:
+                return Permission.FLY_ENEMY.has(getPlayer());
+            case ALLY:
+                return Permission.FLY_ALLY.has(getPlayer());
+            case TRUCE:
+                return Permission.FLY_TRUCE.has(getPlayer());
+            case NEUTRAL:
+                if (faction.isSystemFaction()) return false;
+                return Permission.FLY_NEUTRAL.has(getPlayer());
+        }
+        if (isAdminBypassing)
+            return true;
+        return faction.getAccess(this, PermissableAction.FLY) == Access.ALLOW;
+    }
+
+    public boolean isSeeingChunk() {
+        return seeingChunk;
+    }
+
+    public void setSeeingChunk(boolean seeingChunk) {
+        this.seeingChunk = seeingChunk;
+        Util.getSeeChunkUtil().updatePlayerInfo(UUID.fromString(getId()), seeingChunk);
+    }
+
+    public boolean isEnteringPassword() {
+        return enteringPassword;
+    }
+
+    public void setEnteringPassword(boolean toggle, String warp) {
+        enteringPassword = toggle;
+        enteringPasswordWarp = warp;
+    }
+
+    public String getEnteringWarp() {
+        return enteringPasswordWarp;
+    }
+
+    @Override
+    public void checkIfNearbyEnemies() {
+        Player me = this.getPlayer();
+
+        if (me == null) return;
+        if (me.hasPermission("factions.fly.bypassnearbyenemycheck")) return;
+        int radius = Conf.stealthFlyCheckRadius;
+        for (Entity e : me.getNearbyEntities(radius, 255, radius)) {
+            if (e == null) continue;
+            if (e instanceof Player) {
+                Player eplayer = (((Player) e).getPlayer());
+                if (eplayer == null) continue;
+                if (eplayer.hasMetadata("NPC")) continue;
+                FPlayer efplayer = FPlayers.getInstance().getByPlayer(eplayer);
+                if (efplayer == null) continue;
+                if (!me.canSee(eplayer) || efplayer.isVanished() || efplayer.getPlayer().getGameMode() == GameMode.CREATIVE || efplayer.getPlayer().getGameMode() == GameMode.SPECTATOR)
+                    continue;
+                if (this.getRelationTo(efplayer).equals(Relation.ENEMY) && !efplayer.isStealthEnabled()) {
+                    setFlying(false);
+                    msg(TL.COMMAND_FLY_ENEMY_NEAR);
+                    Bukkit.getServer().getPluginManager().callEvent(new FPlayerStoppedFlying(this));
+                    this.enemiesNearby = true;
+                    return;
+                }
+            }
+        }
+        this.enemiesNearby = false;
+    }
+
+    public int getCooldown(String cmd) {
+        int seconds = 0;
+        if (this.getPlayer().isOp())
+            return 0;
+        if (commandCooldown.containsKey(cmd))
+            seconds = (int) ((this.commandCooldown.get(cmd) - System.currentTimeMillis()) / 1000);
+        return seconds;
+    }
+
+    public void setCooldown(String cmd, long cooldown) {
+        if (this.getPlayer().isOp())
+            return;
+
+        this.commandCooldown.put(cmd, cooldown);
+    }
+
+    public boolean isCooldownEnded(String cmd) {
+        if (this.getPlayer().isOp())
+            return true;
+        if (!commandCooldown.containsKey(cmd))
+            return true;
+        else return commandCooldown.containsKey(cmd) && commandCooldown.get(cmd) <= System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean isWarmingUp() {
+        return warmup != null;
+    }
+
+    @Override
+    public WarmUpUtil.Warmup getWarmupType() {
+        return warmup;
+    }
+
+    @Override
+    public void addWarmup(WarmUpUtil.Warmup warmup, int taskId) {
+        if (this.warmup != null) this.clearWarmup();
+        this.warmup = warmup;
+        this.warmupTask = taskId;
+    }
+
+    @Override
+    public void stopWarmup() {
+        warmup = null;
+    }
+
+    @Override
+    public void clearWarmup() {
+        if (warmup != null) {
+            Bukkit.getScheduler().cancelTask(warmupTask);
+            this.stopWarmup();
+        }
+    }
+
+    public void msg(TL translation, Object... args) {
+        this.msg(translation.toString(), args);
+    }
+
+    public void setEnemiesNearby(Boolean b) {
+        this.enemiesNearby = b;
+    }
+
+    public String getNameAndTitle(MemoryFPlayer fplayer) {
+        return this.getColorTo(fplayer) + this.getNameAndTitle();
+    }
+
+    public String getChatTag(MemoryFPlayer fplayer) {
+        return this.hasFaction() ? this.getColorTo(fplayer) + getChatTag() : "";
+    }
+
+    /**
+     * Check if the scoreboard should be shown. Simple method to be used by above method.
+     *
+     * @param toShow Faction to be shown.
+     *
+     * @return true if should show, otherwise false.
+     */
+    public boolean showInfoBoard(Faction toShow) {
+        return showScoreboard && !toShow.isWarZone() && !toShow.isWilderness() && !toShow.isSafeZone() && FactionsPlugin.getInstance().getConfig().contains("scoreboard.finfo") && FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.finfo-enabled", false) && FScoreboard.get(this) != null;
+    }
+
+    public boolean shouldBeSaved() {
+        return this.hasFaction() || (this.getPowerRounded() != this.getPowerMaxRounded() && this.getPowerRounded() != (int) Math.round(Conf.powerPlayerStarting));
     }
 
     public String commas(final double amount) {
         final DecimalFormat formatter = new DecimalFormat("#,###.00");
         return formatter.format(amount);
-    }
-
-    @Override
-    public boolean takeMoney(int amt) {
-        if (hasMoney(amt)) {
-            Economy econ = Util.getEcon();
-            if (econ.withdrawPlayer(getPlayer(), amt).transactionSuccess()) {
-                sendMessage(TL.GENERIC_MONEYTAKE.toString().replace("{amount}", commas(amt)));
-                return true;
-            }
-        }
-        return false;
     }
 }

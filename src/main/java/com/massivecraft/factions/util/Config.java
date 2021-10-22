@@ -25,14 +25,6 @@ public class Config extends YamlConfiguration {
         this.createFile();
     }
 
-    public String getFileName() {
-        return this.fileName;
-    }
-
-    public FactionsPlugin getPlugin() {
-        return this.plugin;
-    }
-
     private void createFile() {
         File folder = this.plugin.getDataFolder();
         try {
@@ -49,6 +41,14 @@ public class Config extends YamlConfiguration {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public FactionsPlugin getPlugin() {
+        return this.plugin;
     }
 
     public void save() {
