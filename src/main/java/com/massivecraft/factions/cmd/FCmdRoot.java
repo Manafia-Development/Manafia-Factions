@@ -424,12 +424,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        this.execute(new CommandContext(sender, new ArrayList<>(Arrays.asList(args)), label));
-        return true;
-    }
-
-    @Override
     public void addSubCommand(FCommand subCommand) {
         super.addSubCommand(subCommand);
         // People were getting NPE's as somehow CommodoreProvider#isSupported returned true on legacy versions.
@@ -441,6 +435,12 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     @Override
     public TL getUsageTranslation() {
         return TL.GENERIC_PLACEHOLDER;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        this.execute(new CommandContext(sender, new ArrayList<>(Arrays.asList(args)), label));
+        return true;
     }
 
 }

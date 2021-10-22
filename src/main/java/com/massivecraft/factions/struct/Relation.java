@@ -51,11 +51,6 @@ public enum Relation implements Permissable {
             return NEUTRAL; // If they somehow mess things up, go back to default behavior.
     }
 
-    @Override
-    public String toString() {
-        return this.nicename;
-    }
-
     public String getTranslation() {
         try {
             return TL.valueOf("RELATION_" + name() + "_SINGULAR").toString();
@@ -64,15 +59,16 @@ public enum Relation implements Permissable {
         }
     }
 
+    @Override
+    public String toString() {
+        return this.nicename;
+    }
+
     public String getPluralTranslation() {
         for (TL t : TL.values())
             if (t.name().equalsIgnoreCase("RELATION_" + name() + "_PLURAL"))
                 return t.toString();
         return toString();
-    }
-
-    public boolean isMember() {
-        return this == MEMBER;
     }
 
     public boolean isAlly() {
@@ -97,22 +93,6 @@ public enum Relation implements Permissable {
 
     public boolean isAtMost(Relation relation) {
         return this.value <= relation.value;
-    }
-
-    public ChatColor getColor() {
-
-        switch (this) {
-            case MEMBER:
-                return Conf.colorMember;
-            case ALLY:
-                return Conf.colorAlly;
-            case NEUTRAL:
-                return Conf.colorNeutral;
-            case TRUCE:
-                return Conf.colorTruce;
-            default:
-                return Conf.colorEnemy;
-        }
     }
 
     // return appropriate Conf setting for DenyBuild based on this relation and their online status
@@ -146,6 +126,10 @@ public enum Relation implements Permissable {
                 default:
                     return Conf.territoryDenyBuildWhenOffline;
             }
+    }
+
+    public boolean isMember() {
+        return this == MEMBER;
     }
 
     // return appropriate Conf setting for PainBuild based on this relation and their online status
@@ -229,6 +213,22 @@ public enum Relation implements Permissable {
         item.setItemMeta(itemMeta);
 
         return item;
+    }
+
+    public ChatColor getColor() {
+
+        switch (this) {
+            case MEMBER:
+                return Conf.colorMember;
+            case ALLY:
+                return Conf.colorAlly;
+            case NEUTRAL:
+                return Conf.colorNeutral;
+            case TRUCE:
+                return Conf.colorTruce;
+            default:
+                return Conf.colorEnemy;
+        }
     }
 
     public String replacePlaceholders(String string) {

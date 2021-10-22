@@ -15,13 +15,13 @@ public class InventoryItem {
     private final Map<ClickType, Runnable> clickMap;
     private Runnable runnable;
 
+    public InventoryItem(ItemBuilder original) {
+        this(original.build());
+    }
+
     public InventoryItem(ItemStack original) {
         this.clickMap = new HashMap<>();
         this.item = original;
-    }
-
-    public InventoryItem(ItemBuilder original) {
-        this(original.build());
     }
 
     public InventoryItem click(ClickType type, Runnable runnable) {

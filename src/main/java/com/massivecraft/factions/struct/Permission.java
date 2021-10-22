@@ -174,11 +174,11 @@ public enum Permission {
         this.node = "factions." + node;
     }
 
-    public boolean has(CommandSender sender, boolean informSenderIfNot) {
-        return FactionsPlugin.getInstance().perm.has(sender, this.node, informSenderIfNot);
-    }
-
     public boolean has(CommandSender sender) {
         return has(sender, false);
+    }
+
+    public boolean has(CommandSender sender, boolean informSenderIfNot) {
+        return FactionsPlugin.getInstance().perm.has(sender, this.node, informSenderIfNot);
     }
 }

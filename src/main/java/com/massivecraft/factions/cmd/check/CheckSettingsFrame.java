@@ -70,10 +70,6 @@ public class CheckSettingsFrame implements InventoryHolder, FactionGUI {
         inventory.setItem(FactionsPlugin.getInstance().getConfig().getInt("f-check.history.slot"), historyStack);
     }
 
-    public Inventory getInventory() {
-        return this.inventory;
-    }
-
     private int getNext(int current) {
         switch (current) {
             case 0: {
@@ -101,6 +97,10 @@ public class CheckSettingsFrame implements InventoryHolder, FactionGUI {
         if (minutes == 0)
             return "Offline";
         return minutes + " Minutes";
+    }
+
+    public Inventory getInventory() {
+        return this.inventory;
     }
 
     public String color(String message) {

@@ -20,14 +20,14 @@ public class FPlayerRoleChangeEvent extends FactionPlayerEvent implements Cancel
     private boolean cancelled;
     private Role to;
 
+    public FPlayerRoleChangeEvent(Faction faction, FPlayer fPlayer, Role to) {
+        this(faction, fPlayer, fPlayer.getRole(), to);
+    }
+
     public FPlayerRoleChangeEvent(Faction faction, FPlayer fPlayer, Role from, Role to) {
         super(faction, fPlayer);
         this.from = from;
         this.to = to;
-    }
-
-    public FPlayerRoleChangeEvent(Faction faction, FPlayer fPlayer, Role to) {
-        this(faction, fPlayer, fPlayer.getRole(), to);
     }
 
     @Override

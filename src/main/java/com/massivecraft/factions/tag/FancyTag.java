@@ -93,28 +93,11 @@ public enum FancyTag implements Tag {
         return first && Tag.isMinimalShow() ? null : fancyMessages;
     }
 
-    public static List<FancyMessage> parse(String text, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
-        for (FancyTag tag : FancyTag.values())
-            if (tag.foundInString(text))
-                return tag.getMessage(text, faction, player, groupMap);
-        return Collections.emptyList(); // We really shouldn't be here.
-    }
-
-    public static boolean anyMatch(String text) {
-        return getMatch(text) != null;
-    }
-
-    public static FancyTag getMatch(String text) {
-        for (FancyTag tag : FancyTag.values())
-            if (tag.foundInString(text))
-                return tag;
-        return null;
-    }
-
     /**
      * Parses tooltip variables from config <br> Supports variables for factions only (type 2)
      *
      * @param faction faction to tooltip for
+     *
      * @return list of tooltips for a fancy message
      */
     private static List<String> tipFaction(Faction faction, FPlayer player) {
@@ -129,10 +112,18 @@ public enum FancyTag implements Tag {
         return lines;
     }
 
+    public static List<FancyMessage> parse(String text, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
+        for (FancyTag tag : FancyTag.values())
+            if (tag.foundInString(text))
+                return tag.getMessage(text, faction, player, groupMap);
+        return Collections.emptyList(); // We really shouldn't be here.
+    }
+
     /**
      * Parses tooltip variables from config <br> Supports variables for players and factions (types 1 and 2)
      *
      * @param fplayer player to tooltip for
+     *
      * @return list of tooltips for a fancy message
      */
     private static List<String> tipPlayer(FPlayer fplayer, Map<UUID, String> groupMap) {
@@ -158,19 +149,30 @@ public enum FancyTag implements Tag {
         return lines;
     }
 
+    public List getMessage(String text, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
+        if (!this.foundInString(text))
+            return Collections.EMPTY_LIST; // We really, really shouldn't be here.
+        return this.function.apply(faction, player, text.replace(this.getTag(), ""), groupMap);
+    }
+
     @Override
     public String getTag() {
         return this.tag;
     }
 
+    public static boolean anyMatch(String text) {
+        return getMatch(text) != null;
+    }
+
+    public static FancyTag getMatch(String text) {
+        for (FancyTag tag : FancyTag.values())
+            if (tag.foundInString(text))
+                return tag;
+        return null;
+    }
+
     @Override
     public boolean foundInString(String test) {
         return test != null && test.contains(this.tag);
-    }
-
-    public List getMessage(String text, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
-        if (!this.foundInString(text))
-            return Collections.EMPTY_LIST; // We really, really shouldn't be here.
-        return this.function.apply(faction, player, text.replace(this.getTag(), ""), groupMap);
     }
 }

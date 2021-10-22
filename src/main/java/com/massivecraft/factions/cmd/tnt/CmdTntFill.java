@@ -130,28 +130,6 @@ public class CmdTntFill extends FCommand {
         return this.fillTaskMap.containsKey(player);
     }
 
-    public void fillDispensers(Player player, TNTProvider tntProvider, Collection<Dispenser> dispensers, int amount) {
-        TNTFillTask tntFillTask = new TNTFillTask(this, tntProvider, dispensers.stream().map(d -> d.getBlock()).collect(Collectors.toList()), amount);
-        tntFillTask.runTaskTimer(FactionsPlugin.getInstance(), 0, 1);
-        fillTaskMap.put(player, tntFillTask);
-    }
-
-    public int getAddable(Inventory inv, Material material) {
-        int output = 0;
-        int notempty = 0;
-        for (int i = 0; i < inv.getSize(); ++i) {
-            ItemStack is = inv.getItem(i);
-            if (is != null) {
-                ++notempty;
-                if (is.getType() == material) {
-                    int amount = is.getAmount();
-                    output += 64 - amount;
-                }
-            }
-        }
-        return output + (inv.getSize() - notempty) * 64;
-    }
-
     public boolean isInvFull(Inventory inv) {
         return inv.firstEmpty() == -1;
     }
@@ -170,9 +148,31 @@ public class CmdTntFill extends FCommand {
         return result;
     }
 
+    public void fillDispensers(Player player, TNTProvider tntProvider, Collection<Dispenser> dispensers, int amount) {
+        TNTFillTask tntFillTask = new TNTFillTask(this, tntProvider, dispensers.stream().map(d -> d.getBlock()).collect(Collectors.toList()), amount);
+        tntFillTask.runTaskTimer(FactionsPlugin.getInstance(), 0, 1);
+        fillTaskMap.put(player, tntFillTask);
+    }
+
     @Override
     public TL getUsageTranslation() {
         return TL.COMMAND_TNTFILL_DESCRIPTION;
+    }
+
+    public int getAddable(Inventory inv, Material material) {
+        int output = 0;
+        int notempty = 0;
+        for (int i = 0; i < inv.getSize(); ++i) {
+            ItemStack is = inv.getItem(i);
+            if (is != null) {
+                ++notempty;
+                if (is.getType() == material) {
+                    int amount = is.getAmount();
+                    output += 64 - amount;
+                }
+            }
+        }
+        return output + (inv.getSize() - notempty) * 64;
     }
 
 }

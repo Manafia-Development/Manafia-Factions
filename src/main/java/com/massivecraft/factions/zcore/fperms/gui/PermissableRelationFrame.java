@@ -57,18 +57,6 @@ public class PermissableRelationFrame {
         gui.show(fplayer.getPlayer());
     }
 
-    private ItemStack buildAsset(String loc, String relation) {
-        String s1 = relation.substring(0, 1).toUpperCase();
-        String nameCapitalized = s1 + relation.substring(1);
-        ItemStack item = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getConfig().getString(loc)).get().parseItem();
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(Util.color(FactionsPlugin.getInstance().getConfig().getString("fperm-gui.relation.Placeholder-Item.Name").replace("{relation}", nameCapitalized)));
-            item.setItemMeta(meta);
-        }
-        return item;
-    }
-
     private ItemStack buildDummyItem() {
         ConfigurationSection config = FactionsPlugin.getInstance().getConfig().getConfigurationSection("fperm-gui.dummy-item");
         ItemStack item = XMaterial.matchXMaterial(config.getString("Type")).get().parseItem();
@@ -77,6 +65,18 @@ public class PermissableRelationFrame {
         if (meta != null) {
             meta.setLore(Util.colorList(config.getStringList("Lore")));
             meta.setDisplayName(Util.color(config.getString("Name")));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
+    private ItemStack buildAsset(String loc, String relation) {
+        String s1 = relation.substring(0, 1).toUpperCase();
+        String nameCapitalized = s1 + relation.substring(1);
+        ItemStack item = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getConfig().getString(loc)).get().parseItem();
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(Util.color(FactionsPlugin.getInstance().getConfig().getString("fperm-gui.relation.Placeholder-Item.Name").replace("{relation}", nameCapitalized)));
             item.setItemMeta(meta);
         }
         return item;

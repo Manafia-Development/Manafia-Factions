@@ -89,12 +89,12 @@ public class CmdAdmin extends FCommand {
         });
     }
 
-    private void setRole(FPlayer fp, Role r) {
-        FactionsPlugin.getInstance().getServer().getScheduler().runTask(FactionsPlugin.getInstance(), () -> fp.setRole(r));
-    }
-
     private void promoteNewLeader(Faction f) {
         FactionsPlugin.getInstance().getServer().getScheduler().runTask(FactionsPlugin.getInstance(), (Runnable) f::promoteNewLeader);
+    }
+
+    private void setRole(FPlayer fp, Role r) {
+        FactionsPlugin.getInstance().getServer().getScheduler().runTask(FactionsPlugin.getInstance(), () -> fp.setRole(r));
     }
 
     public TL getUsageTranslation() {

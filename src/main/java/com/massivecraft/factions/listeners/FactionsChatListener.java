@@ -119,6 +119,15 @@ public class FactionsChatListener implements Listener {
         }
     }
 
+    private void doWarmup(final String warp, final FPlayer fme) {
+        WarmUpUtil.process(fme, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
+            Player player = Bukkit.getPlayer(fme.getPlayer().getUniqueId());
+            if (player != null) {
+                player.teleport(fme.getFaction().getWarp(warp).getLocation());
+                fme.msg(TL.COMMAND_FWARP_WARPED, warp);
+            }
+        }, FactionsPlugin.getInstance().getConfig().getLong("warmups.f-warp", 10));
+    }
 
     // this is for handling insertion of the player's faction tag, set at highest priority to give other plugins a chance to modify chat first
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -179,16 +188,6 @@ public class FactionsChatListener implements Listener {
             event.getRecipients().clear();
         }
         event.setFormat(nonColoredMsgFormat);
-    }
-
-    private void doWarmup(final String warp, final FPlayer fme) {
-        WarmUpUtil.process(fme, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
-            Player player = Bukkit.getPlayer(fme.getPlayer().getUniqueId());
-            if (player != null) {
-                player.teleport(fme.getFaction().getWarp(warp).getLocation());
-                fme.msg(TL.COMMAND_FWARP_WARPED, warp);
-            }
-        }, FactionsPlugin.getInstance().getConfig().getLong("warmups.f-warp", 10));
     }
 
 }

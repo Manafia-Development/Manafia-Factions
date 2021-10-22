@@ -110,6 +110,8 @@ public interface FPlayer extends EconomyParticipator {
 
     String getAccountId();
 
+    void msg(String str, Object... args);
+
     void resetFactionData(boolean doSpoutUpdate);
 
     void resetFactionData();
@@ -183,10 +185,10 @@ public interface FPlayer extends EconomyParticipator {
     Boolean canflyinNeutral();
 
     @Override
-    String describeTo(RelationParticipator that, boolean ucfirst);
+    String describeTo(RelationParticipator that);
 
     @Override
-    String describeTo(RelationParticipator that);
+    String describeTo(RelationParticipator that, boolean ucfirst);
 
     @Override
     Relation getRelationTo(RelationParticipator rp);
@@ -194,10 +196,10 @@ public interface FPlayer extends EconomyParticipator {
     @Override
     Relation getRelationTo(RelationParticipator rp, boolean ignorePeaceful);
 
-    Relation getRelationToLocation();
-
     @Override
     ChatColor getColorTo(RelationParticipator rp);
+
+    Relation getRelationToLocation();
 
     String getRolePrefix();
 
@@ -256,8 +258,6 @@ public interface FPlayer extends EconomyParticipator {
     boolean isInVault();
 
     void setInVault(boolean status);
-
-    void msg(String str, Object... args);
 
     String getId();
 

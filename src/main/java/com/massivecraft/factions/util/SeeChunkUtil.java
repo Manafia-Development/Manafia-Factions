@@ -29,6 +29,19 @@ public class SeeChunkUtil extends BukkitRunnable {
         FactionsPlugin.instance.getLogger().info(FactionsPlugin.getInstance().txt.parse("Using %s as the ParticleEffect for /f sc", Util.getParticleProvider().effectName(effect)));
     }
 
+    @Override
+    public void run() {
+        for (UUID playerId : playersSeeingChunks) {
+            Player player = Bukkit.getPlayer(playerId);
+            if (player == null) {
+                playersSeeingChunks.remove(playerId);
+                continue;
+            }
+            FPlayer fme = FPlayers.getInstance().getByPlayer(player);
+            showPillars(player, fme, this.effect, useColor);
+        }
+    }
+
     public static void showPillars(Player me, FPlayer fme, Object effect, boolean useColor) {
         World world = me.getWorld();
         FLocation flocation = new FLocation(me);
@@ -75,19 +88,6 @@ public class SeeChunkUtil extends BukkitRunnable {
                 Material mat = blockY % 5 == 0 ? XMaterial.REDSTONE_LAMP.parseMaterial() : XMaterial.GLASS_PANE.parseMaterial();
                 VisualizeUtil.addLocation(player, loc, mat);
             }
-        }
-    }
-
-    @Override
-    public void run() {
-        for (UUID playerId : playersSeeingChunks) {
-            Player player = Bukkit.getPlayer(playerId);
-            if (player == null) {
-                playersSeeingChunks.remove(playerId);
-                continue;
-            }
-            FPlayer fme = FPlayers.getInstance().getByPlayer(player);
-            showPillars(player, fme, this.effect, useColor);
         }
     }
 

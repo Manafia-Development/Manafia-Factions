@@ -19,7 +19,7 @@ public class NewRaidListener extends Listener {
 //    Faction fac = Board.getInstance().getFactionAt(fLoc);
         Faction myFaction = me.getFaction();
         Faction otherFaction = Board.getInstance().getFactionAt(loc);
-        Relation rel = myFaction.getRelationTo(otherFaction);
+        com.massivecraft.factions.struct.Relation rel = myFaction.getRelationTo(otherFaction);
 
 
         if (FactionsPlugin.getInstance().getFileManager().getraids().getConfig().getBoolean("Enabled", true)) {

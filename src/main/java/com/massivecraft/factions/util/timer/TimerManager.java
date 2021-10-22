@@ -30,6 +30,12 @@ public class TimerManager implements Listener, Runnable {
         plugin.getServer().getScheduler().runTaskTimer(plugin, this, 4, 4);
     }
 
+    public void registerTimer(Timer timer) {
+        this.timers.add(timer);
+        if (timer instanceof Listener)
+            this.plugin.getServer().getPluginManager().registerEvents((Listener) timer, this.plugin);
+    }
+
     public static String getRemaining(long millis, boolean milliseconds) {
         return getRemaining(millis, milliseconds, true);
     }
@@ -42,12 +48,6 @@ public class TimerManager implements Listener, Runnable {
 
     public Collection<Timer> getTimers() {
         return this.timers;
-    }
-
-    public void registerTimer(Timer timer) {
-        this.timers.add(timer);
-        if (timer instanceof Listener)
-            this.plugin.getServer().getPluginManager().registerEvents((Listener) timer, this.plugin);
     }
 
     public void unregisterTimer(Timer timer) {

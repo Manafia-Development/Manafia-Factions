@@ -27,7 +27,59 @@ public abstract class MemoryBoard extends Board {
 
     public MemoryBoardMap flocationIds = new MemoryBoardMap();
 
-    //----------------------------------------------//
+    @SuppressWarnings("unused")
+    private List<String> getToolTip(Faction faction, FPlayer to) {
+        List<String> ret = new ArrayList<>();
+        List<String> show = FactionsPlugin.getInstance().getConfig().getStringList("map");
+
+        if (!faction.isNormal()) {
+            String tag = faction.getTag(to);
+            // send header and that's all
+            String header = show.get(0);
+            if (TagReplacer.HEADER.contains(header)) {
+                ret.add(FactionsPlugin.getInstance().txt.titleize(tag));
+            } else {
+                ret.add(FactionsPlugin.getInstance().txt.parse(TagReplacer.FACTION.replace(header, tag)));
+            }
+            return ret; // we only show header for non-normal factions
+        }
+
+        for (String raw : show) {
+            // Hack to get rid of the extra underscores in title normally used to center tag
+            if (raw.contains("{header}")) {
+                raw = raw.replace("{header}", faction.getTag(to));
+            }
+
+            String parsed = TagUtil.parsePlain(faction, to, raw); // use relations
+            if (parsed == null) {
+                continue; // Due to minimal f show.
+            }
+
+            if (TagUtil.hasFancy(parsed)) {
+                List<FancyMessage> fancy = TagUtil.parseFancy(faction, to, parsed);
+                if (fancy != null) {
+                    for (FancyMessage msg : fancy) {
+                        ret.add((FactionsPlugin.getInstance().txt.parse(msg.toOldMessageFormat())));
+                    }
+                }
+                continue;
+            }
+
+            if (!parsed.contains("{notFrozen}") && !parsed.contains("{notPermanent}")) {
+                if (parsed.contains("{ig}")) {
+                    // replaces all variables with no home TL
+                    parsed = parsed.substring(0, parsed.indexOf("{ig}")) + TL.COMMAND_SHOW_NOHOME;
+                }
+                if (parsed.contains("%")) {
+                    parsed = parsed.replaceAll("%", ""); // Just in case it got in there before we disallowed it.
+                }
+                ret.add(FactionsPlugin.getInstance().txt.parse(parsed));
+            }
+        }
+
+        return ret;
+    }    //----------------------------------------------//
+
     // Get and Set
     //----------------------------------------------//
     public String getIdAt(FLocation flocation) {
@@ -36,6 +88,64 @@ public abstract class MemoryBoard extends Board {
         }
 
         return flocationIds.get(flocation);
+    }
+
+    public abstract void convertFrom(MemoryBoard old);
+
+    public static class MemoryBoardMap extends HashMap<FLocation, String> {
+        private static final long serialVersionUID = -6689617828610585368L;
+
+        Multimap<String, FLocation> factionToLandMap = HashMultimap.create();
+
+        @Override
+        public String put(FLocation floc, String factionId) {
+            String previousValue = super.put(floc, factionId);
+            if (previousValue != null) {
+                factionToLandMap.remove(previousValue, floc);
+            }
+
+            factionToLandMap.put(factionId, floc);
+            return previousValue;
+        }
+
+        @Override
+        public String remove(Object key) {
+            String result = super.remove(key);
+            if (result != null) {
+                FLocation floc = (FLocation) key;
+                factionToLandMap.remove(result, floc);
+            }
+
+            return result;
+        }
+
+        @Override
+        public void clear() {
+            super.clear();
+            factionToLandMap.clear();
+        }
+
+        public int getOwnedLandCount(String factionId) {
+            return factionToLandMap.get(factionId).size();
+        }
+
+        public void removeFaction(String factionId) {
+            Collection<FLocation> fLocations = factionToLandMap.removeAll(factionId);
+            for (FPlayer fPlayer : FPlayers.getInstance().getOnlinePlayers()) {
+                if (fLocations.contains(fPlayer.getLastStoodAt())) {
+                    if (FCmdRoot.instance.fFlyEnabled && !fPlayer.isAdminBypassing() && fPlayer.isFlying()) {
+                        fPlayer.setFlying(false);
+                    }
+                    if (fPlayer.isWarmingUp()) {
+                        fPlayer.clearWarmup();
+                        fPlayer.msg(TL.WARMUPS_CANCELLED);
+                    }
+                }
+                for (FLocation floc : fLocations) {
+                    super.remove(floc);
+                }
+            }
+        }
     }
 
     public Faction getFactionAt(FLocation flocation) {
@@ -147,6 +257,7 @@ public abstract class MemoryBoard extends Board {
      * @param flocation - center location.
      * @param faction   - faction checking for.
      * @param radius    - chunk radius to check.
+     *
      * @return true if another Faction is within the radius, otherwise false.
      */
     public boolean hasFactionWithin(FLocation flocation, Faction faction, int radius) {
@@ -317,114 +428,9 @@ public abstract class MemoryBoard extends Board {
         return Collections.singletonList(faction.describeTo(to));
     }
 
-    @SuppressWarnings("unused")
-    private List<String> getToolTip(Faction faction, FPlayer to) {
-        List<String> ret = new ArrayList<>();
-        List<String> show = FactionsPlugin.getInstance().getConfig().getStringList("map");
 
-        if (!faction.isNormal()) {
-            String tag = faction.getTag(to);
-            // send header and that's all
-            String header = show.get(0);
-            if (TagReplacer.HEADER.contains(header)) {
-                ret.add(FactionsPlugin.getInstance().txt.titleize(tag));
-            } else {
-                ret.add(FactionsPlugin.getInstance().txt.parse(TagReplacer.FACTION.replace(header, tag)));
-            }
-            return ret; // we only show header for non-normal factions
-        }
 
-        for (String raw : show) {
-            // Hack to get rid of the extra underscores in title normally used to center tag
-            if (raw.contains("{header}")) {
-                raw = raw.replace("{header}", faction.getTag(to));
-            }
 
-            String parsed = TagUtil.parsePlain(faction, to, raw); // use relations
-            if (parsed == null) {
-                continue; // Due to minimal f show.
-            }
 
-            if (TagUtil.hasFancy(parsed)) {
-                List<FancyMessage> fancy = TagUtil.parseFancy(faction, to, parsed);
-                if (fancy != null) {
-                    for (FancyMessage msg : fancy) {
-                        ret.add((FactionsPlugin.getInstance().txt.parse(msg.toOldMessageFormat())));
-                    }
-                }
-                continue;
-            }
 
-            if (!parsed.contains("{notFrozen}") && !parsed.contains("{notPermanent}")) {
-                if (parsed.contains("{ig}")) {
-                    // replaces all variables with no home TL
-                    parsed = parsed.substring(0, parsed.indexOf("{ig}")) + TL.COMMAND_SHOW_NOHOME;
-                }
-                if (parsed.contains("%")) {
-                    parsed = parsed.replaceAll("%", ""); // Just in case it got in there before we disallowed it.
-                }
-                ret.add(FactionsPlugin.getInstance().txt.parse(parsed));
-            }
-        }
-
-        return ret;
-    }
-
-    public abstract void convertFrom(MemoryBoard old);
-
-    public static class MemoryBoardMap extends HashMap<FLocation, String> {
-        private static final long serialVersionUID = -6689617828610585368L;
-
-        Multimap<String, FLocation> factionToLandMap = HashMultimap.create();
-
-        @Override
-        public String put(FLocation floc, String factionId) {
-            String previousValue = super.put(floc, factionId);
-            if (previousValue != null) {
-                factionToLandMap.remove(previousValue, floc);
-            }
-
-            factionToLandMap.put(factionId, floc);
-            return previousValue;
-        }
-
-        @Override
-        public String remove(Object key) {
-            String result = super.remove(key);
-            if (result != null) {
-                FLocation floc = (FLocation) key;
-                factionToLandMap.remove(result, floc);
-            }
-
-            return result;
-        }
-
-        @Override
-        public void clear() {
-            super.clear();
-            factionToLandMap.clear();
-        }
-
-        public int getOwnedLandCount(String factionId) {
-            return factionToLandMap.get(factionId).size();
-        }
-
-        public void removeFaction(String factionId) {
-            Collection<FLocation> fLocations = factionToLandMap.removeAll(factionId);
-            for (FPlayer fPlayer : FPlayers.getInstance().getOnlinePlayers()) {
-                if (fLocations.contains(fPlayer.getLastStoodAt())) {
-                    if (FCmdRoot.instance.fFlyEnabled && !fPlayer.isAdminBypassing() && fPlayer.isFlying()) {
-                        fPlayer.setFlying(false);
-                    }
-                    if (fPlayer.isWarmingUp()) {
-                        fPlayer.clearWarmup();
-                        fPlayer.msg(TL.WARMUPS_CANCELLED);
-                    }
-                }
-                for (FLocation floc : fLocations) {
-                    super.remove(floc);
-                }
-            }
-        }
-    }
 }

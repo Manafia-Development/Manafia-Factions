@@ -72,9 +72,18 @@ public class CmdRaid extends FCommand {
             Bukkit.broadcastMessage(TL.COMMAND_RAID_STARTED_BROADCAST.format(me, target.getTag()));
             //    boolean RaidStarted = true;
 
+
+            //Send a fancy hologram
+
+            java.util.ArrayList<Object> objects = new java.util.ArrayList<>();
+            objects.add(new org.bukkit.inventory.ItemStack(org.bukkit.Material.BEACON));
+            objects.add("You are now at war with" + target);
+            HologramAPI.sendHologram(me, objects.toArray(), 30);
+
             if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Mechanics.Spawner-Break", false)) {
 
                 boolean raidSpawners = true;
+
 
                 //TODO add a timer!
 

@@ -20,29 +20,6 @@ public class Persist {
     // GET NAME - What should we call this type of object?
     // ------------------------------------------------------------ //
 
-    public static String getName(Class<?> clazz) {
-        return clazz.getSimpleName().toLowerCase();
-    }
-
-    public static String getName(Object o) {
-        return getName(o.getClass());
-    }
-
-    // ------------------------------------------------------------ //
-    // GET FILE - In which file would we like to store this object?
-    // ------------------------------------------------------------ //
-
-    public File getFile(String name) {
-        return new File(p.getDataFolder(), name + ".json");
-    }
-
-    public File getFile(Object obj) {
-        return getFile(getName(obj));
-    }
-
-
-    // NICE WRAPPERS
-
     public <T> T loadOrSaveDefault(T def, Class<T> clazz, String name) {
         return loadOrSaveDefault(def, clazz, getFile(name));
     }
@@ -64,27 +41,20 @@ public class Persist {
         return loaded;
     }
 
-    // SAVE
+    // ------------------------------------------------------------ //
+    // GET FILE - In which file would we like to store this object?
+    // ------------------------------------------------------------ //
 
     public boolean save(Object instance) {
         return save(instance, getFile(instance));
-    }
-
-    public boolean save(Object instance, String name) {
-        return save(instance, getFile(name));
     }
 
     public boolean save(Object instance, File file) {
         return DiscUtil.writeCatch(file, p.gson.toJson(instance), false);
     }
 
-    public boolean saveSync(Object instance) {
-        return saveSync(instance, getFile(instance));
-    }
 
-    public boolean saveSync(Object instance, File file) {
-        return DiscUtil.writeCatch(file, p.gson.toJson(instance), true);
-    }
+    // NICE WRAPPERS
 
     public <T> T load(Class<T> clazz, File file) {
         String content = DiscUtil.readCatch(file);
@@ -98,6 +68,35 @@ public class Persist {
         return null;
     }
 
+    public File getFile(Object obj) {
+        return getFile(getName(obj));
+    }
+
+    // SAVE
+
+    public File getFile(String name) {
+        return new File(p.getDataFolder(), name + ".json");
+    }
+
+    public static String getName(Object o) {
+        return getName(o.getClass());
+    }
+
+    public static String getName(Class<?> clazz) {
+        return clazz.getSimpleName().toLowerCase();
+    }
+
+    public boolean save(Object instance, String name) {
+        return save(instance, getFile(name));
+    }
+
+    public boolean saveSync(Object instance) {
+        return saveSync(instance, getFile(instance));
+    }
+
+    public boolean saveSync(Object instance, File file) {
+        return DiscUtil.writeCatch(file, p.gson.toJson(instance), true);
+    }
 
     // LOAD BY TYPE
     @SuppressWarnings("unchecked")

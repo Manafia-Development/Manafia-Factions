@@ -48,16 +48,16 @@ public final class EnumTypeAdapter<T extends Enum<T>> extends TypeAdapter<T> {
         };
     }
 
+    public void write(JsonWriter out, T value) throws IOException {
+        out.value(value == null ? null : constantToName.get(value));
+    }
+
     public T read(JsonReader in) throws IOException {
         if (in.peek() == JsonToken.NULL) {
             in.nextNull();
             return null;
         }
         return nameToConstant.get(in.nextString());
-    }
-
-    public void write(JsonWriter out, T value) throws IOException {
-        out.value(value == null ? null : constantToName.get(value));
     }
 
 }

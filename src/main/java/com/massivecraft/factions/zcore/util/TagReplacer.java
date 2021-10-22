@@ -108,6 +108,7 @@ public enum TagReplacer {
      * Returns a list of all the variables we can use for this type<br>
      *
      * @param type the type we want
+     *
      * @return a list of all the variables with this type
      */
     protected static List<TagReplacer> getByType(TagType type) {
@@ -123,46 +124,11 @@ public enum TagReplacer {
     }
 
     /**
-     * Protected access to this generic server related variable
-     *
-     * @return value for this generic server related variable<br>
-     */
-    protected String getValue() {
-        switch (this) {
-            case GRACE_TIMER:
-                return String.valueOf(TimerManager.getRemaining(Util.getTimerManager().graceTimer.getRemaining(), true));
-            case TOTAL_ONLINE:
-                return String.valueOf(Bukkit.getOnlinePlayers().size());
-            case FACTIONLESS:
-                return String.valueOf(FPlayers.getInstance().getAllFPlayers().stream().filter(p -> !p.hasFaction()).count());
-            case MAX_ALLIES:
-                if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", true))
-                    return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-relations.ally", 10));
-                return TL.GENERIC_INFINITY.toString();
-            case MAX_ALTS:
-                if (FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Enabled"))
-                    return String.valueOf(Conf.factionAltMemberLimit);
-                return TL.GENERIC_INFINITY.toString();
-            case MAX_ENEMIES:
-                if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", true))
-                    return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-relations.enemy", 10));
-                return TL.GENERIC_INFINITY.toString();
-            case MAX_TRUCES:
-                if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", true))
-                    return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-relations.truce", 10));
-                return TL.GENERIC_INFINITY.toString();
-            case MAX_WARPS:
-                return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-warps", 5));
-            default:
-        }
-        return null;
-    }
-
-    /**
      * Gets the value for this (as in the instance this is called from) variable!
      *
      * @param fac Target faction
      * @param fp  Target player (can be null)
+     *
      * @return the value for this enum!
      */
     protected String getValue(Faction fac, FPlayer fp) {
@@ -301,8 +267,45 @@ public enum TagReplacer {
     }
 
     /**
+     * Protected access to this generic server related variable
+     *
+     * @return value for this generic server related variable<br>
+     */
+    protected String getValue() {
+        switch (this) {
+            case GRACE_TIMER:
+                return String.valueOf(TimerManager.getRemaining(Util.getTimerManager().graceTimer.getRemaining(), true));
+            case TOTAL_ONLINE:
+                return String.valueOf(Bukkit.getOnlinePlayers().size());
+            case FACTIONLESS:
+                return String.valueOf(FPlayers.getInstance().getAllFPlayers().stream().filter(p -> !p.hasFaction()).count());
+            case MAX_ALLIES:
+                if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", true))
+                    return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-relations.ally", 10));
+                return TL.GENERIC_INFINITY.toString();
+            case MAX_ALTS:
+                if (FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Enabled"))
+                    return String.valueOf(Conf.factionAltMemberLimit);
+                return TL.GENERIC_INFINITY.toString();
+            case MAX_ENEMIES:
+                if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", true))
+                    return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-relations.enemy", 10));
+                return TL.GENERIC_INFINITY.toString();
+            case MAX_TRUCES:
+                if (FactionsPlugin.getInstance().getConfig().getBoolean("max-relations.enabled", true))
+                    return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-relations.truce", 10));
+                return TL.GENERIC_INFINITY.toString();
+            case MAX_WARPS:
+                return String.valueOf(FactionsPlugin.getInstance().getConfig().getInt("max-warps", 5));
+            default:
+        }
+        return null;
+    }
+
+    /**
      * @param original raw line with variables
      * @param value    what to replace var in raw line with
+     *
      * @return the string with the new value
      */
     public String replace(String original, String value) {
@@ -311,6 +314,7 @@ public enum TagReplacer {
 
     /**
      * @param toSearch raw line with variables
+     *
      * @return if the raw line contains this enums variable
      */
     public boolean contains(String toSearch) {
