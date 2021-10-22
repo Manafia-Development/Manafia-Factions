@@ -17,6 +17,39 @@ public class DiscUtil {
     // -------------------------------------------- //
     private static final HashMap<String, Lock> locks = new HashMap<>();
 
+    public static byte[] readBytes(File file) throws IOException {
+        int length = (int) file.length();
+        byte[] output = new byte[length];
+        InputStream in = new FileInputStream(file);
+        int offset = 0;
+        while (offset < length)
+            offset += in.read(output, offset, (length - offset));
+        in.close();
+        return output;
+    }
+
+    // -------------------------------------------- //
+    // STRING
+    // -------------------------------------------- //
+
+    public static void writeBytes(File file, byte[] bytes) throws IOException {
+        FileOutputStream out = new FileOutputStream(file);
+        out.write(bytes);
+        out.close();
+    }
+
+    public static void write(File file, String content) throws IOException {
+        writeBytes(file, utf8(content));
+    }
+
+    // -------------------------------------------- //
+    // CATCH
+    // -------------------------------------------- //
+
+    public static String read(File file) throws IOException {
+        return utf8(readBytes(file));
+    }
+
     public static boolean writeCatch(final File file, final String content, boolean sync) {
         String name = file.getName();
         final Lock lock;
@@ -55,28 +88,6 @@ public class DiscUtil {
         return true; // don't really care but for some reason this is a boolean.
     }
 
-    // -------------------------------------------- //
-    // STRING
-    // -------------------------------------------- //
-
-    public static void write(File file, String content) throws IOException {
-        writeBytes(file, utf8(content));
-    }
-
-    public static void writeBytes(File file, byte[] bytes) throws IOException {
-        FileOutputStream out = new FileOutputStream(file);
-        out.write(bytes);
-        out.close();
-    }
-
-    // -------------------------------------------- //
-    // CATCH
-    // -------------------------------------------- //
-
-    public static byte[] utf8(String string) {
-        return string.getBytes(StandardCharsets.UTF_8);
-    }
-
     public static String readCatch(File file) {
         try {
             return read(file);
@@ -85,27 +96,16 @@ public class DiscUtil {
         }
     }
 
-    public static String read(File file) throws IOException {
-        return utf8(readBytes(file));
-    }
-
     // -------------------------------------------- //
     // UTF8 ENCODE AND DECODE
     // -------------------------------------------- //
 
-    public static String utf8(byte[] bytes) {
-        return new String(bytes, StandardCharsets.UTF_8);
+    public static byte[] utf8(String string) {
+        return string.getBytes(StandardCharsets.UTF_8);
     }
 
-    public static byte[] readBytes(File file) throws IOException {
-        int length = (int) file.length();
-        byte[] output = new byte[length];
-        InputStream in = new FileInputStream(file);
-        int offset = 0;
-        while (offset < length)
-            offset += in.read(output, offset, (length - offset));
-        in.close();
-        return output;
+    public static String utf8(byte[] bytes) {
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
 }

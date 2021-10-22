@@ -35,6 +35,24 @@ public class CmdTnt extends FCommand {
                 .build();
     }
 
+    public static void removeItems(Inventory inventory, ItemStack item, int toRemove) {
+        if (toRemove <= 0 || inventory == null || item == null)
+            return;
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack loopItem = inventory.getItem(i);
+            if (loopItem == null || !item.isSimilar(loopItem) || loopItem.hasItemMeta() || loopItem.getItemMeta().hasDisplayName() || loopItem.getItemMeta().hasLore())
+                continue;
+            if (toRemove <= 0)
+                return;
+            if (toRemove < loopItem.getAmount()) {
+                loopItem.setAmount(loopItem.getAmount() - toRemove);
+                return;
+            }
+            inventory.clear(i);
+            toRemove -= loopItem.getAmount();
+        }
+    }
+
     @Override
     public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("ftnt.Enabled")) {
@@ -156,6 +174,23 @@ public class CmdTnt extends FCommand {
         context.sendMessage(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + ""));
     }
 
+    public boolean inventoryContains(Inventory inventory, ItemStack item) {
+        int count = 0;
+        ItemStack[] items = inventory.getContents();
+        for (ItemStack item1 : items)
+            if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability())
+                count += item1.getAmount();
+        return count >= item.getAmount();
+    }
+
+    public boolean hasAvaliableSlot(Player player, int howmany) {
+        int check = 0;
+        for (ItemStack item : player.getInventory().getContents())
+            if (item == null)
+                check++;
+        return check >= howmany;
+    }
+
     public void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();
         ItemStack[] items = inventory.getContents();
@@ -177,43 +212,8 @@ public class CmdTnt extends FCommand {
         inventory.setContents(items);
     }
 
-    public static void removeItems(Inventory inventory, ItemStack item, int toRemove) {
-        if (toRemove <= 0 || inventory == null || item == null)
-            return;
-        for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack loopItem = inventory.getItem(i);
-            if (loopItem == null || !item.isSimilar(loopItem) || loopItem.hasItemMeta() || loopItem.getItemMeta().hasDisplayName() || loopItem.getItemMeta().hasLore())
-                continue;
-            if (toRemove <= 0)
-                return;
-            if (toRemove < loopItem.getAmount()) {
-                loopItem.setAmount(loopItem.getAmount() - toRemove);
-                return;
-            }
-            inventory.clear(i);
-            toRemove -= loopItem.getAmount();
-        }
-    }
-
-    public boolean hasAvaliableSlot(Player player, int howmany) {
-        int check = 0;
-        for (ItemStack item : player.getInventory().getContents())
-            if (item == null)
-                check++;
-        return check >= howmany;
-    }
-
     @Override
     public TL getUsageTranslation() {
         return TL.COMMAND_TNT_DESCRIPTION;
-    }
-
-    public boolean inventoryContains(Inventory inventory, ItemStack item) {
-        int count = 0;
-        ItemStack[] items = inventory.getContents();
-        for (ItemStack item1 : items)
-            if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability())
-                count += item1.getAmount();
-        return count >= item.getAmount();
     }
 }

@@ -270,11 +270,6 @@ public interface Faction extends EconomyParticipator {
 
     String getAccountId();
 
-    // ----------------------------------------------//
-    // Messages
-    // ----------------------------------------------//
-    void msg(String message, Object... args);
-
     Integer getPermanentPower();
 
     void setPermanentPower(Integer permanentPower);
@@ -320,19 +315,19 @@ public interface Faction extends EconomyParticipator {
 
     void setDefaultPerms();
 
+    void disband(Player disbander, PlayerDisbandReason reason);
+
     // -------------------------------
     // Relation and relation colors
     // -------------------------------
 
-    void disband(Player disbander, PlayerDisbandReason reason);
-
     Map<Permissable, Map<PermissableAction, Access>> getPermissions();
 
     @Override
-    String describeTo(RelationParticipator that);
+    String describeTo(RelationParticipator that, boolean ucfirst);
 
     @Override
-    String describeTo(RelationParticipator that, boolean ucfirst);
+    String describeTo(RelationParticipator that);
 
     @Override
     Relation getRelationTo(RelationParticipator rp);
@@ -362,11 +357,11 @@ public interface Faction extends EconomyParticipator {
 
     int getLandRounded();
 
+    int getLandRoundedInWorld(String worldName);
+
     // -------------------------------
     // FPlayers
     // -------------------------------
-
-    int getLandRoundedInWorld(String worldName);
 
     boolean hasLandInflation();
 
@@ -408,6 +403,11 @@ public interface Faction extends EconomyParticipator {
     Role getDefaultRole();
 
     void setDefaultRole(Role role);
+
+    // ----------------------------------------------//
+    // Messages
+    // ----------------------------------------------//
+    void msg(String message, Object... args);
 
     void sendMessage(String message);
 

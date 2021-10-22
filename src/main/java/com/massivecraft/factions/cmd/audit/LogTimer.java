@@ -25,12 +25,12 @@ public class LogTimer extends ConcurrentHashMap<LogTimer.TimerType, Map<LogTimer
         this.factionId = factionId;
     }
 
-    public LogTimer.Timer attemptLog(LogTimer.TimerType type, LogTimer.TimerSubType subType, long increment) {
-        return this.getCurrentTimersOrCreate(type).computeIfAbsent(subType, (e) -> new Timer(System.currentTimeMillis(), 0L, null)).increment(increment);
-    }
-
     public Map<LogTimer.TimerSubType, LogTimer.Timer> getCurrentTimersOrCreate(LogTimer.TimerType type) {
         return this.computeIfAbsent(type, (m) -> new ConcurrentHashMap<>());
+    }
+
+    public LogTimer.Timer attemptLog(LogTimer.TimerType type, LogTimer.TimerSubType subType, long increment) {
+        return this.getCurrentTimersOrCreate(type).computeIfAbsent(subType, (e) -> new Timer(System.currentTimeMillis(), 0L, null)).increment(increment);
     }
 
     public void pushLogs(Faction faction, LogTimer.TimerType type) {

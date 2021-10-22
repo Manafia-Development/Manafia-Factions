@@ -31,30 +31,11 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns the constructor of a desired class with the given parameter types
-     *
-     * @param className      Name of the desired target class
-     * @param packageType    Package where the desired target class is located
-     * @param parameterTypes Parameter types of the desired constructor
-     *
-     * @return The constructor of the desired target class with the specified parameter types
-     *
-     * @throws NoSuchMethodException  If the desired constructor with the specified parameter types cannot be found
-     * @throws ClassNotFoundException ClassNotFoundException If the desired target class with the specified name and package cannot be found
-     * @see #getConstructor(Class, Class...)
-     */
-    public static Constructor<?> getConstructor(String className, PackageType packageType, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException {
-        return getConstructor(packageType.getClass(className), parameterTypes);
-    }
-
-    /**
      * Returns the constructor of a given class with the given parameter types
      *
      * @param clazz          Target class
      * @param parameterTypes Parameter types of the desired constructor
-     *
      * @return The constructor of the target class with the specified parameter types
-     *
      * @throws NoSuchMethodException If the desired constructor with the specified parameter types cannot be found
      * @see DataType
      * @see DataType#getPrimitive(Class[])
@@ -71,14 +52,43 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Returns the constructor of a desired class with the given parameter types
+     *
+     * @param className      Name of the desired target class
+     * @param packageType    Package where the desired target class is located
+     * @param parameterTypes Parameter types of the desired constructor
+     * @return The constructor of the desired target class with the specified parameter types
+     * @throws NoSuchMethodException  If the desired constructor with the specified parameter types cannot be found
+     * @throws ClassNotFoundException ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @see #getConstructor(Class, Class...)
+     */
+    public static Constructor<?> getConstructor(String className, PackageType packageType, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException {
+        return getConstructor(packageType.getClass(className), parameterTypes);
+    }
+
+    /**
+     * Returns an instance of a class with the given arguments
+     *
+     * @param clazz     Target class
+     * @param arguments Arguments which are used to construct an object of the target class
+     * @return The instance of the target class with the specified arguments
+     * @throws InstantiationException    If you cannot create an instance of the target class due to certain circumstances
+     * @throws IllegalAccessException    If the desired constructor cannot be accessed due to certain circumstances
+     * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the constructor (this should not occur since it searches for a constructor with the types of the arguments)
+     * @throws InvocationTargetException If the desired constructor cannot be invoked
+     * @throws NoSuchMethodException     If the desired constructor with the specified arguments cannot be found
+     */
+    public static Object instantiateObject(Class<?> clazz, Object... arguments) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        return getConstructor(clazz, DataType.getPrimitive(arguments)).newInstance(arguments);
+    }
+
+    /**
      * Returns an instance of a desired class with the given arguments
      *
      * @param className   Name of the desired target class
      * @param packageType Package where the desired target class is located
      * @param arguments   Arguments which are used to construct an object of the desired target class
-     *
      * @return The instance of the desired target class with the specified arguments
-     *
      * @throws InstantiationException    If you cannot create an instance of the desired target class due to certain circumstances
      * @throws IllegalAccessException    If the desired constructor cannot be accessed due to certain circumstances
      * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the constructor (this should not occur since it searches for a constructor with the types of the arguments)
@@ -92,50 +102,12 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns an instance of a class with the given arguments
-     *
-     * @param clazz     Target class
-     * @param arguments Arguments which are used to construct an object of the target class
-     *
-     * @return The instance of the target class with the specified arguments
-     *
-     * @throws InstantiationException    If you cannot create an instance of the target class due to certain circumstances
-     * @throws IllegalAccessException    If the desired constructor cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the constructor (this should not occur since it searches for a constructor with the types of the arguments)
-     * @throws InvocationTargetException If the desired constructor cannot be invoked
-     * @throws NoSuchMethodException     If the desired constructor with the specified arguments cannot be found
-     */
-    public static Object instantiateObject(Class<?> clazz, Object... arguments) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
-        return getConstructor(clazz, DataType.getPrimitive(arguments)).newInstance(arguments);
-    }
-
-    /**
-     * Returns a method of a desired class with the given parameter types
-     *
-     * @param className      Name of the desired target class
-     * @param packageType    Package where the desired target class is located
-     * @param methodName     Name of the desired method
-     * @param parameterTypes Parameter types of the desired method
-     *
-     * @return The method of the desired target class with the specified name and parameter types
-     *
-     * @throws NoSuchMethodException  If the desired method of the desired target class with the specified name and parameter types cannot be found
-     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
-     * @see #getMethod(Class, String, Class...)
-     */
-    public static Method getMethod(String className, PackageType packageType, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException {
-        return getMethod(packageType.getClass(className), methodName, parameterTypes);
-    }
-
-    /**
      * Returns a method of a class with the given parameter types
      *
      * @param clazz          Target class
      * @param methodName     Name of the desired method
      * @param parameterTypes Parameter types of the desired method
-     *
      * @return The method of the target class with the specified name and parameter types
-     *
      * @throws NoSuchMethodException If the desired method of the target class with the specified name and parameter types cannot be found
      * @see DataType#getPrimitive(Class[])
      * @see DataType#compare(Class[], Class[])
@@ -151,14 +123,28 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Returns a method of a desired class with the given parameter types
+     *
+     * @param className      Name of the desired target class
+     * @param packageType    Package where the desired target class is located
+     * @param methodName     Name of the desired method
+     * @param parameterTypes Parameter types of the desired method
+     * @return The method of the desired target class with the specified name and parameter types
+     * @throws NoSuchMethodException  If the desired method of the desired target class with the specified name and parameter types cannot be found
+     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @see #getMethod(Class, String, Class...)
+     */
+    public static Method getMethod(String className, PackageType packageType, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException {
+        return getMethod(packageType.getClass(className), methodName, parameterTypes);
+    }
+
+    /**
      * Invokes a method on an object with the given arguments
      *
      * @param instance   Target object
      * @param methodName Name of the desired method
      * @param arguments  Arguments which are used to invoke the desired method
-     *
      * @return The result of invoking the desired method on the target object
-     *
      * @throws IllegalAccessException    If the desired method cannot be accessed due to certain circumstances
      * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
@@ -171,37 +157,13 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Invokes a method of a desired class on an object with the given arguments
-     *
-     * @param instance    Target object
-     * @param className   Name of the desired target class
-     * @param packageType Package where the desired target class is located
-     * @param methodName  Name of the desired method
-     * @param arguments   Arguments which are used to invoke the desired method
-     *
-     * @return The result of invoking the desired method on the target object
-     *
-     * @throws IllegalAccessException    If the desired method cannot be accessed due to certain circumstances
-     * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
-     * @throws InvocationTargetException If the desired method cannot be invoked on the target object
-     * @throws NoSuchMethodException     If the desired method of the desired target class with the specified name and arguments cannot be found
-     * @throws ClassNotFoundException    If the desired target class with the specified name and package cannot be found
-     * @see #invokeMethod(Object, Class, String, Object...)
-     */
-    public static Object invokeMethod(Object instance, String className, PackageType packageType, String methodName, Object... arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
-        return invokeMethod(instance, packageType.getClass(className), methodName, arguments);
-    }
-
-    /**
      * Invokes a method of the target class on an object with the given arguments
      *
      * @param instance   Target object
      * @param clazz      Target class
      * @param methodName Name of the desired method
      * @param arguments  Arguments which are used to invoke the desired method
-     *
      * @return The result of invoking the desired method on the target object
-     *
      * @throws IllegalAccessException    If the desired method cannot be accessed due to certain circumstances
      * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
      * @throws InvocationTargetException If the desired method cannot be invoked on the target object
@@ -214,22 +176,23 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns a field of a desired class with the given name
+     * Invokes a method of a desired class on an object with the given arguments
      *
+     * @param instance    Target object
      * @param className   Name of the desired target class
      * @param packageType Package where the desired target class is located
-     * @param declared    Whether the desired field is declared or not
-     * @param fieldName   Name of the desired field
-     *
-     * @return The field of the desired target class with the specified name
-     *
-     * @throws NoSuchFieldException   If the desired field of the desired class cannot be found
-     * @throws SecurityException      If the desired field cannot be made accessible
-     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
-     * @see #getField(Class, boolean, String)
+     * @param methodName  Name of the desired method
+     * @param arguments   Arguments which are used to invoke the desired method
+     * @return The result of invoking the desired method on the target object
+     * @throws IllegalAccessException    If the desired method cannot be accessed due to certain circumstances
+     * @throws IllegalArgumentException  If the types of the arguments do not match the parameter types of the method (this should not occur since it searches for a method with the types of the arguments)
+     * @throws InvocationTargetException If the desired method cannot be invoked on the target object
+     * @throws NoSuchMethodException     If the desired method of the desired target class with the specified name and arguments cannot be found
+     * @throws ClassNotFoundException    If the desired target class with the specified name and package cannot be found
+     * @see #invokeMethod(Object, Class, String, Object...)
      */
-    public static Field getField(String className, PackageType packageType, boolean declared, String fieldName) throws NoSuchFieldException, SecurityException, ClassNotFoundException {
-        return getField(packageType.getClass(className), declared, fieldName);
+    public static Object invokeMethod(Object instance, String className, PackageType packageType, String methodName, Object... arguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+        return invokeMethod(instance, packageType.getClass(className), methodName, arguments);
     }
 
     /**
@@ -238,9 +201,7 @@ public final class ReflectionUtils {
      * @param clazz     Target class
      * @param declared  Whether the desired field is declared or not
      * @param fieldName Name of the desired field
-     *
      * @return The field of the target class with the specified name
-     *
      * @throws NoSuchFieldException If the desired field of the given class cannot be found
      * @throws SecurityException    If the desired field cannot be made accessible
      */
@@ -251,6 +212,41 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Returns a field of a desired class with the given name
+     *
+     * @param className   Name of the desired target class
+     * @param packageType Package where the desired target class is located
+     * @param declared    Whether the desired field is declared or not
+     * @param fieldName   Name of the desired field
+     * @return The field of the desired target class with the specified name
+     * @throws NoSuchFieldException   If the desired field of the desired class cannot be found
+     * @throws SecurityException      If the desired field cannot be made accessible
+     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @see #getField(Class, boolean, String)
+     */
+    public static Field getField(String className, PackageType packageType, boolean declared, String fieldName) throws NoSuchFieldException, SecurityException, ClassNotFoundException {
+        return getField(packageType.getClass(className), declared, fieldName);
+    }
+
+    /**
+     * Returns the value of a field of the given class of an object
+     *
+     * @param instance  Target object
+     * @param clazz     Target class
+     * @param declared  Whether the desired field is declared or not
+     * @param fieldName Name of the desired field
+     * @return The value of field of the target object
+     * @throws IllegalArgumentException If the target object does not feature the desired field
+     * @throws IllegalAccessException   If the desired field cannot be accessed
+     * @throws NoSuchFieldException     If the desired field of the target class cannot be found
+     * @throws SecurityException        If the desired field cannot be made accessible
+     * @see #getField(Class, boolean, String)
+     */
+    public static Object getValue(Object instance, Class<?> clazz, boolean declared, String fieldName) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        return getField(clazz, declared, fieldName).get(instance);
+    }
+
+    /**
      * Returns the value of a field of a desired class of an object
      *
      * @param instance    Target object
@@ -258,9 +254,7 @@ public final class ReflectionUtils {
      * @param packageType Package where the desired target class is located
      * @param declared    Whether the desired field is declared or not
      * @param fieldName   Name of the desired field
-     *
      * @return The value of field of the target object
-     *
      * @throws IllegalArgumentException If the target object does not feature the desired field
      * @throws IllegalAccessException   If the desired field cannot be accessed
      * @throws NoSuchFieldException     If the desired field of the desired class cannot be found
@@ -273,34 +267,12 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Returns the value of a field of the given class of an object
-     *
-     * @param instance  Target object
-     * @param clazz     Target class
-     * @param declared  Whether the desired field is declared or not
-     * @param fieldName Name of the desired field
-     *
-     * @return The value of field of the target object
-     *
-     * @throws IllegalArgumentException If the target object does not feature the desired field
-     * @throws IllegalAccessException   If the desired field cannot be accessed
-     * @throws NoSuchFieldException     If the desired field of the target class cannot be found
-     * @throws SecurityException        If the desired field cannot be made accessible
-     * @see #getField(Class, boolean, String)
-     */
-    public static Object getValue(Object instance, Class<?> clazz, boolean declared, String fieldName) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-        return getField(clazz, declared, fieldName).get(instance);
-    }
-
-    /**
      * Returns the value of a field with the given name of an object
      *
      * @param instance  Target object
      * @param declared  Whether the desired field is declared or not
      * @param fieldName Name of the desired field
-     *
      * @return The value of field of the target object
-     *
      * @throws IllegalArgumentException If the target object does not feature the desired field (should not occur since it searches for a field with the given name in the class of the object)
      * @throws IllegalAccessException   If the desired field cannot be accessed
      * @throws NoSuchFieldException     If the desired field of the target object cannot be found
@@ -312,6 +284,24 @@ public final class ReflectionUtils {
     }
 
     /**
+     * Sets the value of a field of the given class of an object
+     *
+     * @param instance  Target object
+     * @param clazz     Target class
+     * @param declared  Whether the desired field is declared or not
+     * @param fieldName Name of the desired field
+     * @param value     New value
+     * @throws IllegalArgumentException If the type of the value does not match the type of the desired field
+     * @throws IllegalAccessException   If the desired field cannot be accessed
+     * @throws NoSuchFieldException     If the desired field of the target class cannot be found
+     * @throws SecurityException        If the desired field cannot be made accessible
+     * @see #getField(Class, boolean, String)
+     */
+    public static void setValue(Object instance, Class<?> clazz, boolean declared, String fieldName, Object value) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+        getField(clazz, declared, fieldName).set(instance, value);
+    }
+
+    /**
      * Sets the value of a field of a desired class of an object
      *
      * @param instance    Target object
@@ -320,7 +310,6 @@ public final class ReflectionUtils {
      * @param declared    Whether the desired field is declared or not
      * @param fieldName   Name of the desired field
      * @param value       New value
-     *
      * @throws IllegalArgumentException If the type of the value does not match the type of the desired field
      * @throws IllegalAccessException   If the desired field cannot be accessed
      * @throws NoSuchFieldException     If the desired field of the desired class cannot be found
@@ -333,32 +322,12 @@ public final class ReflectionUtils {
     }
 
     /**
-     * Sets the value of a field of the given class of an object
-     *
-     * @param instance  Target object
-     * @param clazz     Target class
-     * @param declared  Whether the desired field is declared or not
-     * @param fieldName Name of the desired field
-     * @param value     New value
-     *
-     * @throws IllegalArgumentException If the type of the value does not match the type of the desired field
-     * @throws IllegalAccessException   If the desired field cannot be accessed
-     * @throws NoSuchFieldException     If the desired field of the target class cannot be found
-     * @throws SecurityException        If the desired field cannot be made accessible
-     * @see #getField(Class, boolean, String)
-     */
-    public static void setValue(Object instance, Class<?> clazz, boolean declared, String fieldName, Object value) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
-        getField(clazz, declared, fieldName).set(instance, value);
-    }
-
-    /**
      * Sets the value of a field with the given name of an object
      *
      * @param instance  Target object
      * @param declared  Whether the desired field is declared or not
      * @param fieldName Name of the desired field
      * @param value     New value
-     *
      * @throws IllegalArgumentException If the type of the value does not match the type of the desired field
      * @throws IllegalAccessException   If the desired field cannot be accessed
      * @throws NoSuchFieldException     If the desired field of the target object cannot be found
@@ -404,20 +373,20 @@ public final class ReflectionUtils {
         /**
          * Construct a new package type
          *
-         * @param parent Parent package of the package
-         * @param path   Path of the package
+         * @param path Path of the package
          */
-        PackageType(PackageType parent, String path) {
-            this(parent + "." + path);
+        PackageType(String path) {
+            this.path = path;
         }
 
         /**
          * Construct a new package type
          *
-         * @param path Path of the package
+         * @param parent Parent package of the package
+         * @param path   Path of the package
          */
-        PackageType(String path) {
-            this.path = path;
+        PackageType(PackageType parent, String path) {
+            this(parent + "." + path);
         }
 
         /**
@@ -442,9 +411,7 @@ public final class ReflectionUtils {
          * Returns the class with the given name
          *
          * @param className Name of the desired class
-         *
          * @return The class with the specified name
-         *
          * @throws ClassNotFoundException If the desired class with the specified name and package cannot be found
          */
         public Class<?> getClass(String className) throws ClassNotFoundException {
@@ -501,10 +468,41 @@ public final class ReflectionUtils {
         }
 
         /**
+         * Returns the data type with the given primitive/reference class
+         *
+         * @param clazz Primitive/Reference class of the data type
+         * @return The data type
+         */
+        public static DataType fromClass(Class<?> clazz) {
+            return CLASS_MAP.get(clazz);
+        }
+
+        /**
+         * Returns the primitive class of the data type with the given reference class
+         *
+         * @param clazz Reference class of the data type
+         * @return The primitive class
+         */
+        public static Class<?> getPrimitive(Class<?> clazz) {
+            DataType type = fromClass(clazz);
+            return type == null ? clazz : type.getPrimitive();
+        }
+
+        /**
+         * Returns the reference class of the data type with the given primitive class
+         *
+         * @param clazz Primitive class of the data type
+         * @return The reference class
+         */
+        public static Class<?> getReference(Class<?> clazz) {
+            DataType type = fromClass(clazz);
+            return type == null ? clazz : type.getReference();
+        }
+
+        /**
          * Returns the primitive class array of the given class array
          *
          * @param classes Given class array
-         *
          * @return The primitive class array
          */
         public static Class<?>[] getPrimitive(Class<?>[] classes) {
@@ -516,42 +514,9 @@ public final class ReflectionUtils {
         }
 
         /**
-         * Returns the primitive class of the data type with the given reference class
-         *
-         * @param clazz Reference class of the data type
-         *
-         * @return The primitive class
-         */
-        public static Class<?> getPrimitive(Class<?> clazz) {
-            DataType type = fromClass(clazz);
-            return type == null ? clazz : type.getPrimitive();
-        }
-
-        /**
-         * Returns the data type with the given primitive/reference class
-         *
-         * @param clazz Primitive/Reference class of the data type
-         *
-         * @return The data type
-         */
-        public static DataType fromClass(Class<?> clazz) {
-            return CLASS_MAP.get(clazz);
-        }
-
-        /**
-         * Returns the primitive class of this data type
-         *
-         * @return The primitive class
-         */
-        public Class<?> getPrimitive() {
-            return primitive;
-        }
-
-        /**
          * Returns the reference class array of the given class array
          *
          * @param classes Given class array
-         *
          * @return The reference class array
          */
         public static Class<?>[] getReference(Class<?>[] classes) {
@@ -560,27 +525,6 @@ public final class ReflectionUtils {
             for (int index = 0; index < length; index++)
                 types[index] = getReference(classes[index]);
             return types;
-        }
-
-        /**
-         * Returns the reference class of the data type with the given primitive class
-         *
-         * @param clazz Primitive class of the data type
-         *
-         * @return The reference class
-         */
-        public static Class<?> getReference(Class<?> clazz) {
-            DataType type = fromClass(clazz);
-            return type == null ? clazz : type.getReference();
-        }
-
-        /**
-         * Returns the reference class of this data type
-         *
-         * @return The reference class
-         */
-        public Class<?> getReference() {
-            return reference;
         }
 
         /**
@@ -600,7 +544,6 @@ public final class ReflectionUtils {
          * Returns the reference class array of the given object array
          *
          * @param objects Given object array
-         *
          * @return The reference class array
          */
         public static Class<?>[] getReference(Object[] objects) {
@@ -616,7 +559,6 @@ public final class ReflectionUtils {
          *
          * @param primary   Primary class array
          * @param secondary Class array which is compared to the primary array
-         *
          * @return Whether these arrays are equal or not
          */
         public static boolean compare(Class<?>[] primary, Class<?>[] secondary) {
@@ -630,6 +572,24 @@ public final class ReflectionUtils {
                 return false;
             }
             return true;
+        }
+
+        /**
+         * Returns the primitive class of this data type
+         *
+         * @return The primitive class
+         */
+        public Class<?> getPrimitive() {
+            return primitive;
+        }
+
+        /**
+         * Returns the reference class of this data type
+         *
+         * @return The reference class
+         */
+        public Class<?> getReference() {
+            return reference;
         }
     }
 }

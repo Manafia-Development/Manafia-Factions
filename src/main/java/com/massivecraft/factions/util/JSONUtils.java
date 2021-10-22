@@ -32,11 +32,6 @@ public class JSONUtils {
         return f;
     }
 
-    public static Object fromJson(String fileName, Object token) throws IOException {
-        File f = getOrCreateFile(fileName);
-        return fromJson(f, token);
-    }
-
     public static File getOrCreateFile(String fileName) throws IOException {
         File f = new File(fileName);
         if (!f.exists()) {
@@ -46,16 +41,13 @@ public class JSONUtils {
         return f;
     }
 
+    public static Object fromJson(String fileName, Object token) throws IOException {
+        File f = getOrCreateFile(fileName);
+        return fromJson(f, token);
+    }
+
     public static Object fromJson(File f, Object clazz) throws FileNotFoundException {
         return gson.fromJson(new FileReader(f), getTypeFromObject(clazz));
-    }
-
-    private static Type getTypeFromObject(Object object) {
-        return object instanceof Type ? (Type) object : getTypeFromClass(object.getClass());
-    }
-
-    private static Type getTypeFromClass(Class<?> clazz) {
-        return TypeToken.of(clazz).getType();
     }
 
     public static Object fromJson(File f, Object clazz, Object defaultObj) throws FileNotFoundException {
@@ -83,10 +75,6 @@ public class JSONUtils {
         return saveJSONToFile(getOrCreateFile(fileName), toSave, token);
     }
 
-    public static boolean saveJSONToFile(File f, Object toSave, Object token) throws IOException {
-        return saveJSONToFile(f, toSave, token, gson);
-    }
-
     public static boolean saveJSONToFile(File f, Object toSave, Object token, Gson gson) throws IOException {
         String str = toJSON(toSave, token, gson);
         FileWriter writer = new FileWriter(f);
@@ -94,5 +82,17 @@ public class JSONUtils {
         writer.flush();
         writer.close();
         return true;
+    }
+
+    public static boolean saveJSONToFile(File f, Object toSave, Object token) throws IOException {
+        return saveJSONToFile(f, toSave, token, gson);
+    }
+
+    private static Type getTypeFromObject(Object object) {
+        return object instanceof Type ? (Type) object : getTypeFromClass(object.getClass());
+    }
+
+    private static Type getTypeFromClass(Class<?> clazz) {
+        return TypeToken.of(clazz).getType();
     }
 }

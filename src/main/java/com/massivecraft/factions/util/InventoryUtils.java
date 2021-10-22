@@ -33,7 +33,6 @@ public final class InventoryUtils {
      * for each non-null entry.
      *
      * @param origin the array to clone
-     *
      * @return deep cloned array.
      */
     public static ItemStack[] deepClone(ItemStack[] origin) {
@@ -51,7 +50,6 @@ public final class InventoryUtils {
      * Converts an initial value to a safe inventory size.
      *
      * @param initialSize the initial size of inventory
-     *
      * @return the safe Bukkit {@link Inventory} size
      */
     public static int getSafestInventorySize(int initialSize) {
@@ -92,7 +90,6 @@ public final class InventoryUtils {
      * @param inventory the inventory to count for
      * @param type      the material to count for
      * @param data      the data value to count for
-     *
      * @return amount of the item inventory contains
      */
     public static int countAmount(Inventory inventory, Material type, short data) {
@@ -144,7 +141,6 @@ public final class InventoryUtils {
      * Checks if the top inventory was clicked in the {@link InventoryDragEvent}.
      *
      * @param event the {@link org.bukkit.event.Event} to check for
-     *
      * @return true if the top {@link Inventory} was clicked
      */
     public static boolean clickedTopInventory(InventoryDragEvent event) {

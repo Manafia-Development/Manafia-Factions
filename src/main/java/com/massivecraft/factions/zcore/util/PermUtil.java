@@ -18,6 +18,10 @@ public class PermUtil {
         this.setup();
     }
 
+    public String getForbiddenMessage(String perm) {
+        return p.txt.parse(TL.GENERIC_NOPERMISSION.toString(), getPermissionDescription(perm));
+    }
+
     /**
      * This method hooks into all permission plugins we are supporting
      */
@@ -26,12 +30,9 @@ public class PermUtil {
             this.permissionDescriptions.put(permission.getName(), permission.getDescription());
     }
 
-    public boolean has(CommandSender me, String perm, boolean informSenderIfNot) {
-        if (has(me, perm))
-            return true;
-        else if (informSenderIfNot && me != null)
-            me.sendMessage(this.getForbiddenMessage(perm));
-        return false;
+    public String getPermissionDescription(String perm) {
+        String desc = permissionDescriptions.get(perm);
+        return desc != null ? desc : TL.GENERIC_DOTHAT.toString();
     }
 
     /**
@@ -41,12 +42,11 @@ public class PermUtil {
         return me != null && me.hasPermission(perm);
     }
 
-    public String getForbiddenMessage(String perm) {
-        return p.txt.parse(TL.GENERIC_NOPERMISSION.toString(), getPermissionDescription(perm));
-    }
-
-    public String getPermissionDescription(String perm) {
-        String desc = permissionDescriptions.get(perm);
-        return desc != null ? desc : TL.GENERIC_DOTHAT.toString();
+    public boolean has(CommandSender me, String perm, boolean informSenderIfNot) {
+        if (has(me, perm))
+            return true;
+        else if (informSenderIfNot && me != null)
+            me.sendMessage(this.getForbiddenMessage(perm));
+        return false;
     }
 }

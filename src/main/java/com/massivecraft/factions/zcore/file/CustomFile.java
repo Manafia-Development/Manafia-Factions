@@ -42,17 +42,9 @@ public class CustomFile {
         loadFile();
     }
 
-    public File getFile() {
-        return file;
-    }
-
     public void loadFile() {
         this.fileConfig = YamlConfiguration.loadConfiguration(file);
         this.cachedObjects.clear(); // remove cached objects
-    }
-
-    public void setFile(File file) {
-        this.file = file;
     }
 
     public void saveFile() {
@@ -63,20 +55,28 @@ public class CustomFile {
         }
     }
 
-    public YamlConfiguration getConfig() {
-        return fileConfig;
-    }
-
     public boolean containsKey(String key) {
         return getCachedObjects().containsKey(key) || getConfig().contains(key);
     }
 
-    public HashMap<String, Object> getCachedObjects() {
-        return cachedObjects;
-    }
-
     public String fetchString(String key) {
         return (String) getObj(key, dataTypes.STRING);
+    }
+
+    public int fetchInt(String key) {
+        return (int) getObj(key, dataTypes.INT);
+    }
+
+    public double fetchDouble(String key) {
+        return (double) getObj(key, dataTypes.DOUBLE);
+    }
+
+    public List<String> fetchStringList(String key) {
+        return (List<String>) getObj(key, dataTypes.STRINGLIST);
+    }
+
+    public boolean fetchBoolean(String key) {
+        return (boolean) getObj(key, dataTypes.BOOLEAN);
     }
 
     public Object getObj(String key, Enum<dataTypes> data) {
@@ -117,24 +117,24 @@ public class CustomFile {
         return null;
     }
 
-    public int fetchInt(String key) {
-        return (int) getObj(key, dataTypes.INT);
+    public HashMap<String, Object> getCachedObjects() {
+        return cachedObjects;
     }
 
-    public double fetchDouble(String key) {
-        return (double) getObj(key, dataTypes.DOUBLE);
+    public File getFile() {
+        return file;
     }
 
-    public List<String> fetchStringList(String key) {
-        return (List<String>) getObj(key, dataTypes.STRINGLIST);
-    }
-
-    public boolean fetchBoolean(String key) {
-        return (boolean) getObj(key, dataTypes.BOOLEAN);
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public void setFileConfig(YamlConfiguration fileConfig) {
         this.fileConfig = fileConfig;
+    }
+
+    public YamlConfiguration getConfig() {
+        return fileConfig;
     }
 
 

@@ -11,12 +11,6 @@ public class VisualizeUtil {
 
     protected static Map<UUID, Set<Location>> playerLocations = new HashMap<>();
 
-    @SuppressWarnings("deprecation")
-    public static void addLocation(Player player, Location location, Material type, byte data) {
-        getPlayerLocations(player).add(location);
-        player.sendBlockChange(location, type, data);
-    }
-
     public static Set<Location> getPlayerLocations(Player player) {
         return getPlayerLocations(player.getUniqueId());
     }
@@ -24,6 +18,12 @@ public class VisualizeUtil {
     public static Set<Location> getPlayerLocations(UUID uuid) {
         Set<Location> ret = playerLocations.computeIfAbsent(uuid, k -> new HashSet<>());
         return ret;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void addLocation(Player player, Location location, Material type, byte data) {
+        getPlayerLocations(player).add(location);
+        player.sendBlockChange(location, type, data);
     }
 
     @SuppressWarnings("deprecation")

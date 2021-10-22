@@ -22,7 +22,6 @@ public enum Access {
      * Case insensitive check for access.
      *
      * @param check
-     *
      * @return
      */
     public static Access fromString(String check) {

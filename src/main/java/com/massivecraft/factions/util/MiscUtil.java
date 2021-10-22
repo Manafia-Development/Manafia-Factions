@@ -72,6 +72,18 @@ public class MiscUtil {
         return values;
     }
 
+    public static String getComparisonString(String str) {
+        StringBuilder ret = new StringBuilder();
+
+        str = ChatColor.stripColor(str);
+        str = str.toLowerCase();
+
+        for (char c : str.toCharArray())
+            if (substanceChars.contains(String.valueOf(c)))
+                ret.append(c);
+        return ret.toString().toLowerCase();
+    }
+
     public static ArrayList<String> validateTag(String str) {
         ArrayList<String> errors = new ArrayList<>();
 
@@ -94,18 +106,6 @@ public class MiscUtil {
             }
 
         return errors;
-    }
-
-    public static String getComparisonString(String str) {
-        StringBuilder ret = new StringBuilder();
-
-        str = ChatColor.stripColor(str);
-        str = str.toLowerCase();
-
-        for (char c : str.toCharArray())
-            if (substanceChars.contains(String.valueOf(c)))
-                ret.append(c);
-        return ret.toString().toLowerCase();
     }
 
     public static Iterable<FPlayer> rankOrder(Iterable<FPlayer> players) {

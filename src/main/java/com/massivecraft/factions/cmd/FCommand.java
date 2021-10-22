@@ -138,6 +138,13 @@ public abstract class FCommand {
         return lines;
     }
 
+    public List<String> getToolTips(Faction faction) {
+        List<String> lines = new ArrayList<>();
+        for (String s : FactionsPlugin.getInstance().getConfig().getStringList("tooltips.list"))
+            lines.add(ChatColor.translateAlternateColorCodes('&', replaceFactionTags(s, faction)));
+        return lines;
+    }
+
     public String replaceFPlayerTags(String s, FPlayer player) {
         List<String> keys = Arrays.asList("{balance}", "{lastSeen}", "{power}", "{group}");
         for (String str : keys)
@@ -158,13 +165,6 @@ public abstract class FCommand {
                         s = s.replace("{group}", group);
                 }
         return s;
-    }
-
-    public List<String> getToolTips(Faction faction) {
-        List<String> lines = new ArrayList<>();
-        for (String s : FactionsPlugin.getInstance().getConfig().getStringList("tooltips.list"))
-            lines.add(ChatColor.translateAlternateColorCodes('&', replaceFactionTags(s, faction)));
-        return lines;
     }
 
     public String replaceFactionTags(String s, Faction faction) {

@@ -30,19 +30,20 @@ public class SmokeUtil {
     // Spawn once
     // -------------------------------------------- //
 
-    // Simple Cloud ========
-    public static void spawnCloudSimple(Location location) {
-        for (int i = 0; i <= 8; i++)
-            spawnSingle(location, i);
-    }
-
-    public static void spawnCloudRandom(Collection<Location> locations, float thickness) {
-        for (Location location : locations)
-            spawnCloudRandom(location, thickness);
+    // Single ========
+    public static void spawnSingle(Location location, int direction) {
+        if (location == null) return;
+        location.getWorld().playEffect(location.clone(), Effect.SMOKE, direction);
     }
 
     public static void spawnSingleRandom(Location location) {
         spawnSingle(location, random.nextInt(9));
+    }
+
+    // Simple Cloud ========
+    public static void spawnCloudSimple(Location location) {
+        for (int i = 0; i <= 8; i++)
+            spawnSingle(location, i);
     }
 
     // Random Cloud ========
@@ -52,10 +53,9 @@ public class SmokeUtil {
             spawnSingleRandom(location.clone());
     }
 
-    // Single ========
-    public static void spawnSingle(Location location, int direction) {
-        if (location == null) return;
-        location.getWorld().playEffect(location.clone(), Effect.SMOKE, direction);
+    public static void spawnCloudRandom(Collection<Location> locations, float thickness) {
+        for (Location location : locations)
+            spawnCloudRandom(location, thickness);
     }
 
     // -------------------------------------------- //

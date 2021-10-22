@@ -30,21 +30,26 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
         return "factionsuuid";
     }
 
+    @Override
+    public String getAuthor() {
+        return "drtshock";
+    }
+
     // Since we are registering this expansion from the dependency, this can be null
     @Override
     public String getPlugin() {
         return null;
     }
 
-    @Override
-    public boolean persist() {
-        return true;
-    }
-
     // Return the plugin version since this expansion is bundled with the dependency
     @Override
     public String getVersion() {
         return FactionsPlugin.getInstance().getDescription().getVersion();
+    }
+
+    @Override
+    public boolean persist() {
+        return true;
     }
 
     // Relational placeholders
@@ -248,10 +253,5 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
                 else
                     count += faction.getFPlayersWhereOnline(false, player).size();
         return count;
-    }
-
-    @Override
-    public String getAuthor() {
-        return "drtshock";
     }
 }
