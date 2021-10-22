@@ -43,12 +43,6 @@ public class InventoryUtil {
         }
     }
 
-    public static String toBase64(ItemStack[] is, int size) {
-        Inventory inventory = Bukkit.createInventory(null, size);
-        inventory.setContents(is);
-        return toBase64(inventory);
-    }
-
     public static String toBase64(Inventory inventory) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -67,6 +61,12 @@ public class InventoryUtil {
         } catch (Exception e) {
             throw new IllegalStateException("Cannot convert into itemstacks!", e);
         }
+    }
+
+    public static String toBase64(ItemStack[] is, int size) {
+        Inventory inventory = Bukkit.createInventory(null, size);
+        inventory.setContents(is);
+        return toBase64(inventory);
     }
 
     public static Inventory fromBase64(String data, String invName) {

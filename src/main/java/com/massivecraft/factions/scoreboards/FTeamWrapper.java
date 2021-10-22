@@ -34,47 +34,6 @@ public class FTeamWrapper {
             add(fboard);
     }
 
-    private void add(FScoreboard fboard) {
-        Scoreboard board = fboard.getScoreboard();
-        Team team = board.registerNewTeam(teamName);
-        teams.put(fboard, team);
-        for (OfflinePlayer player : getPlayers()) team.addPlayer(player);
-        updatePrefix(fboard);
-    }
-
-    private Set<OfflinePlayer> getPlayers() {
-        return new HashSet<>(this.members);
-    }
-
-    private void updatePrefix(FScoreboard fboard) {
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.default-prefixes", false)) {
-            FPlayer fplayer = fboard.getFPlayer();
-            Team team = teams.get(fboard);
-            boolean focused = false;
-
-            if (FactionsPlugin.getInstance().getConfig().getBoolean("See-Invisible-Faction-Members", false))
-                team.setCanSeeFriendlyInvisibles(true);
-
-            if ((FactionsPlugin.getInstance().getConfig().getBoolean("ffocus.Enabled")) && (fplayer.getFaction() != null) && (fplayer.getFaction().getFocused() != null))
-                for (FPlayer fp : faction.getFPlayersWhereOnline(true))
-                    if (fplayer.getFaction().getFocused().equalsIgnoreCase(fp.getName())) {
-                        team.setPrefix(ChatColor.translateAlternateColorCodes('&', FactionsPlugin.getInstance().getConfig().getString("ffocus.Prefix", "&7»&b")));
-                        focused = true;
-                    }
-            if (!focused) {
-                String prefix = TL.DEFAULT_PREFIX.toString();
-
-                prefix = PlaceholderAPI.setPlaceholders(fplayer.getPlayer(), prefix);
-                prefix = PlaceholderAPI.setBracketPlaceholders(fplayer.getPlayer(), prefix);
-                prefix = prefix.replace("{relationcolor}", faction.getRelationTo(fplayer).getColor().toString());
-                prefix = prefix.replace("{faction}",
-                        faction.getTag().substring(0, Math.min("{faction}".length() + 16 - prefix.length(), faction.getTag().length())));
-                if ((team.getPrefix() == null) || (!team.getPrefix().equals(prefix)))
-                    team.setPrefix(prefix);
-            }
-        }
-    }
-
     public static void applyUpdatesLater(final Faction faction) {
         if (!FScoreboard.isSupportedByServer()) return;
         if (faction.isWilderness()) return;
@@ -128,29 +87,6 @@ public class FTeamWrapper {
         wrapper.updatePrefixes();
     }
 
-    private void unregister() {
-        for (Team team : teams.values())
-            team.unregister();
-        teams.clear();
-    }
-
-    private void removePlayer(OfflinePlayer player) {
-        if (members.remove(player))
-            for (Team team : teams.values())
-                team.removePlayer(player);
-    }
-
-    private void addPlayer(OfflinePlayer player) {
-        if (members.add(player))
-            for (Team team : teams.values())
-                team.addPlayer(player);
-    }
-
-    private void updatePrefixes() {
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.default-prefixes", false))
-            for (FScoreboard fboard : teams.keySet()) updatePrefix(fboard);
-    }
-
     public static void updatePrefixes(Faction faction) {
         if (!FScoreboard.isSupportedByServer()) return;
 
@@ -172,7 +108,72 @@ public class FTeamWrapper {
         for (FTeamWrapper wrapper : wrappers.values()) wrapper.remove(fboard);
     }
 
+    private void add(FScoreboard fboard) {
+        Scoreboard board = fboard.getScoreboard();
+        Team team = board.registerNewTeam(teamName);
+        teams.put(fboard, team);
+        for (OfflinePlayer player : getPlayers()) team.addPlayer(player);
+        updatePrefix(fboard);
+    }
+
     private void remove(FScoreboard fboard) {
         teams.remove(fboard).unregister();
+    }
+
+    private void updatePrefixes() {
+        if (FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.default-prefixes", false))
+            for (FScoreboard fboard : teams.keySet()) updatePrefix(fboard);
+    }
+
+    private void updatePrefix(FScoreboard fboard) {
+        if (FactionsPlugin.getInstance().getConfig().getBoolean("scoreboard.default-prefixes", false)) {
+            FPlayer fplayer = fboard.getFPlayer();
+            Team team = teams.get(fboard);
+            boolean focused = false;
+
+            if (FactionsPlugin.getInstance().getConfig().getBoolean("See-Invisible-Faction-Members", false))
+                team.setCanSeeFriendlyInvisibles(true);
+
+            if ((FactionsPlugin.getInstance().getConfig().getBoolean("ffocus.Enabled")) && (fplayer.getFaction() != null) && (fplayer.getFaction().getFocused() != null))
+                for (FPlayer fp : faction.getFPlayersWhereOnline(true))
+                    if (fplayer.getFaction().getFocused().equalsIgnoreCase(fp.getName())) {
+                        team.setPrefix(ChatColor.translateAlternateColorCodes('&', FactionsPlugin.getInstance().getConfig().getString("ffocus.Prefix", "&7»&b")));
+                        focused = true;
+                    }
+            if (!focused) {
+                String prefix = TL.DEFAULT_PREFIX.toString();
+
+                prefix = PlaceholderAPI.setPlaceholders(fplayer.getPlayer(), prefix);
+                prefix = PlaceholderAPI.setBracketPlaceholders(fplayer.getPlayer(), prefix);
+                prefix = prefix.replace("{relationcolor}", faction.getRelationTo(fplayer).getColor().toString());
+                prefix = prefix.replace("{faction}",
+                        faction.getTag().substring(0, Math.min("{faction}".length() + 16 - prefix.length(), faction.getTag().length())));
+                if ((team.getPrefix() == null) || (!team.getPrefix().equals(prefix)))
+                    team.setPrefix(prefix);
+            }
+        }
+    }
+
+
+    private void addPlayer(OfflinePlayer player) {
+        if (members.add(player))
+            for (Team team : teams.values())
+                team.addPlayer(player);
+    }
+
+    private void removePlayer(OfflinePlayer player) {
+        if (members.remove(player))
+            for (Team team : teams.values())
+                team.removePlayer(player);
+    }
+
+    private Set<OfflinePlayer> getPlayers() {
+        return new HashSet<>(this.members);
+    }
+
+    private void unregister() {
+        for (Team team : teams.values())
+            team.unregister();
+        teams.clear();
     }
 }

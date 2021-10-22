@@ -50,13 +50,25 @@ public class CommandContext {
     // Message Sending Helpers
     // -------------------------------------------- //
 
+    public void msg(String str, Object... args) {
+        sender.sendMessage(FactionsPlugin.getInstance().txt.parse(str, args));
+    }
+
+    public void msg(TL translation, Object... args) {
+        sender.sendMessage(FactionsPlugin.getInstance().txt.parse(translation.toString(), args));
+    }
+
+    public void sendMessage(String msg) {
+        sender.sendMessage(msg);
+    }
+
     public void sendMessage(List<String> msgs) {
         for (String msg : msgs)
             this.sendMessage(msg);
     }
 
-    public void sendMessage(String msg) {
-        sender.sendMessage(msg);
+    public void sendFancyMessage(FancyMessage message) {
+        message.send(sender);
     }
 
     public void sendFancyMessage(List<FancyMessage> messages) {
@@ -64,26 +76,25 @@ public class CommandContext {
             sendFancyMessage(m);
     }
 
-    public void sendFancyMessage(FancyMessage message) {
-        message.send(sender);
-    }
+    // TODO: Clean this UP
+    // -------------------------------------------- //
+    // Argument Readers
+    // -------------------------------------------- //
 
     // Is set? ======================
     public boolean argIsSet(int idx) {
         return args.size() >= idx + 1;
     }
 
-    public Integer argAsInt(int idx) {
-        return argAsInt(idx, null);
+    // STRING ======================
+    public String argAsString(int idx, String def) {
+        if (args.size() < idx + 1)
+            return def;
+        return args.get(idx);
     }
 
-    // TODO: Clean this UP
-    // -------------------------------------------- //
-    // Argument Readers
-    // -------------------------------------------- //
-
-    public Integer argAsInt(int idx, Integer def) {
-        return strAsInt(argAsString(idx), def);
+    public String argAsString(int idx) {
+        return argAsString(idx, null);
     }
 
     // INT ======================
@@ -97,23 +108,12 @@ public class CommandContext {
         }
     }
 
-    public String argAsString(int idx) {
-        return argAsString(idx, null);
+    public Integer argAsInt(int idx, Integer def) {
+        return strAsInt(argAsString(idx), def);
     }
 
-    // STRING ======================
-    public String argAsString(int idx, String def) {
-        if (args.size() < idx + 1)
-            return def;
-        return args.get(idx);
-    }
-
-    public Double argAsDouble(int idx) {
-        return argAsDouble(idx, null);
-    }
-
-    public Double argAsDouble(int idx, Double def) {
-        return strAsDouble(argAsString(idx), def);
+    public Integer argAsInt(int idx) {
+        return argAsInt(idx, null);
     }
 
     // Double ======================
@@ -127,8 +127,19 @@ public class CommandContext {
         }
     }
 
-    public Boolean argAsBool(int idx) {
-        return argAsBool(idx, false);
+    public Double argAsDouble(int idx, Double def) {
+        return strAsDouble(argAsString(idx), def);
+    }
+
+    public Double argAsDouble(int idx) {
+        return argAsDouble(idx, null);
+    }
+
+    // TODO: Go through the str conversion for the other arg-readers as well.
+    // Boolean ======================
+    public Boolean strAsBool(String str) {
+        str = str.toLowerCase();
+        return str.startsWith("y") || str.startsWith("t") || str.startsWith("on") || str.startsWith("+") || str.startsWith("1");
     }
 
     public Boolean argAsBool(int idx, boolean def) {
@@ -139,23 +150,8 @@ public class CommandContext {
         return strAsBool(str);
     }
 
-    // TODO: Go through the str conversion for the other arg-readers as well.
-    // Boolean ======================
-    public Boolean strAsBool(String str) {
-        str = str.toLowerCase();
-        return str.startsWith("y") || str.startsWith("t") || str.startsWith("on") || str.startsWith("+") || str.startsWith("1");
-    }
-
-    public Player argAsPlayer(int idx) {
-        return argAsPlayer(idx, null);
-    }
-
-    public Player argAsPlayer(int idx, Player def) {
-        return argAsPlayer(idx, def, true);
-    }
-
-    public Player argAsPlayer(int idx, Player def, boolean msg) {
-        return this.strAsPlayer(argAsString(idx), def, msg);
+    public Boolean argAsBool(int idx) {
+        return argAsBool(idx, false);
     }
 
     // PLAYER ======================
@@ -174,12 +170,16 @@ public class CommandContext {
         return ret;
     }
 
-    public Player argAsBestPlayerMatch(int idx, Player def) {
-        return argAsBestPlayerMatch(idx, def, true);
+    public Player argAsPlayer(int idx, Player def, boolean msg) {
+        return this.strAsPlayer(argAsString(idx), def, msg);
     }
 
-    public Player argAsBestPlayerMatch(int idx, Player def, boolean msg) {
-        return this.strAsBestPlayerMatch(argAsString(idx), def, msg);
+    public Player argAsPlayer(int idx, Player def) {
+        return argAsPlayer(idx, def, true);
+    }
+
+    public Player argAsPlayer(int idx) {
+        return argAsPlayer(idx, null);
     }
 
     // BEST PLAYER MATCH ======================
@@ -198,26 +198,22 @@ public class CommandContext {
         return ret;
     }
 
+    public Player argAsBestPlayerMatch(int idx, Player def, boolean msg) {
+        return this.strAsBestPlayerMatch(argAsString(idx), def, msg);
+    }
+
+    public Player argAsBestPlayerMatch(int idx, Player def) {
+        return argAsBestPlayerMatch(idx, def, true);
+    }
+
     public Player argAsBestPlayerMatch(int idx) {
         return argAsPlayer(idx, null);
-    }
-
-    public FPlayer argAsFPlayer(int idx) {
-        return argAsFPlayer(idx, null);
-    }
-
-    public FPlayer argAsFPlayer(int idx, FPlayer def) {
-        return argAsFPlayer(idx, def, true);
     }
 
 
     // -------------------------------------------- //
     // Faction Argument Readers
     // -------------------------------------------- //
-
-    public FPlayer argAsFPlayer(int idx, FPlayer def, boolean msg) {
-        return this.strAsFPlayer(argAsString(idx), def, msg);
-    }
 
     // FPLAYER ======================
     public FPlayer strAsFPlayer(String name, FPlayer def, boolean msg) {
@@ -236,20 +232,16 @@ public class CommandContext {
         return ret;
     }
 
-    public void msg(TL translation, Object... args) {
-        sender.sendMessage(FactionsPlugin.getInstance().txt.parse(translation.toString(), args));
+    public FPlayer argAsFPlayer(int idx, FPlayer def, boolean msg) {
+        return this.strAsFPlayer(argAsString(idx), def, msg);
     }
 
-    public FPlayer argAsBestFPlayerMatch(int idx) {
-        return argAsBestFPlayerMatch(idx, null);
+    public FPlayer argAsFPlayer(int idx, FPlayer def) {
+        return argAsFPlayer(idx, def, true);
     }
 
-    public FPlayer argAsBestFPlayerMatch(int idx, FPlayer def) {
-        return argAsBestFPlayerMatch(idx, def, true);
-    }
-
-    public FPlayer argAsBestFPlayerMatch(int idx, FPlayer def, boolean msg) {
-        return this.strAsBestFPlayerMatch(argAsString(idx), def, msg);
+    public FPlayer argAsFPlayer(int idx) {
+        return argAsFPlayer(idx, null);
     }
 
     // BEST FPLAYER MATCH ======================
@@ -257,16 +249,16 @@ public class CommandContext {
         return strAsFPlayer(name, def, msg);
     }
 
-    public Faction argAsFaction(int idx) {
-        return argAsFaction(idx, null);
+    public FPlayer argAsBestFPlayerMatch(int idx, FPlayer def, boolean msg) {
+        return this.strAsBestFPlayerMatch(argAsString(idx), def, msg);
     }
 
-    public Faction argAsFaction(int idx, Faction def) {
-        return argAsFaction(idx, def, true);
+    public FPlayer argAsBestFPlayerMatch(int idx, FPlayer def) {
+        return argAsBestFPlayerMatch(idx, def, true);
     }
 
-    public Faction argAsFaction(int idx, Faction def, boolean msg) {
-        return this.strAsFaction(argAsString(idx), def, msg);
+    public FPlayer argAsBestFPlayerMatch(int idx) {
+        return argAsBestFPlayerMatch(idx, null);
     }
 
     // FACTION ======================
@@ -307,6 +299,22 @@ public class CommandContext {
         return ret;
     }
 
+    public Faction argAsFaction(int idx, Faction def, boolean msg) {
+        return this.strAsFaction(argAsString(idx), def, msg);
+    }
+
+    public Faction argAsFaction(int idx, Faction def) {
+        return argAsFaction(idx, def, true);
+    }
+
+    public Faction argAsFaction(int idx) {
+        return argAsFaction(idx, null);
+    }
+
+    /*
+        Assertions
+     */
+
     public boolean assertHasFaction() {
         if (player == null)
             return true;
@@ -318,10 +326,6 @@ public class CommandContext {
         return true;
     }
 
-    /*
-        Assertions
-     */
-
     public boolean assertMinRole(Role role) {
         if (player == null)
             return true;
@@ -330,10 +334,6 @@ public class CommandContext {
             return false;
         }
         return true;
-    }
-
-    public void msg(String str, Object... args) {
-        sender.sendMessage(FactionsPlugin.getInstance().txt.parse(str, args));
     }
 
     /*
@@ -359,10 +359,6 @@ public class CommandContext {
         return false;
     }
 
-    public boolean payForCommand(double cost, TL toDoThis, TL forDoingThis) {
-        return payForCommand(cost, toDoThis.toString(), forDoingThis.toString());
-    }
-
     // if economy is enabled and they're not on the bypass list, make 'em pay; returns true unless person can't afford the cost
     public boolean payForCommand(double cost, String toDoThis, String forDoingThis) {
         if (!Econ.shouldBeUsed() || this.fPlayer == null || cost == 0.0 || fPlayer.isAdminBypassing())
@@ -372,6 +368,10 @@ public class CommandContext {
             return Econ.modifyMoney(faction, -cost, toDoThis, forDoingThis);
         else
             return Econ.modifyMoney(fPlayer, -cost, toDoThis, forDoingThis);
+    }
+
+    public boolean payForCommand(double cost, TL toDoThis, TL forDoingThis) {
+        return payForCommand(cost, toDoThis.toString(), forDoingThis.toString());
     }
 
     // like above, but just make sure they can pay; returns true unless person can't afford the cost

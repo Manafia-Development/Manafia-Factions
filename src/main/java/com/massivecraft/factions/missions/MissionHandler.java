@@ -50,16 +50,6 @@ public class MissionHandler implements Listener {
         }
     }
 
-    private void checkIfDone(FPlayer fPlayer, Mission mission, ConfigurationSection section) {
-        if (mission.getProgress() < section.getConfigurationSection("Mission").getLong("Amount"))
-            return;
-        for (String command : section.getConfigurationSection("Reward").getStringList("Commands"))
-            FactionsPlugin.instance.getServer().dispatchCommand(FactionsPlugin.getInstance().getServer().getConsoleSender(), command.replace("%faction%", fPlayer.getFaction().getTag()));
-        fPlayer.getFaction().getMissions().remove(mission.getName());
-        fPlayer.getFaction().msg(TL.MISSION_MISSION_FINISHED, Util.color(section.getString("Name")));
-        fPlayer.getFaction().getCompletedMissions().add(mission.getName());
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() == null || event.getEntity().getKiller() == null)
@@ -148,5 +138,15 @@ public class MissionHandler implements Listener {
                 checkIfDone(fPlayer, mission2, section);
             }
         }
+    }
+
+    private void checkIfDone(FPlayer fPlayer, Mission mission, ConfigurationSection section) {
+        if (mission.getProgress() < section.getConfigurationSection("Mission").getLong("Amount"))
+            return;
+        for (String command : section.getConfigurationSection("Reward").getStringList("Commands"))
+            FactionsPlugin.instance.getServer().dispatchCommand(FactionsPlugin.getInstance().getServer().getConsoleSender(), command.replace("%faction%", fPlayer.getFaction().getTag()));
+        fPlayer.getFaction().getMissions().remove(mission.getName());
+        fPlayer.getFaction().msg(TL.MISSION_MISSION_FINISHED, Util.color(section.getString("Name")));
+        fPlayer.getFaction().getCompletedMissions().add(mission.getName());
     }
 }

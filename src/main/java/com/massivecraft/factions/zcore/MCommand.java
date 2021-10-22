@@ -67,6 +67,12 @@ public abstract class MCommand<T extends MPlugin> {
         this.subCommands.add(subCommand);
     }
 
+    public String getHelpShort() {
+        return this.helpShort != null ? this.helpShort : getUsageTranslation().toString();
+    }
+
+    public abstract TL getUsageTranslation();
+
     public void setCommandSender(CommandSender sender) {
         this.sender = sender;
         if (sender instanceof Player) {
@@ -106,12 +112,16 @@ public abstract class MCommand<T extends MPlugin> {
     // This is where the command action is performed.
     public abstract void perform();
 
+
+    // -------------------------------------------- //
+    // Call Validation
+    // -------------------------------------------- //
+
     /**
      * In this method we validate that all prerequisites to perform this command has been met.
      *
      * @param sender of the command
      * @param args   of the command
-     *
      * @return true if valid, false if not.
      */
     // TODO: There should be a boolean for silence
@@ -124,10 +134,6 @@ public abstract class MCommand<T extends MPlugin> {
     }
 
 
-    // -------------------------------------------- //
-    // Call Validation
-    // -------------------------------------------- //
-
     public boolean validSenderType(CommandSender sender, boolean informSenderIfNot) {
         if (this.senderMustBePlayer && !(sender instanceof Player)) {
             if (informSenderIfNot) msg(TL.GENERIC_PLAYERONLY);
@@ -138,10 +144,6 @@ public abstract class MCommand<T extends MPlugin> {
 
     public boolean validSenderPermissions(CommandSender sender, boolean informSenderIfNot) {
         return this.permission == null || p.perm.has(sender, this.permission, informSenderIfNot);
-    }
-
-    public boolean validArgs(List<String> args) {
-        return this.validArgs(args, null);
     }
 
     public boolean validArgs(List<String> args, CommandSender sender) {
@@ -162,21 +164,13 @@ public abstract class MCommand<T extends MPlugin> {
         return true;
     }
 
-    public void msg(TL translation, Object... args) {
-        sender.sendMessage(p.txt.parse(translation.toString(), args));
-    }
-
-    public String getUseageTemplate() {
-        return getUseageTemplate(false);
+    public boolean validArgs(List<String> args) {
+        return this.validArgs(args, null);
     }
 
     // -------------------------------------------- //
     // Help and Usage information
     // -------------------------------------------- //
-
-    public String getUseageTemplate(boolean addShortHelp) {
-        return getUseageTemplate(this.commandChain, addShortHelp);
-    }
 
     public String getUseageTemplate(List<MCommand<?>> commandChain, boolean addShortHelp) {
         StringBuilder ret = new StringBuilder();
@@ -214,15 +208,21 @@ public abstract class MCommand<T extends MPlugin> {
         return ret.toString();
     }
 
-    public String getHelpShort() {
-        return this.helpShort != null ? this.helpShort : getUsageTranslation().toString();
+    public String getUseageTemplate(boolean addShortHelp) {
+        return getUseageTemplate(this.commandChain, addShortHelp);
+    }
+
+    public String getUseageTemplate() {
+        return getUseageTemplate(false);
     }
 
     // -------------------------------------------- //
     // Message Sending Helpers
     // -------------------------------------------- //
 
-    public abstract TL getUsageTranslation();
+    public void msg(TL translation, Object... args) {
+        sender.sendMessage(p.txt.parse(translation.toString(), args));
+    }
 
     public void sendMessage(String msg) {
         sender.sendMessage(msg);
@@ -232,8 +232,15 @@ public abstract class MCommand<T extends MPlugin> {
         message.send(sender);
     }
 
-    public Integer argAsInt(int idx, Integer def) {
-        return strAsInt(this.argAsString(idx), def);
+    // STRING ======================
+    public String argAsString(int idx, String def) {
+        if (this.args.size() < idx + 1)
+            return def;
+        return this.args.get(idx);
+    }
+
+    public String argAsString(int idx) {
+        return this.argAsString(idx, null);
     }
 
     // INT ======================
@@ -246,19 +253,8 @@ public abstract class MCommand<T extends MPlugin> {
         }
     }
 
-    public String argAsString(int idx) {
-        return this.argAsString(idx, null);
-    }
-
-    // STRING ======================
-    public String argAsString(int idx, String def) {
-        if (this.args.size() < idx + 1)
-            return def;
-        return this.args.get(idx);
-    }
-
-    public Double argAsDouble(int idx, Double def) {
-        return strAsDouble(this.argAsString(idx), def);
+    public Integer argAsInt(int idx, Integer def) {
+        return strAsInt(this.argAsString(idx), def);
     }
 
     // Double ======================
@@ -271,10 +267,8 @@ public abstract class MCommand<T extends MPlugin> {
         }
     }
 
-    public Boolean argAsBool(int idx, boolean def) {
-        String str = this.argAsString(idx);
-        if (str == null) return def;
-        return strAsBool(str);
+    public Double argAsDouble(int idx, Double def) {
+        return strAsDouble(this.argAsString(idx), def);
     }
 
     // TODO: Go through the str conversion for the other arg-readers as well.
@@ -284,12 +278,10 @@ public abstract class MCommand<T extends MPlugin> {
         return str.startsWith("y") || str.startsWith("t") || str.startsWith("on") || str.startsWith("+") || str.startsWith("1");
     }
 
-    public Player argAsPlayer(int idx, Player def) {
-        return this.argAsPlayer(idx, def, true);
-    }
-
-    public Player argAsPlayer(int idx, Player def, boolean msg) {
-        return this.strAsPlayer(this.argAsString(idx), def, msg);
+    public Boolean argAsBool(int idx, boolean def) {
+        String str = this.argAsString(idx);
+        if (str == null) return def;
+        return strAsBool(str);
     }
 
     // PLAYER ======================
@@ -300,8 +292,12 @@ public abstract class MCommand<T extends MPlugin> {
         return ret;
     }
 
-    public Player argAsBestPlayerMatch(int idx, Player def, boolean msg) {
-        return this.strAsBestPlayerMatch(this.argAsString(idx), def, msg);
+    public Player argAsPlayer(int idx, Player def, boolean msg) {
+        return this.strAsPlayer(this.argAsString(idx), def, msg);
+    }
+
+    public Player argAsPlayer(int idx, Player def) {
+        return this.argAsPlayer(idx, def, true);
     }
 
     // BEST PLAYER MATCH ======================
@@ -315,5 +311,9 @@ public abstract class MCommand<T extends MPlugin> {
         if (msg && ret == null)
             this.msg(TL.GENERIC_NOPLAYERMATCH, name);
         return ret;
+    }
+
+    public Player argAsBestPlayerMatch(int idx, Player def, boolean msg) {
+        return this.strAsBestPlayerMatch(this.argAsString(idx), def, msg);
     }
 }

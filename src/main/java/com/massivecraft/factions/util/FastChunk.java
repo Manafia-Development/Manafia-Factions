@@ -38,11 +38,6 @@ public class FastChunk {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(worldName, x, z);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -50,6 +45,11 @@ public class FastChunk {
         return x == fastChunk.x &&
                 z == fastChunk.z &&
                 worldName.equals(fastChunk.worldName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(worldName, x, z);
     }
 
     public String getWorldName() {

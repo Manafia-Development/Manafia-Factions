@@ -48,9 +48,13 @@ public class CmdBanner extends FCommand {
         context.player.getInventory().addItem(warBanner);
     }
 
-    @Override
-    public TL getUsageTranslation() {
-        return TL.COMMAND_BANNER_DESCRIPTION;
+    @Deprecated
+    public boolean hasMoney(FPlayer fme, int amt) {
+        Economy econ = Util.getEcon();
+        if (econ.getBalance(fme.getPlayer()) >= amt)
+            return true;
+        fme.msg(TL.COMMAND_BANNER_NOTENOUGHMONEY);
+        return false;
     }
 
     @Deprecated
@@ -59,15 +63,6 @@ public class CmdBanner extends FCommand {
             Economy econ = Util.getEcon();
             fme.sendMessage(TL.COMMAND_BANNER_MONEYTAKE.toString().replace("{amount}", amt + ""));
         }
-    }
-
-    @Deprecated
-    public boolean hasMoney(FPlayer fme, int amt) {
-        Economy econ = Util.getEcon();
-        if (econ.getBalance(fme.getPlayer()) >= amt)
-            return true;
-        fme.msg(TL.COMMAND_BANNER_NOTENOUGHMONEY);
-        return false;
     }
 
     public boolean inventoryContains(Inventory inventory, ItemStack item) {
@@ -106,5 +101,10 @@ public class CmdBanner extends FCommand {
             if (item != null && item.getType() != Material.AIR)
                 ++i;
         return 36 - i;
+    }
+
+    @Override
+    public TL getUsageTranslation() {
+        return TL.COMMAND_BANNER_DESCRIPTION;
     }
 }

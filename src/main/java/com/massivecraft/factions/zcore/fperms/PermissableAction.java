@@ -61,7 +61,6 @@ public enum PermissableAction {
      * Case insensitive check for action.
      *
      * @param check
-     *
      * @return - action
      */
     public static PermissableAction fromString(String check) {
@@ -82,6 +81,10 @@ public enum PermissableAction {
         for (PermissableAction action : PermissableAction.values())
             if (action.getSlot() == slot) return action;
         return null;
+    }
+
+    public String getDescription() {
+        return CC.translate(FactionsPlugin.getInstance().getConfig().getString("fperm-gui.action.Descriptions." + this.name.toLowerCase()));
     }
 
     public int getSlot() {
@@ -118,10 +121,6 @@ public enum PermissableAction {
         meta.setLore(Util.colorList(lore));
         item.setItemMeta(meta);
         return item;
-    }
-
-    public String getDescription() {
-        return CC.translate(FactionsPlugin.getInstance().getConfig().getString("fperm-gui.action.Descriptions." + this.name.toLowerCase()));
     }
 
 }

@@ -81,35 +81,13 @@ public class Worldguard {
         return worldGuardPlugin != null;
     }
 
-    private ApplicableRegionSet getRegionSet(Location location) {
-        RegionManager regionManager = getRegionManager(location.getWorld());
-        if (regionManager == null) return null;
-        try {
-            Object vector = vectorConstructorAsAMethodBecauseWhyNot == null
-                    ? vectorConstructor.newInstance(location.getX(), location.getY(), location.getZ())
-                    : vectorConstructorAsAMethodBecauseWhyNot.invoke(null, location.getX(), location.getY(), location.getZ());
-            return (ApplicableRegionSet) regionManagerGetMethod.invoke(regionManager, vector);
-        } catch (Exception ex) {
-            FactionsPlugin.getInstance().log("An error occurred looking up a WorldGuard ApplicableRegionSet");
-            FactionsPlugin.getInstance().log("WorldGuard 7.0.0 support is currently in BETA. Please be careful!");
-        }
-        return null;
-    }
-
-    private RegionManager getRegionManager(World world) {
-        initialize();
-        if (regionContainer == null || regionContainerGetMethod == null) return null;
-        RegionManager regionManager = null;
-        try {
-            if (worldAdaptMethod != null) {
-                Object worldEditWorld = worldAdaptMethod.invoke(null, world);
-                regionManager = (RegionManager) regionContainerGetMethod.invoke(regionContainer, worldEditWorld);
-            } else
-                regionManager = (RegionManager) regionContainerGetMethod.invoke(regionContainer, world);
-        } catch (Exception ex) {
-            FactionsPlugin.getInstance().log("An error occurred looking up a WorldGuard RegionManager");
-        }
-        return regionManager;
+    protected RegionAssociable getAssociable(Player player) {
+        RegionAssociable associable;
+        if (player == null)
+            associable = Associables.constant(Association.NON_MEMBER);
+        else
+            associable = worldGuardPlugin.wrapPlayer(player);
+        return associable;
     }
 
     /**
@@ -184,6 +162,89 @@ public class Worldguard {
         }
     }
 
+    private RegionManager getRegionManager(World world) {
+        initialize();
+        if (regionContainer == null || regionContainerGetMethod == null) return null;
+        RegionManager regionManager = null;
+        try {
+            if (worldAdaptMethod != null) {
+                Object worldEditWorld = worldAdaptMethod.invoke(null, world);
+                regionManager = (RegionManager) regionContainerGetMethod.invoke(regionContainer, worldEditWorld);
+            } else
+                regionManager = (RegionManager) regionContainerGetMethod.invoke(regionContainer, world);
+        } catch (Exception ex) {
+            FactionsPlugin.getInstance().log("An error occurred looking up a WorldGuard RegionManager");
+        }
+        return regionManager;
+    }
+
+    private ApplicableRegionSet getRegionSet(Location location) {
+        RegionManager regionManager = getRegionManager(location.getWorld());
+        if (regionManager == null) return null;
+        try {
+            Object vector = vectorConstructorAsAMethodBecauseWhyNot == null
+                    ? vectorConstructor.newInstance(location.getX(), location.getY(), location.getZ())
+                    : vectorConstructorAsAMethodBecauseWhyNot.invoke(null, location.getX(), location.getY(), location.getZ());
+            return (ApplicableRegionSet) regionManagerGetMethod.invoke(regionManager, vector);
+        } catch (Exception ex) {
+            FactionsPlugin.getInstance().log("An error occurred looking up a WorldGuard ApplicableRegionSet");
+            FactionsPlugin.getInstance().log("WorldGuard 7.0.0 support is currently in BETA. Please be careful!");
+        }
+        return null;
+    }
+
+
+    /**
+     * Used to check WorldGuard to see if a Player has permission to place a block.
+     *
+     * @param player   player in question.
+     * @param location Location of block placed.
+     * @return
+     */
+    public boolean hasBuildPermission(Player player, Location location) {
+        initialize();
+        if (createQueryMethod != null && regionContainer != null) {
+            try {
+                Object query = createQueryMethod.invoke(regionContainer);
+                if (locationAdaptMethod != null) {
+                    Object loc = locationAdaptMethod.invoke(null, location);
+                    return (boolean) regionQueryTestStateMethod.invoke(query, loc, getAssociable(player), new StateFlag[]{buildFlag});
+                } else
+                    return (boolean) regionQueryTestStateMethod.invoke(query, location, getAssociable(player), new StateFlag[]{buildFlag});
+            } catch (Exception ex) {
+                FactionsPlugin.getInstance().log("An error occurred querying WorldGuard! Report this issue to SF Developers!");
+                FactionsPlugin.getInstance().log("WorldGuard 7.0.0 support is currently in BETA. Please be careful!");
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Used to check WorldGuard to see if a player has permission to break a block.
+     *
+     * @param player   player in question.
+     * @param location Location of block broken.
+     * @return
+     */
+    public boolean hasBreakPermission(Player player, Location location) {
+        initialize();
+        if (createQueryMethod != null && regionContainer != null) {
+            try {
+                Object query = createQueryMethod.invoke(regionContainer);
+                if (locationAdaptMethod != null) {
+                    Object loc = locationAdaptMethod.invoke(null, location);
+                    return (boolean) regionQueryTestStateMethod.invoke(query, loc, getAssociable(player), new StateFlag[]{breakFlag});
+                } else
+                    return (boolean) regionQueryTestStateMethod.invoke(query, location, getAssociable(player), new StateFlag[]{breakFlag});
+
+            } catch (Exception ex) {
+                FactionsPlugin.getInstance().log("An error occurred querying WorldGuard! Report this issue to SF Developers!");
+                FactionsPlugin.getInstance().log("WorldGuard 7.0.0 support is currently in BETA. Please be careful!");
+            }
+        }
+        return true;
+    }
+
     public boolean checkForRegionsInChunk(FLocation floc) {
         return checkForRegionsInChunk(floc.getChunk());
     }
@@ -192,7 +253,6 @@ public class Worldguard {
      * Used for checking if regions are located in a chunk
      *
      * @param chunk Chunk in question.
-     *
      * @return
      */
     public boolean checkForRegionsInChunk(Chunk chunk) {
@@ -229,72 +289,9 @@ public class Worldguard {
      *
      * @param player   player in question.
      * @param location Location of block broken.
-     *
      * @return
      */
     public boolean playerCanBuild(Player player, Location location) {
         return hasBuildPermission(player, location) && hasBreakPermission(player, location);
-    }
-
-    /**
-     * Used to check WorldGuard to see if a Player has permission to place a block.
-     *
-     * @param player   player in question.
-     * @param location Location of block placed.
-     *
-     * @return
-     */
-    public boolean hasBuildPermission(Player player, Location location) {
-        initialize();
-        if (createQueryMethod != null && regionContainer != null) {
-            try {
-                Object query = createQueryMethod.invoke(regionContainer);
-                if (locationAdaptMethod != null) {
-                    Object loc = locationAdaptMethod.invoke(null, location);
-                    return (boolean) regionQueryTestStateMethod.invoke(query, loc, getAssociable(player), new StateFlag[]{buildFlag});
-                } else
-                    return (boolean) regionQueryTestStateMethod.invoke(query, location, getAssociable(player), new StateFlag[]{buildFlag});
-            } catch (Exception ex) {
-                FactionsPlugin.getInstance().log("An error occurred querying WorldGuard! Report this issue to SF Developers!");
-                FactionsPlugin.getInstance().log("WorldGuard 7.0.0 support is currently in BETA. Please be careful!");
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Used to check WorldGuard to see if a player has permission to break a block.
-     *
-     * @param player   player in question.
-     * @param location Location of block broken.
-     *
-     * @return
-     */
-    public boolean hasBreakPermission(Player player, Location location) {
-        initialize();
-        if (createQueryMethod != null && regionContainer != null) {
-            try {
-                Object query = createQueryMethod.invoke(regionContainer);
-                if (locationAdaptMethod != null) {
-                    Object loc = locationAdaptMethod.invoke(null, location);
-                    return (boolean) regionQueryTestStateMethod.invoke(query, loc, getAssociable(player), new StateFlag[]{breakFlag});
-                } else
-                    return (boolean) regionQueryTestStateMethod.invoke(query, location, getAssociable(player), new StateFlag[]{breakFlag});
-
-            } catch (Exception ex) {
-                FactionsPlugin.getInstance().log("An error occurred querying WorldGuard! Report this issue to SF Developers!");
-                FactionsPlugin.getInstance().log("WorldGuard 7.0.0 support is currently in BETA. Please be careful!");
-            }
-        }
-        return true;
-    }
-
-    protected RegionAssociable getAssociable(Player player) {
-        RegionAssociable associable;
-        if (player == null)
-            associable = Associables.constant(Association.NON_MEMBER);
-        else
-            associable = worldGuardPlugin.wrapPlayer(player);
-        return associable;
     }
 }

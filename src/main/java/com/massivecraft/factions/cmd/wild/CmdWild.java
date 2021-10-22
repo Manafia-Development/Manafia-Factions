@@ -47,15 +47,6 @@ public class CmdWild extends FCommand implements WaitedTask {
             context.player.openInventory(new WildGUI(context.player, context.fPlayer).getInventory());
     }
 
-    @Override
-    public TL getUsageTranslation() {
-        return TL.COMMAND_WILD_DESCRIPTION;
-    }
-
-    @Override
-    public void handleSuccess(Player player) {
-        attemptTeleport(player);
-    }
 
     public void attemptTeleport(Player p) {
         boolean success = false;
@@ -96,14 +87,24 @@ public class CmdWild extends FCommand implements WaitedTask {
         applyEffects(p);
     }
 
+    public void applyEffects(Player p) {
+        for (String s : FactionsPlugin.getInstance().getConfig().getStringList("Wild.Arrival.Effects"))
+            p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(s)), 40, 1));
+    }
+
     public void setTeleporting(Player p) {
         teleporting.add(p);
         Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.getInstance(), () -> teleporting.remove(p), FactionsPlugin.getInstance().getConfig().getInt("Wild.Arrival.FallDamageWindow") * 20);
     }
 
-    public void applyEffects(Player p) {
-        for (String s : FactionsPlugin.getInstance().getConfig().getStringList("Wild.Arrival.Effects"))
-            p.addPotionEffect(new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(s)), 40, 1));
+    @Override
+    public TL getUsageTranslation() {
+        return TL.COMMAND_WILD_DESCRIPTION;
+    }
+
+    @Override
+    public void handleSuccess(Player player) {
+        attemptTeleport(player);
     }
 
     @Override

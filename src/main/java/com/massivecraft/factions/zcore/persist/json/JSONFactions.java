@@ -42,6 +42,22 @@ public class JSONFactions extends MemoryFactions {
         return file;
     }
 
+    public void forceSave() {
+        forceSave(true);
+    }
+
+    public void forceSave(boolean sync) {
+        final Map<String, JSONFaction> entitiesThatShouldBeSaved = new HashMap<>();
+        for (Faction entity : this.factions.values())
+            entitiesThatShouldBeSaved.put(entity.getId(), (JSONFaction) entity);
+
+        saveCore(file, entitiesThatShouldBeSaved, sync);
+    }
+
+    private boolean saveCore(File target, Map<String, JSONFaction> entities, boolean sync) {
+        return DiscUtil.writeCatch(target, this.gson.toJson(entities), sync);
+    }
+
     public void load() {
         Map<String, JSONFaction> factions = this.loadCore();
         if (factions == null) return;
@@ -150,14 +166,6 @@ public class JSONFactions extends MemoryFactions {
         return data;
     }
 
-    protected void updateNextIdForId(String id) {
-        try {
-            int idAsInt = Integer.parseInt(id);
-            this.updateNextIdForId(idAsInt);
-        } catch (Exception ignored) {
-        }
-    }
-
     private Set<String> whichKeysNeedMigration(Set<String> keys) {
         HashSet<String> list = new HashSet<>();
         for (String value : keys) {
@@ -173,15 +181,6 @@ public class JSONFactions extends MemoryFactions {
         return list;
     }
 
-    protected synchronized void updateNextIdForId(int id) {
-        if (this.nextId < id) this.nextId = id + 1;
-    }
-
-    @Override
-    public Faction generateFactionObject(String id) {
-        return new JSONFaction(id);
-    }
-
     // -------------------------------------------- //
     // ID MANAGEMENT
     // -------------------------------------------- //
@@ -189,6 +188,26 @@ public class JSONFactions extends MemoryFactions {
     public String getNextId() {
         while (!isIdFree(this.nextId)) this.nextId += 1;
         return Integer.toString(this.nextId);
+    }
+
+    public boolean isIdFree(String id) {
+        return !this.factions.containsKey(id);
+    }
+
+    public boolean isIdFree(int id) {
+        return this.isIdFree(Integer.toString(id));
+    }
+
+    protected synchronized void updateNextIdForId(int id) {
+        if (this.nextId < id) this.nextId = id + 1;
+    }
+
+    protected void updateNextIdForId(String id) {
+        try {
+            int idAsInt = Integer.parseInt(id);
+            this.updateNextIdForId(idAsInt);
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -199,16 +218,9 @@ public class JSONFactions extends MemoryFactions {
         return faction;
     }
 
-    public boolean isIdFree(int id) {
-        return this.isIdFree(Integer.toString(id));
-    }
-
-    public boolean isIdFree(String id) {
-        return !this.factions.containsKey(id);
-    }
-
-    public void forceSave() {
-        forceSave(true);
+    @Override
+    public Faction generateFactionObject(String id) {
+        return new JSONFaction(id);
     }
 
     @Override
@@ -217,17 +229,5 @@ public class JSONFactions extends MemoryFactions {
         this.nextId = old.nextId;
         forceSave();
         Factions.instance = this;
-    }
-
-    private boolean saveCore(File target, Map<String, JSONFaction> entities, boolean sync) {
-        return DiscUtil.writeCatch(target, this.gson.toJson(entities), sync);
-    }
-
-    public void forceSave(boolean sync) {
-        final Map<String, JSONFaction> entitiesThatShouldBeSaved = new HashMap<>();
-        for (Faction entity : this.factions.values())
-            entitiesThatShouldBeSaved.put(entity.getId(), (JSONFaction) entity);
-
-        saveCore(file, entitiesThatShouldBeSaved, sync);
     }
 }

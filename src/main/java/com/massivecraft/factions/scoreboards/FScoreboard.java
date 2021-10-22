@@ -114,18 +114,6 @@ public class FScoreboard {
         }.runTaskTimer(FactionsPlugin.instance, 20, 20);
     }
 
-    private void updateObjective() {
-        FSidebarProvider provider = temporaryProvider != null ? temporaryProvider : defaultProvider;
-
-        if (provider == null)
-            bufferedObjective.hide();
-        else {
-            bufferedObjective.setTitle(provider.getTitle(fplayer));
-            bufferedObjective.setAllLines(provider.getLines(fplayer));
-            bufferedObjective.flip();
-        }
-    }
-
     public void setTemporarySidebar(final FSidebarProvider provider) {
         if (!isSupportedByServer())
             return;
@@ -144,5 +132,17 @@ public class FScoreboard {
                 }
             }
         }.runTaskLater(FactionsPlugin.instance, FactionsPlugin.instance.getConfig().getInt("scoreboard.expiration", 7) * 20);
+    }
+
+    private void updateObjective() {
+        FSidebarProvider provider = temporaryProvider != null ? temporaryProvider : defaultProvider;
+
+        if (provider == null)
+            bufferedObjective.hide();
+        else {
+            bufferedObjective.setTitle(provider.getTitle(fplayer));
+            bufferedObjective.setAllLines(provider.getLines(fplayer));
+            bufferedObjective.flip();
+        }
     }
 }

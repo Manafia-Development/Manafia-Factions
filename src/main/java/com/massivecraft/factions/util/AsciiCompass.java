@@ -7,35 +7,6 @@ import java.util.ArrayList;
 
 public class AsciiCompass {
 
-    public static ArrayList<String> getAsciiCompass(double inDegrees, ChatColor colorActive, String colorDefault) {
-        return getAsciiCompass(getCompassPointForDirection(inDegrees), colorActive, colorDefault);
-    }
-
-    public static ArrayList<String> getAsciiCompass(Point point, ChatColor colorActive, String colorDefault) {
-        ArrayList<String> ret = new ArrayList<>();
-        String row;
-
-        row = "";
-        row += Point.NW.toString(Point.NW == point, colorActive, colorDefault);
-        row += Point.N.toString(Point.N == point, colorActive, colorDefault);
-        row += Point.NE.toString(Point.NE == point, colorActive, colorDefault);
-        ret.add(row);
-
-        row = "";
-        row += Point.W.toString(Point.W == point, colorActive, colorDefault);
-        row += colorDefault + "+";
-        row += Point.E.toString(Point.E == point, colorActive, colorDefault);
-        ret.add(row);
-
-        row = "";
-        row += Point.SW.toString(Point.SW == point, colorActive, colorDefault);
-        row += Point.S.toString(Point.S == point, colorActive, colorDefault);
-        row += Point.SE.toString(Point.SE == point, colorActive, colorDefault);
-        ret.add(row);
-
-        return ret;
-    }
-
     public static Point getCompassPointForDirection(double inDegrees) {
         double degrees = (inDegrees - 180) % 360;
         if (degrees < 0)
@@ -70,6 +41,35 @@ public class AsciiCompass {
         }
     }
 
+    public static ArrayList<String> getAsciiCompass(Point point, ChatColor colorActive, String colorDefault) {
+        ArrayList<String> ret = new ArrayList<>();
+        String row;
+
+        row = "";
+        row += Point.NW.toString(Point.NW == point, colorActive, colorDefault);
+        row += Point.N.toString(Point.N == point, colorActive, colorDefault);
+        row += Point.NE.toString(Point.NE == point, colorActive, colorDefault);
+        ret.add(row);
+
+        row = "";
+        row += Point.W.toString(Point.W == point, colorActive, colorDefault);
+        row += colorDefault + "+";
+        row += Point.E.toString(Point.E == point, colorActive, colorDefault);
+        ret.add(row);
+
+        row = "";
+        row += Point.SW.toString(Point.SW == point, colorActive, colorDefault);
+        row += Point.S.toString(Point.S == point, colorActive, colorDefault);
+        row += Point.SE.toString(Point.SE == point, colorActive, colorDefault);
+        ret.add(row);
+
+        return ret;
+    }
+
+    public static ArrayList<String> getAsciiCompass(double inDegrees, ChatColor colorActive, String colorDefault) {
+        return getAsciiCompass(getCompassPointForDirection(inDegrees), colorActive, colorDefault);
+    }
+
     public enum Point {
 
         N('N'),
@@ -87,8 +87,9 @@ public class AsciiCompass {
             this.asciiChar = asciiChar;
         }
 
-        public String toString(boolean isActive, ChatColor colorActive, String colorDefault) {
-            return (isActive ? colorActive : colorDefault) + getTranslation();
+        @Override
+        public String toString() {
+            return String.valueOf(this.asciiChar);
         }
 
         public String getTranslation() {
@@ -106,9 +107,8 @@ public class AsciiCompass {
             }
         }
 
-        @Override
-        public String toString() {
-            return String.valueOf(this.asciiChar);
+        public String toString(boolean isActive, ChatColor colorActive, String colorDefault) {
+            return (isActive ? colorActive : colorDefault) + getTranslation();
         }
     }
 }

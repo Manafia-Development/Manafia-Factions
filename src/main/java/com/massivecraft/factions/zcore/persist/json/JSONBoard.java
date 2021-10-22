@@ -22,13 +22,6 @@ public class JSONBoard extends MemoryBoard {
     // Persistance
     // -------------------------------------------- //
 
-    @Override
-    public void convertFrom(MemoryBoard old) {
-        this.flocationIds = old.flocationIds;
-        forceSave();
-        Board.instance = this;
-    }
-
     public Map<String, Map<String, String>> dumpAsSaveFormat() {
         Map<String, Map<String, String>> worldCoordIds = new HashMap<>();
 
@@ -99,5 +92,10 @@ public class JSONBoard extends MemoryBoard {
         return true;
     }
 
-
+    @Override
+    public void convertFrom(MemoryBoard old) {
+        this.flocationIds = old.flocationIds;
+        forceSave();
+        Board.instance = this;
+    }
 }

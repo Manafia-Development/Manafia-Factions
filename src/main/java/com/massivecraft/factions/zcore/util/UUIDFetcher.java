@@ -26,13 +26,35 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
     private final List<String> names;
     private final boolean rateLimiting;
 
+    public UUIDFetcher(List<String> names, boolean rateLimiting) {
+        this.names = ImmutableList.copyOf(names);
+        this.rateLimiting = rateLimiting;
+    }
+
     public UUIDFetcher(List<String> names) {
         this(names, true);
     }
 
-    public UUIDFetcher(List<String> names, boolean rateLimiting) {
-        this.names = ImmutableList.copyOf(names);
-        this.rateLimiting = rateLimiting;
+    private static void writeBody(HttpURLConnection connection, String body) throws Exception {
+        OutputStream stream = connection.getOutputStream();
+        stream.write(body.getBytes());
+        stream.flush();
+        stream.close();
+    }
+
+    private static HttpURLConnection createConnection() throws Exception {
+        URL url = new URL(PROFILE_URL);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        return connection;
+    }
+
+    private static UUID getUUID(String id) {
+        return UUID.fromString(id.substring(0, 8) + "-" + id.substring(8, 12) + "-" + id.substring(12, 16) + "-" + id.substring(16, 20) + "-" + id.substring(20, 32));
     }
 
     public Map<String, UUID> call() throws Exception {
@@ -55,27 +77,5 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
             }
         }
         return uuidMap;
-    }
-
-    private static HttpURLConnection createConnection() throws Exception {
-        URL url = new URL(PROFILE_URL);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setUseCaches(false);
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        return connection;
-    }
-
-    private static void writeBody(HttpURLConnection connection, String body) throws Exception {
-        OutputStream stream = connection.getOutputStream();
-        stream.write(body.getBytes());
-        stream.flush();
-        stream.close();
-    }
-
-    private static UUID getUUID(String id) {
-        return UUID.fromString(id.substring(0, 8) + "-" + id.substring(8, 12) + "-" + id.substring(12, 16) + "-" + id.substring(16, 20) + "-" + id.substring(20, 32));
     }
 }

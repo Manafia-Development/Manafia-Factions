@@ -44,13 +44,6 @@ public enum GeneralTag implements Tag {
         return text;
     }
 
-    public String replace(String text) {
-        if (!this.foundInString(text))
-            return text;
-        String result = this.supplier.get();
-        return result == null ? null : text.replace(this.tag, result);
-    }
-
     @Override
     public String getTag() {
         return this.tag;
@@ -59,5 +52,12 @@ public enum GeneralTag implements Tag {
     @Override
     public boolean foundInString(String test) {
         return test != null && test.contains(this.tag);
+    }
+
+    public String replace(String text) {
+        if (!this.foundInString(text))
+            return text;
+        String result = this.supplier.get();
+        return result == null ? null : text.replace(this.tag, result);
     }
 }

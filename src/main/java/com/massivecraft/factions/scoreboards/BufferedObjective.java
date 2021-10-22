@@ -66,10 +66,6 @@ public class BufferedObjective {
         return builder.substring(0, 14);
     }
 
-    private String getNextObjectiveName() {
-        return baseName + "_" + ((objPtr++) % 2);
-    }
-
     public void setTitle(String title) {
         if (this.title == null || !this.title.equals(title)) {
             this.title = title;
@@ -204,6 +200,10 @@ public class BufferedObjective {
 
         current = buffer;
         currentTeams = bufferTeams;
+    }
+
+    private String getNextObjectiveName() {
+        return baseName + "_" + ((objPtr++) % 2);
     }
 
     private String getNextTeamName() {

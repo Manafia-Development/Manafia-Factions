@@ -213,7 +213,6 @@ public enum TL {
     COMMAND_CHATSPY_DESCRIPTION("Enable the administrator chat spying mode."),
 
     COMMAND_CLAIM_INVALIDRADIUS("&e&lFactions &8➤ &f &cIf you specify a radius, it must be at least 1."),
-    COMMAND_CLAIM_RADIUSOVER("&e&lFactions &8➤ &fThe specified radius is too large. &cRadius Claim Limit: %s"),
     COMMAND_CLAIM_DENIED("&e&lFactions &8➤ &f &cYou don't have permission to claim in a radius."),
     COMMAND_CLAIM_DESCRIPTION("Claim land from where you are standing."),
 

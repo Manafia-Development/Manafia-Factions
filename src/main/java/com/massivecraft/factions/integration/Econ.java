@@ -50,8 +50,20 @@ public class Econ {
             FactionsPlugin.instance.log("NOTE: Economy is disabled. You can enable it with the command: f config econEnabled true");
     }
 
+    public static boolean shouldBeUsed() {
+        return Conf.econEnabled && econ != null && econ.isEnabled();
+    }
+
     public static boolean isSetup() {
         return econ != null;
+    }
+
+    public static void modifyUniverseMoney(double delta) {
+        if (!shouldBeUsed()) return;
+        if (Conf.econUniverseAccount == null) return;
+        if (Conf.econUniverseAccount.length() == 0) return;
+        if (!econ.hasAccount(Conf.econUniverseAccount)) return;
+        modifyBalance(Conf.econUniverseAccount, delta);
     }
 
     public static void sendBalanceInfo(FPlayer to, EconomyParticipator about) {
@@ -62,8 +74,12 @@ public class Econ {
         to.msg(TL.ECON_PLAYERBALANCE, about.describeTo(to, true), Econ.moneyString(econ.getBalance(about.getAccountId())));
     }
 
-    public static String moneyString(double amount) {
-        return format.format(amount);
+    public static void sendBalanceInfo(CommandSender to, Faction about) {
+        if (!shouldBeUsed()) {
+            FactionsPlugin.instance.log(Level.WARNING, "Vault does not appear to be hooked into an economy plugin.");
+            return;
+        }
+        to.sendMessage(String.format(TL.ECON_PLAYERBALANCE.toString(), about.getTag(), Econ.moneyString(econ.getBalance(about.getAccountId()))));
     }
 
     public static boolean canIControllYou(EconomyParticipator i, EconomyParticipator you) {
@@ -88,14 +104,6 @@ public class Econ {
         // Otherwise you may not!;,,;
         i.msg(TL.ECON_CANTCONTROLMONEY, i.describeTo(i, true), you.describeTo(i));
         return false;
-    }
-
-    public static void sendBalanceInfo(CommandSender to, Faction about) {
-        if (!shouldBeUsed()) {
-            FactionsPlugin.instance.log(Level.WARNING, "Vault does not appear to be hooked into an economy plugin.");
-            return;
-        }
-        to.sendMessage(String.format(TL.ECON_PLAYERBALANCE.toString(), about.getTag(), Econ.moneyString(econ.getBalance(about.getAccountId()))));
     }
 
     public static boolean transferMoney(EconomyParticipator invoker, EconomyParticipator from, EconomyParticipator to, double amount) {
@@ -166,16 +174,6 @@ public class Econ {
         return false;
     }
 
-    public static boolean isUUID(String uuid) {
-        try {
-            UUID.fromString(uuid);
-        } catch (IllegalArgumentException ex) {
-            return false;
-        }
-
-        return true;
-    }
-
     public static Set<FPlayer> getFplayers(EconomyParticipator ep) {
         Set<FPlayer> fplayers = new HashSet<>();
 
@@ -205,14 +203,6 @@ public class Econ {
         else
             for (FPlayer recipient : recipients)
                 recipient.msg(TL.ECON_MONEYTRASFERREDFROMPERSONTOPERSON, invoker.describeTo(recipient, true), moneyString(amount), from.describeTo(recipient), to.describeTo(recipient));
-    }
-
-    public static void modifyUniverseMoney(double delta) {
-        if (!shouldBeUsed()) return;
-        if (Conf.econUniverseAccount == null) return;
-        if (Conf.econUniverseAccount.length() == 0) return;
-        if (!econ.hasAccount(Conf.econUniverseAccount)) return;
-        modifyBalance(Conf.econUniverseAccount, delta);
     }
 
     public static boolean hasAtLeast(EconomyParticipator ep, double delta, String toDoThis) {
@@ -282,24 +272,9 @@ public class Econ {
         }
     }
 
-    public static boolean shouldBeUsed() {
-        return Conf.econEnabled && econ != null && econ.isEnabled();
+    public static String moneyString(double amount) {
+        return format.format(amount);
     }
-
-    public static boolean modifyBalance(String account, double amount) {
-        if (amount < 0) return econ.withdrawPlayer(account, -amount).transactionSuccess();
-        else return econ.depositPlayer(account, amount).transactionSuccess();
-    }
-
-    // calculate refund amount for unclaiming land
-    public static double calculateClaimRefund(int ownedLand) {
-        return calculateClaimCost(ownedLand - 1, false) * Conf.econClaimRefundMultiplier;
-    }
-
-
-    // -------------------------------------------- //
-    // Standard account management methods
-    // -------------------------------------------- //
 
     // calculate the cost for claiming land
     public static double calculateClaimCost(int ownedLand, boolean takingFromAnotherFaction) {
@@ -308,9 +283,9 @@ public class Econ {
         return Conf.econCostClaimWilderness + (Conf.econCostClaimWilderness * Conf.econClaimAdditionalMultiplier * ownedLand) - (takingFromAnotherFaction ? Conf.econCostClaimFromFactionBonus : 0.0);
     }
 
-    // calculate refund amount for all owned land
-    public static double calculateTotalLandRefund(int ownedLand) {
-        return calculateTotalLandValue(ownedLand) * Conf.econClaimRefundMultiplier;
+    // calculate refund amount for unclaiming land
+    public static double calculateClaimRefund(int ownedLand) {
+        return calculateClaimCost(ownedLand - 1, false) * Conf.econClaimRefundMultiplier;
     }
 
     // calculate value of all owned land
@@ -318,6 +293,16 @@ public class Econ {
         double amount = 0;
         for (int x = 0; x < ownedLand; x++) amount += calculateClaimCost(x, false);
         return amount;
+    }
+
+
+    // -------------------------------------------- //
+    // Standard account management methods
+    // -------------------------------------------- //
+
+    // calculate refund amount for all owned land
+    public static double calculateTotalLandRefund(int ownedLand) {
+        return calculateTotalLandValue(ownedLand) * Conf.econClaimRefundMultiplier;
     }
 
     public static boolean hasAccount(String name) {
@@ -328,14 +313,14 @@ public class Econ {
         return econ.getBalance(account);
     }
 
-    public static String getFriendlyBalance(FPlayer player) {
-        return getFriendlyBalance(UUID.fromString(player.getId()));
-    }
-
     public static String getFriendlyBalance(UUID uuid) {
         OfflinePlayer offline = Bukkit.getOfflinePlayer(uuid);
         if (offline.getName() == null) return "0";
         return format.format(econ.getBalance(offline));
+    }
+
+    public static String getFriendlyBalance(FPlayer player) {
+        return getFriendlyBalance(UUID.fromString(player.getId()));
     }
 
     public static boolean setBalance(String account, double amount) {
@@ -344,15 +329,30 @@ public class Econ {
         else return econ.depositPlayer(account, amount - current).transactionSuccess();
     }
 
+    public static boolean modifyBalance(String account, double amount) {
+        if (amount < 0) return econ.withdrawPlayer(account, -amount).transactionSuccess();
+        else return econ.depositPlayer(account, amount).transactionSuccess();
+    }
+
     public static boolean deposit(String account, double amount) {
         return econ.depositPlayer(account, amount).transactionSuccess();
+    }
+
+    public static boolean withdraw(String account, double amount) {
+        return econ.withdrawPlayer(account, amount).transactionSuccess();
     }
 
     // ---------------------------------------
     // Helpful Utilities
     // ---------------------------------------
 
-    public static boolean withdraw(String account, double amount) {
-        return econ.withdrawPlayer(account, amount).transactionSuccess();
+    public static boolean isUUID(String uuid) {
+        try {
+            UUID.fromString(uuid);
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+
+        return true;
     }
 }

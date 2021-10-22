@@ -113,26 +113,6 @@ public class FactionsEntityListener implements Listener {
             fplayer.msg(msg, fplayer.getPowerRounded(), fplayer.getPowerMaxRounded());
     }
 
-    private void spawnMoreDrops(EntityDeathEvent e, double multiplier) {
-        List<ItemStack> drops = e.getDrops();
-
-        for (ItemStack drop : drops) {
-
-            int amount = randInt(drop.getAmount(), (int) Math.round(drop.getAmount() * multiplier));
-            drop.setAmount(amount);
-        }
-    }
-
-    private int randInt(int min, int max) {
-        return new Random().nextInt((max - min) + 1) + min;
-    }
-
-    private void spawnMoreExp(EntityDeathEvent e, double multiplier) {
-        double newExp = e.getDroppedExp() * multiplier;
-        int newExpInt = (int) newExp;
-        e.setDroppedExp(newExpInt);
-    }
-
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         Entity damagee = event.getEntity();
@@ -249,6 +229,167 @@ public class FactionsEntityListener implements Listener {
                 me.msg(TL.WARMUPS_CANCELLED);
             }
         }
+    }
+
+    private void cancelFFly(Player player) {
+        if (player == null)
+            return;
+        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+        if (fPlayer.isFlying()) {
+            fPlayer.setFlying(false, true);
+            if (fPlayer.isAutoFlying())
+                fPlayer.setAutoFlying(false);
+        }
+    }
+
+    public void cancelFStuckTeleport(Player player) {
+        if (player == null)
+            return;
+
+        UUID uuid = player.getUniqueId();
+        if (FactionsPlugin.instance.getStuckMap().containsKey(uuid))
+            FPlayers.getInstance().getByPlayer(player).msg(TL.COMMAND_STUCK_CANCELLED);
+        FactionsPlugin.instance.getStuckMap().remove(uuid);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        Entity boomer = event.getEntity();
+
+        // Before we need to check the location where the block is placed
+        if (!this.checkExplosionForBlock(boomer, event.getLocation().getBlock())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        // Loop the blocklist to run checks on each aimed block
+
+        // The block don't have to explode
+        event.blockList().removeIf(block -> !this.checkExplosionForBlock(boomer, block));
+
+        // Cancel the event if no block will explode
+        if (!event.blockList().isEmpty() && (boomer instanceof TNTPrimed || boomer instanceof ExplosiveMinecart) && Conf.handleExploitTNTWaterlog) {
+            // TNT in water/lava doesn't normally destroy any surrounding
+            // blocks, which is usually desired behavior, but...
+            // this change below provides workaround for waterwalling providing
+            // perfect protection,
+            // and makes cheap (non-obsidian) TNT cannons require minor
+            // maintenance between shots
+            Block center = event.getLocation().getBlock();
+
+            if (center.isLiquid()) {
+                // a single surrounding block in all 6 directions is broken if
+                // the material is weak enough
+                List<Block> targets = new ArrayList<>();
+                targets.add(center.getRelative(0, 0, 1));
+                targets.add(center.getRelative(0, 0, -1));
+                targets.add(center.getRelative(0, 1, 0));
+                targets.add(center.getRelative(0, -1, 0));
+                targets.add(center.getRelative(1, 0, 0));
+                targets.add(center.getRelative(-1, 0, 0));
+
+                for (Block target : targets) {
+                    @SuppressWarnings("deprecation")
+                    int id = target.getType().getId();
+                    // ignore air, bedrock, water, lava, obsidian, enchanting
+                    // table, etc.... too bad we can't get a blast resistance
+                    // value through Bukkit yet
+                    if (id != 0 && (id < 7 || id > 11) && id != 90 && id != 116 && id != 119 && id != 120 && id != 130)
+                        target.breakNaturally();
+                }
+            }
+        }
+    }
+
+    private boolean checkExplosionForBlock(Entity boomer, Block block) {
+        Faction faction = Board.getInstance().getFactionAt(new FLocation(block.getLocation()));
+
+        if (faction.noExplosionsInTerritory() || (faction.isPeaceful() && Conf.peacefulTerritoryDisableBoom))
+            return false;
+        // faction is peaceful and has explosions set to disabled
+
+        boolean online = faction.hasPlayersOnline();
+
+        if (boomer instanceof Creeper && ((faction.isWilderness() && Conf.wildernessBlockCreepers && !Conf.worldsNoWildernessProtection.contains(block
+                .getWorld().getName())) || (faction.isNormal() && (online ? Conf.territoryBlockCreepers : Conf.territoryBlockCreepersWhenOffline))
+                || (faction.isWarZone() && Conf.warZoneBlockCreepers) || faction.isSafeZone())) {
+            // creeper which needs prevention
+            return false;
+        } else if (
+            // it's a bit crude just using fireball protection for Wither boss too,
+            // but I'd rather not add in a whole new set of xxxBlockWitherExplosion
+            // or whatever
+                (boomer instanceof Fireball || boomer instanceof Wither) && (faction.isWilderness() && Conf.wildernessBlockFireballs
+                        && !Conf.worldsNoWildernessProtection.contains(block.getWorld().getName()) || faction.isNormal() && (online
+                        ? Conf.territoryBlockFireballs
+                        : Conf.territoryBlockFireballsWhenOffline) || faction.isWarZone() && Conf.warZoneBlockFireballs || faction.isSafeZone())) {
+            // ghast fireball which needs prevention
+            return false;
+        } else
+            return (!(boomer instanceof TNTPrimed) && !(boomer instanceof ExplosiveMinecart)) || ((!faction.isWilderness() || !Conf.wildernessBlockTNT
+                    || Conf.worldsNoWildernessProtection.contains(block.getWorld().getName())) && (!faction.isNormal() || (online
+                    ? !Conf.territoryBlockTNT
+                    : !Conf.territoryBlockTNTWhenOffline)) && (!faction.isWarZone() || !Conf.warZoneBlockTNT) && (!faction.isSafeZone()
+                    || !Conf.safeZoneBlockTNT));
+
+        // No condition retained, destroy the block!
+    }
+
+    // mainly for flaming arrows; don't want allies or people in safe zones to
+    // be ignited even after damage event is cancelled
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onEntityCombustByEntity(EntityCombustByEntityEvent event) {
+        EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(event.getCombuster(), event.getEntity(), EntityDamageEvent.DamageCause.FIRE,
+                0d);
+        if (!this.canDamagerHurtDamagee(sub, false))
+            event.setCancelled(true);
+
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPotionSplashEvent(PotionSplashEvent event) {
+        // see if the potion has a harmful effect
+        boolean badjuju = false;
+        for (PotionEffect effect : event.getPotion().getEffects())
+            if (badPotionEffects.contains(effect.getType())) {
+                badjuju = true;
+                break;
+            }
+        if (!badjuju)
+            return;
+
+        ProjectileSource thrower = event.getPotion().getShooter();
+        if (!(thrower instanceof Entity))
+            return;
+
+        if (thrower instanceof Player) {
+            Player player = (Player) thrower;
+            FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+            if (badjuju && fPlayer.getFaction().isPeaceful()) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        // scan through affected entities to make sure they're all valid targets
+        for (LivingEntity target : event.getAffectedEntities()) {
+            EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent((Entity) thrower, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
+            if (!this.canDamagerHurtDamagee(sub, true))
+                event.setIntensity(target, 0.0); // affected entity list doesn't
+            // accept modification (so
+            // no iter.remove()), but
+            // this works
+        }
+    }
+
+    public boolean isPlayerInSafeZone(Entity damagee) {
+        if (!(damagee instanceof Player))
+            return false;
+        return Board.getInstance().getFactionAt(new FLocation(damagee.getLocation())).isSafeZone();
+    }
+
+    public boolean canDamagerHurtDamagee(EntityDamageByEntityEvent sub) {
+        return canDamagerHurtDamagee(sub, true);
     }
 
     public boolean canDamagerHurtDamagee(EntityDamageByEntityEvent sub, boolean notify) {
@@ -400,167 +541,6 @@ public class FactionsEntityListener implements Listener {
         return true;
     }
 
-    public void cancelFStuckTeleport(Player player) {
-        if (player == null)
-            return;
-
-        UUID uuid = player.getUniqueId();
-        if (FactionsPlugin.instance.getStuckMap().containsKey(uuid))
-            FPlayers.getInstance().getByPlayer(player).msg(TL.COMMAND_STUCK_CANCELLED);
-        FactionsPlugin.instance.getStuckMap().remove(uuid);
-    }
-
-    private void cancelFFly(Player player) {
-        if (player == null)
-            return;
-        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
-        if (fPlayer.isFlying()) {
-            fPlayer.setFlying(false, true);
-            if (fPlayer.isAutoFlying())
-                fPlayer.setAutoFlying(false);
-        }
-    }
-
-    public boolean isPlayerInSafeZone(Entity damagee) {
-        if (!(damagee instanceof Player))
-            return false;
-        return Board.getInstance().getFactionAt(new FLocation(damagee.getLocation())).isSafeZone();
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityExplode(EntityExplodeEvent event) {
-        Entity boomer = event.getEntity();
-
-        // Before we need to check the location where the block is placed
-        if (!this.checkExplosionForBlock(boomer, event.getLocation().getBlock())) {
-            event.setCancelled(true);
-            return;
-        }
-
-        // Loop the blocklist to run checks on each aimed block
-
-        // The block don't have to explode
-        event.blockList().removeIf(block -> !this.checkExplosionForBlock(boomer, block));
-
-        // Cancel the event if no block will explode
-        if (!event.blockList().isEmpty() && (boomer instanceof TNTPrimed || boomer instanceof ExplosiveMinecart) && Conf.handleExploitTNTWaterlog) {
-            // TNT in water/lava doesn't normally destroy any surrounding
-            // blocks, which is usually desired behavior, but...
-            // this change below provides workaround for waterwalling providing
-            // perfect protection,
-            // and makes cheap (non-obsidian) TNT cannons require minor
-            // maintenance between shots
-            Block center = event.getLocation().getBlock();
-
-            if (center.isLiquid()) {
-                // a single surrounding block in all 6 directions is broken if
-                // the material is weak enough
-                List<Block> targets = new ArrayList<>();
-                targets.add(center.getRelative(0, 0, 1));
-                targets.add(center.getRelative(0, 0, -1));
-                targets.add(center.getRelative(0, 1, 0));
-                targets.add(center.getRelative(0, -1, 0));
-                targets.add(center.getRelative(1, 0, 0));
-                targets.add(center.getRelative(-1, 0, 0));
-
-                for (Block target : targets) {
-                    @SuppressWarnings("deprecation")
-                    int id = target.getType().getId();
-                    // ignore air, bedrock, water, lava, obsidian, enchanting
-                    // table, etc.... too bad we can't get a blast resistance
-                    // value through Bukkit yet
-                    if (id != 0 && (id < 7 || id > 11) && id != 90 && id != 116 && id != 119 && id != 120 && id != 130)
-                        target.breakNaturally();
-                }
-            }
-        }
-    }
-
-    private boolean checkExplosionForBlock(Entity boomer, Block block) {
-        Faction faction = Board.getInstance().getFactionAt(new FLocation(block.getLocation()));
-
-        if (faction.noExplosionsInTerritory() || (faction.isPeaceful() && Conf.peacefulTerritoryDisableBoom))
-            return false;
-        // faction is peaceful and has explosions set to disabled
-
-        boolean online = faction.hasPlayersOnline();
-
-        if (boomer instanceof Creeper && ((faction.isWilderness() && Conf.wildernessBlockCreepers && !Conf.worldsNoWildernessProtection.contains(block
-                .getWorld().getName())) || (faction.isNormal() && (online ? Conf.territoryBlockCreepers : Conf.territoryBlockCreepersWhenOffline))
-                || (faction.isWarZone() && Conf.warZoneBlockCreepers) || faction.isSafeZone())) {
-            // creeper which needs prevention
-            return false;
-        } else if (
-            // it's a bit crude just using fireball protection for Wither boss too,
-            // but I'd rather not add in a whole new set of xxxBlockWitherExplosion
-            // or whatever
-                (boomer instanceof Fireball || boomer instanceof Wither) && (faction.isWilderness() && Conf.wildernessBlockFireballs
-                        && !Conf.worldsNoWildernessProtection.contains(block.getWorld().getName()) || faction.isNormal() && (online
-                        ? Conf.territoryBlockFireballs
-                        : Conf.territoryBlockFireballsWhenOffline) || faction.isWarZone() && Conf.warZoneBlockFireballs || faction.isSafeZone())) {
-            // ghast fireball which needs prevention
-            return false;
-        } else
-            return (!(boomer instanceof TNTPrimed) && !(boomer instanceof ExplosiveMinecart)) || ((!faction.isWilderness() || !Conf.wildernessBlockTNT
-                    || Conf.worldsNoWildernessProtection.contains(block.getWorld().getName())) && (!faction.isNormal() || (online
-                    ? !Conf.territoryBlockTNT
-                    : !Conf.territoryBlockTNTWhenOffline)) && (!faction.isWarZone() || !Conf.warZoneBlockTNT) && (!faction.isSafeZone()
-                    || !Conf.safeZoneBlockTNT));
-
-        // No condition retained, destroy the block!
-    }
-
-    // mainly for flaming arrows; don't want allies or people in safe zones to
-    // be ignited even after damage event is cancelled
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onEntityCombustByEntity(EntityCombustByEntityEvent event) {
-        EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(event.getCombuster(), event.getEntity(), EntityDamageEvent.DamageCause.FIRE,
-                0d);
-        if (!this.canDamagerHurtDamagee(sub, false))
-            event.setCancelled(true);
-
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPotionSplashEvent(PotionSplashEvent event) {
-        // see if the potion has a harmful effect
-        boolean badjuju = false;
-        for (PotionEffect effect : event.getPotion().getEffects())
-            if (badPotionEffects.contains(effect.getType())) {
-                badjuju = true;
-                break;
-            }
-        if (!badjuju)
-            return;
-
-        ProjectileSource thrower = event.getPotion().getShooter();
-        if (!(thrower instanceof Entity))
-            return;
-
-        if (thrower instanceof Player) {
-            Player player = (Player) thrower;
-            FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
-            if (badjuju && fPlayer.getFaction().isPeaceful()) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-
-        // scan through affected entities to make sure they're all valid targets
-        for (LivingEntity target : event.getAffectedEntities()) {
-            EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent((Entity) thrower, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
-            if (!this.canDamagerHurtDamagee(sub, true))
-                event.setIntensity(target, 0.0); // affected entity list doesn't
-            // accept modification (so
-            // no iter.remove()), but
-            // this works
-        }
-    }
-
-    public boolean canDamagerHurtDamagee(EntityDamageByEntityEvent sub) {
-        return canDamagerHurtDamagee(sub, true);
-    }
-
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         if (event.getLocation() == null)
@@ -619,42 +599,6 @@ public class FactionsEntityListener implements Listener {
         }
     }
 
-    /*
-     * @EventHandler
-     * public void onTravel(PlayerPortalEvent event) {
-     * if (!FactionsPlugin.getInstance().getConfig().getBoolean("portals.limit",
-     * false))
-     * return; // Don't do anything if they don't want us to.
-     *
-     *
-     * TravelAgent agent = event.getPortalTravelAgent();
-     *
-     * // If they aren't able to find a portal, it'll try to create one.
-     * if (event.useTravelAgent() && agent.getCanCreatePortal() &&
-     * agent.findPortal(event.getTo()) == null) {
-     * FLocation loc = new FLocation(event.getTo());
-     * Faction faction = Board.getInstance().getFactionAt(loc);
-     * if (faction.isWilderness()) {
-     * return; // We don't tcare about wilderness.
-     * } else if (!faction.isNormal() && !event.getPlayer().isOp()) {
-     * // Don't let non ops make portals in safezone or warzone.
-     * event.setCancelled(true);
-     * return;
-     * }
-     *
-     * FPlayer fp = FPlayers.getInstance().getByPlayer(event.getPlayer());
-     * String mininumRelation =
-     * FactionsPlugin.getInstance().getConfig().getString(
-     * "portals.minimum-relation", "MEMBER"); // Defaults to Neutral if typed
-     * wrong.
-     * if
-     * (!fp.getFaction().getRelationTo(faction).isAtLeast(Relation.fromString(
-     * mininumRelation))) {
-     * event.setCancelled(true);
-     * }
-     * }
-     * }
-     */
 
     @EventHandler
     public void onHangerBreak(HangingBreakByEntityEvent e) {
@@ -704,30 +648,42 @@ public class FactionsEntityListener implements Listener {
             }
     }
 
-    private boolean stopEndermanBlockManipulation(Location loc) {
-        if (loc == null)
-            return false;
-
-        // quick check to see if all Enderman deny options are enabled; if so,
-        // no need to check location
-        if (Conf.wildernessDenyEndermanBlocks && Conf.territoryDenyEndermanBlocks && Conf.territoryDenyEndermanBlocksWhenOffline
-                && Conf.safeZoneDenyEndermanBlocks && Conf.warZoneDenyEndermanBlocks)
-            return true;
-
-        FLocation fLoc = new FLocation(loc);
-        Faction claimFaction = Board.getInstance().getFactionAt(fLoc);
-        if (claimFaction.isNormal())
-            return claimFaction.hasPlayersOnline() ? Conf.territoryDenyEndermanBlocks : Conf.territoryDenyEndermanBlocksWhenOffline;
-        switch (claimFaction.getId()) {
-            case "0":
-                return Conf.wildernessDenyEndermanBlocks;
-            case "-1":
-                return Conf.safeZoneDenyEndermanBlocks;
-            case "-2":
-                return Conf.warZoneDenyEndermanBlocks;
-        }
-        return false;
-    }
+    /*
+     * @EventHandler
+     * public void onTravel(PlayerPortalEvent event) {
+     * if (!FactionsPlugin.getInstance().getConfig().getBoolean("portals.limit",
+     * false))
+     * return; // Don't do anything if they don't want us to.
+     *
+     *
+     * TravelAgent agent = event.getPortalTravelAgent();
+     *
+     * // If they aren't able to find a portal, it'll try to create one.
+     * if (event.useTravelAgent() && agent.getCanCreatePortal() &&
+     * agent.findPortal(event.getTo()) == null) {
+     * FLocation loc = new FLocation(event.getTo());
+     * Faction faction = Board.getInstance().getFactionAt(loc);
+     * if (faction.isWilderness()) {
+     * return; // We don't tcare about wilderness.
+     * } else if (!faction.isNormal() && !event.getPlayer().isOp()) {
+     * // Don't let non ops make portals in safezone or warzone.
+     * event.setCancelled(true);
+     * return;
+     * }
+     *
+     * FPlayer fp = FPlayers.getInstance().getByPlayer(event.getPlayer());
+     * String mininumRelation =
+     * FactionsPlugin.getInstance().getConfig().getString(
+     * "portals.minimum-relation", "MEMBER"); // Defaults to Neutral if typed
+     * wrong.
+     * if
+     * (!fp.getFaction().getRelationTo(faction).isAtLeast(Relation.fromString(
+     * mininumRelation))) {
+     * event.setCancelled(true);
+     * }
+     * }
+     * }
+     */
 
     @EventHandler
     public void onHit(EntityDamageByEntityEvent e) {
@@ -781,5 +737,50 @@ public class FactionsEntityListener implements Listener {
 
         if (!FactionsBlockListener.playerCanBuildDestroyBlock(event.getPlayer(), event.getRightClicked().getLocation(), "build", false))
             event.setCancelled(true);
+    }
+
+    private boolean stopEndermanBlockManipulation(Location loc) {
+        if (loc == null)
+            return false;
+
+        // quick check to see if all Enderman deny options are enabled; if so,
+        // no need to check location
+        if (Conf.wildernessDenyEndermanBlocks && Conf.territoryDenyEndermanBlocks && Conf.territoryDenyEndermanBlocksWhenOffline
+                && Conf.safeZoneDenyEndermanBlocks && Conf.warZoneDenyEndermanBlocks)
+            return true;
+
+        FLocation fLoc = new FLocation(loc);
+        Faction claimFaction = Board.getInstance().getFactionAt(fLoc);
+        if (claimFaction.isNormal())
+            return claimFaction.hasPlayersOnline() ? Conf.territoryDenyEndermanBlocks : Conf.territoryDenyEndermanBlocksWhenOffline;
+        switch (claimFaction.getId()) {
+            case "0":
+                return Conf.wildernessDenyEndermanBlocks;
+            case "-1":
+                return Conf.safeZoneDenyEndermanBlocks;
+            case "-2":
+                return Conf.warZoneDenyEndermanBlocks;
+        }
+        return false;
+    }
+
+    private void spawnMoreExp(EntityDeathEvent e, double multiplier) {
+        double newExp = e.getDroppedExp() * multiplier;
+        int newExpInt = (int) newExp;
+        e.setDroppedExp(newExpInt);
+    }
+
+    private void spawnMoreDrops(EntityDeathEvent e, double multiplier) {
+        List<ItemStack> drops = e.getDrops();
+
+        for (ItemStack drop : drops) {
+
+            int amount = randInt(drop.getAmount(), (int) Math.round(drop.getAmount() * multiplier));
+            drop.setAmount(amount);
+        }
+    }
+
+    private int randInt(int min, int max) {
+        return new Random().nextInt((max - min) + 1) + min;
     }
 }

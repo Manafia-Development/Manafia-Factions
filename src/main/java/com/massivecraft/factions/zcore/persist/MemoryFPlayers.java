@@ -43,6 +43,8 @@ public abstract class MemoryFPlayers extends FPlayers {
     @Override
     public abstract void forceSave();
 
+    public abstract void load();
+
     @Override
     public FPlayer getByOfflinePlayer(OfflinePlayer player) {
         return getById(player.getUniqueId().toString());
@@ -55,8 +57,6 @@ public abstract class MemoryFPlayers extends FPlayers {
             player = generateFPlayer(id);
         return player;
     }
-
-    public abstract void load();
 
     public abstract FPlayer generateFPlayer(String id);
 
