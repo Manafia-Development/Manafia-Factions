@@ -1,5 +1,5 @@
                    GNU LESSER GENERAL PUBLIC LICENSE
-                       com.massivecraft.factions.Versions 3, 29 June 2007
+                       com.github.manafia.factions.Versions 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
@@ -27,12 +27,12 @@ of using an interface provided by the Library.
   A "Combined Work" is a work produced by combining or linking an
 Application with the Library.  The particular version of the Library
 with which the Combined Work was made is also called the "Linked
-com.massivecraft.factions.Versions".
+com.github.manafia.factions.Versions".
 
   The "Minimal Corresponding Source" for a Combined Work means the
 Corresponding Source for the Combined Work, excluding any source code
 for portions of the Combined Work that, considered in isolation, are
-based on the Application, and not on the Linked com.massivecraft.factions.Versions.
+based on the Application, and not on the Linked com.github.manafia.factions.Versions.
 
   The "Corresponding Application Code" for a Combined Work means the
 object code and/or source code for the Application, including any data
@@ -102,7 +102,7 @@ the following:
        License, and the Corresponding Application Code in a form
        suitable for, and under terms that permit, the user to
        recombine or relink the Application with a modified version of
-       the Linked com.massivecraft.factions.Versions to produce a modified Combined Work, in the
+       the Linked com.github.manafia.factions.Versions to produce a modified Combined Work, in the
        manner specified by section 6 of the GNU GPL for conveying
        Corresponding Source.
 
@@ -111,14 +111,14 @@ the following:
        a copy of the Library already present on the user's computer
        system, and (b) will operate properly with a modified version
        of the Library that is interface-compatible with the Linked
-       com.massivecraft.factions.Versions.
+       com.github.manafia.factions.Versions.
 
    e) Provide Installation Information, but only if you would otherwise
    be required to provide such information under section 6 of the
    GNU GPL, and only to the extent that such information is
    necessary to install and execute a modified version of the
    Combined Work produced by recombining or relinking the
-   Application with a modified version of the Linked com.massivecraft.factions.Versions. (If
+   Application with a modified version of the Linked com.github.manafia.factions.Versions. (If
    you use option 4d0, the Installation Information must accompany
    the Minimal Corresponding Source and Corresponding Application
    Code. If you use option 4d1, you must provide the Installation

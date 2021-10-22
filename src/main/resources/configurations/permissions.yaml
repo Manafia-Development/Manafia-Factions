@@ -126,7 +126,7 @@ factions:
   togglealliancechat: TOGGLE_ALLIANCE_CHAT #Ability to use F ToggleAllianceChat (Player will not be able to see Ally Chat)
   unclaim: UNCLAIM #Ability to use F Unclaim
   unclaimall: UNCLAIM_ALL #Ability to use F Unclaimall
-  version: VERSION #Ability to use F com.massivecraft.factions.Version
+  version: VERSION #Ability to use F com.github.manafia.factions.Version
   scoreboard: SCOREBOARD #Ability to use F Scoreboard
   seechunk: SEECHUNK #Ability to use F Seechunk
   setwarp: SETWARP #Ability to use F SetWarp

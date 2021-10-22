@@ -1,0 +1,50 @@
+package com.github.manafia.factions.listeners;
+
+import com.github.manafia.factions.Board;
+import com.github.manafia.factions.FLocation;
+import com.github.manafia.factions.Faction;
+import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.struct.Relation;
+import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
+
+public class NewRaidListener implements Listener {
+
+  @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+  public void onEntityExplode(EntityExplodeEvent event) {
+    Location location = event.getLocation();
+
+    FLocation fLoc = new FLocation(location);
+    Faction fac = Board.getInstance().getFactionAt(fLoc);
+    Faction otherFaction = Board.getInstance().getFactionAt((FLocation) loc);
+    Relation rel = myFaction.getRelationTo(otherFaction);
+
+
+    if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Enabled", true)) {
+
+
+      if (otherFaction.get)
+
+
+
+
+
+    onEntityExplode(myFaction.sendMessage("We have just started a raid against" + otherFaction.getTag()));
+    if (rel.isEnemy()) {
+      if (myFaction.getRelationTo(otherFaction).isEnemy()) {
+
+      }
+
+      boolean RaidStarted = true;
+
+    }
+  }
+
+
+
+
+  }
+}

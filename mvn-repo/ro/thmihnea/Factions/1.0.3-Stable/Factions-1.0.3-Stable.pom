@@ -43,36 +43,36 @@
                     <relocations>
                         <relocation>
                             <pattern>me.lucko.helper</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.me.lucko.helper</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.me.lucko.helper</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.github.cryptomorin</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.xseries</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.xseries</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.stefvanschie.inventoryframework
+                            <shadedPattern>com.github.manafia.factions.shade.stefvanschie.inventoryframework
                             </shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.org.bstats</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.org.bstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>net.dv8tion</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.net.dv8tion</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.net.dv8tion</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>mkremins.fanciful</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.mkremins.fanciful</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.mkremins.fanciful</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.google.gson</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.com.google.gson</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.com.google.gson</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.darkblade12</pattern>
-                            <shadedPattern>com.massivecraft.factions.shade.com.darkblade12</shadedPattern>
+                            <shadedPattern>com.github.manafia.factions.shade.com.darkblade12</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

@@ -1,0 +1,173 @@
+package com.github.manafia.factions.shop;
+
+import com.cryptomorin.xseries.XMaterial;
+import com.github.stefvanschie.inventoryframework.Gui;
+import com.github.stefvanschie.inventoryframework.GuiItem;
+import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
+import com.github.manafia.factions.*;
+import com.github.manafia.factions.zcore.util.TL;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+public class ShopGUIFrame {
+
+    /**
+     * @author Driftay
+     * questionable code ngl
+     */
+
+    private final Gui gui;
+
+    public ShopGUIFrame(Faction f) {
+        gui = new Gui(FactionsPlugin.getInstance(), FactionsPlugin.instance.getConfig().getInt("F-Shop.GUI.Rows", 4),
+                Util.color(FactionsPlugin.getInstance().getConfig().getString("F-Shop.GUI.Name")));
+    }
+
+    public void buildGUI(FPlayer fplayer) {
+        PaginatedPane pane = new PaginatedPane(0, 0, 9, gui.getRows());
+        List<GuiItem> GUIItems = new ArrayList<>();
+        ItemStack dummy = buildDummyItem(fplayer.getFaction());
+        for (int x = 0; x <= (gui.getRows() * 9) - 1; x++)
+            GUIItems.add(new GuiItem(dummy, e -> e.setCancelled(true)));
+
+        Set<String> items = FactionsPlugin.instance.getFileManager().getShop().getConfig().getConfigurationSection("items").getKeys(false);
+        for (String s : items) {
+            if (!checkShopConfig(s))
+                continue;
+
+            int slot = FactionsPlugin.getInstance().getFileManager().getShop().fetchInt("items." + s + ".slot");
+            ItemStack item = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getFileManager().getShop().fetchString("items." + s + ".block")).get().parseItem();
+            int cost = FactionsPlugin.getInstance().getFileManager().getShop().fetchInt("items." + s + ".cost");
+            String name = FactionsPlugin.getInstance().getFileManager().getShop().fetchString("items." + s + ".name");
+            boolean glowing = FactionsPlugin.getInstance().getFileManager().getShop().fetchBoolean("items." + s + ".glowing");
+            List<String> lore = FactionsPlugin.getInstance().getFileManager().getShop().fetchStringList("items." + s + ".lore");
+
+            assert item != null;
+            ItemMeta meta = item.getItemMeta();
+            meta.setDisplayName(Util.color(name));
+            meta.addItemFlags();
+            if (glowing) {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                meta.addEnchant(Enchantment.DURABILITY, 1, true);
+            }
+            if (!glowing)
+                meta.removeEnchant(Enchantment.DURABILITY);
+            List<String> replacedLore = lore.stream().map(t -> t.replace("{cost}", cost + "")).collect(Collectors.toList());
+            meta.setLore(Util.colorList(replacedLore));
+            item.setItemMeta(meta);
+            GUIItems.set(slot, new GuiItem(item, e -> {
+                e.setCancelled(true);
+                FPlayer fme = FPlayers.getInstance().getByPlayer((Player) e.getWhoClicked());
+                if (fplayer.getFaction().getPoints() >= cost) {
+                    if (runCommands(FactionsPlugin.getInstance().getFileManager().getShop().fetchStringList("items." + s + ".cmds"), fplayer.getPlayer())) {
+                        fplayer.getFaction().setPoints(fplayer.getFaction().getPoints() - cost);
+                        for (FPlayer fplayerBuy : fplayer.getFaction().getFPlayers()) {
+                            fplayerBuy.getPlayer().sendMessage(TL.SHOP_BOUGHT_BROADCAST_FACTION.toString().replace("{player}", fplayer.getPlayer().getName()).replace("{item}", ChatColor.stripColor(Util.color(name)))
+                                    .replace("{cost}", cost + ""));
+                        }
+                        buildGUI(fme);
+                    } else
+                        fplayer.msg(TL.SHOP_ERROR_DURING_PURCHASE);
+                } else
+                    fplayer.msg(TL.SHOP_NOT_ENOUGH_POINTS);
+
+            }));
+        }
+        pane.populateWithGuiItems(GUIItems);
+        gui.addPane(pane);
+        gui.update();
+        gui.show(fplayer.getPlayer());
+
+    }
+
+    private ItemStack buildDummyItem(Faction f) {
+        ConfigurationSection config = FactionsPlugin.getInstance().getConfig().getConfigurationSection("F-Shop.GUI.dummy-item");
+        ItemStack item = XMaterial.matchXMaterial(config.getString("Type")).get().parseItem();
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setLore(Util.colorList(config.getStringList("Lore")));
+            meta.setDisplayName(Util.color(config.getString("Name").replace("{points}", f.getPoints() + "")));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
+    public boolean checkShopConfig() {
+        boolean ret = true;
+        Set<String> items = FactionsPlugin.getInstance().getFileManager().getShop().getConfig().getConfigurationSection("items").getKeys(false);
+        for (String s : items)
+            if (checkShopConfig(s) == false)
+                ret = false;
+        return ret;
+    }
+
+    public boolean checkShopConfig(String s) {
+        boolean ret = true;
+        ArrayList<String> keys = new ArrayList<String>() {
+            {
+                add("slot");
+                add("block");
+                add("cmds");
+                add("cost");
+                add("name");
+            }
+        };
+        for (String str : keys) {
+            if (FactionsPlugin.instance.getFileManager().getShop().containsKey("items." + s + "." + str)) continue;
+            FactionsPlugin.instance.log(Level.WARNING, "Problem with config item '" + s + "' - missing " + str + " variable!");
+            ret = false;
+        }
+        return ret;
+    }
+
+    /**
+     * @param list The list of commands to be ran.
+     * @param p    The player that is using the shop
+     * @return if all commands are able to be ran or if they did run.
+     */
+    public boolean runCommands(List<String> list, Player p) {
+        for (String cmd : list) {
+            cmd = cmd.replace("%player%", p.getName());
+            if (cmd.toLowerCase().startsWith("give")) {
+                String[] args = cmd.split(" ");
+                if (args.length == 4) {
+                    Material material = Material.matchMaterial(args[2]);
+                    int amount = Integer.parseInt(args[3]);
+                    Player player = Bukkit.getPlayer(args[1]);
+                    if (!player.isOnline())
+                        return false;
+                    // See if the player has this item in their inventory;
+                    if (player.getInventory().contains(material) && player.getInventory().firstEmpty() < 0) {
+                        int spacesAvailable = 0;
+                        Map<Integer, ? extends ItemStack> contents = player.getInventory().all(material);
+                        for (ItemStack stack : contents.values())
+                            spacesAvailable += stack.getMaxStackSize() - stack.getAmount();
+                        if (spacesAvailable < amount)
+                            return false;
+                        else if (player.getInventory().firstEmpty() < 0)
+                            return false;
+                    }
+                }
+            }
+        }
+        for (String cmd : list) {
+            cmd = cmd.replace("%player%", p.getName());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+        }
+        return true;
+    }
+}
