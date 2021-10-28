@@ -12,8 +12,8 @@ public class AutoLeaveProcessTask extends BukkitRunnable {
 
     private final transient ListIterator<FPlayer> iterator;
     private final transient double toleranceMillis;
-    private transient boolean readyToGo = false;
-    private transient boolean finished = false;
+    private transient boolean readyToGo;
+    private transient boolean finished;
 
     public AutoLeaveProcessTask() {
         ArrayList<FPlayer> fplayers = (ArrayList<FPlayer>) FPlayers.getInstance().getAllFPlayers();

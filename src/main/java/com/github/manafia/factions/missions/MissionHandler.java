@@ -17,6 +17,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,7 @@ public class MissionHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerTame(EntityTameEvent event) {
+    public void onPlayerTame(@NotNull EntityTameEvent event) {
         if (!(event.getOwner() instanceof Player))
             return;
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer((Player) event.getOwner());
@@ -51,7 +52,7 @@ public class MissionHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onEntityDeath(EntityDeathEvent event) {
+    public void onEntityDeath(@NotNull EntityDeathEvent event) {
         if (event.getEntity() == null || event.getEntity().getKiller() == null)
             return;
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(event.getEntity().getKiller());
@@ -144,7 +145,7 @@ public class MissionHandler implements Listener {
         if (mission.getProgress() < section.getConfigurationSection("Mission").getLong("Amount"))
             return;
         for (String command : section.getConfigurationSection("Reward").getStringList("Commands"))
-            FactionsPlugin.instance.getServer().dispatchCommand(FactionsPlugin.getInstance().getServer().getConsoleSender(), command.replace("%faction%", fPlayer.getFaction().getTag()));
+            FactionsPlugin.getInstance().getServer().dispatchCommand(FactionsPlugin.getInstance().getServer().getConsoleSender(), command.replace("%faction%", fPlayer.getFaction().getTag()).replace("%player%", fPlayer.getPlayer().getName()));
         fPlayer.getFaction().getMissions().remove(mission.getName());
         fPlayer.getFaction().msg(TL.MISSION_MISSION_FINISHED, Util.color(section.getString("Name")));
         fPlayer.getFaction().getCompletedMissions().add(mission.getName());

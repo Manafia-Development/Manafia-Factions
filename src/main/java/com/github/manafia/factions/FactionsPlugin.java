@@ -1,5 +1,6 @@
 package com.github.manafia.factions;
 
+import com.github.manafia.factions.addon.AddonManager;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.github.manafia.factions.cmd.CmdAutoHelp;
@@ -116,6 +117,7 @@ public class FactionsPlugin extends MPlugin {
         if (Conf.userSpawnerChunkSystem) {
             this.getServer().getPluginManager().registerEvents(new SpawnerChunkListener(), this);
         }
+        AddonManager.getAddonManagerInstance().loadAddons();
         this.loadSuccessful = true;
     }
 
