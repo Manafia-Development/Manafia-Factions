@@ -10,6 +10,8 @@
 [![](https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg)](https://jitpack.io/#Manafia-Development/Manafia-Factions)
 [![CodeFactor](https://www.codefactor.io/repository/github/manafia-development/manafia-factions/badge)](https://www.codefactor.io/repository/github/manafia-development/manafia-factions)
 
+## [Support Discord is Live!](https://discord.gg/qZfWdqruth)
+
 ## 🎮 What is Manafia factions
 
 We've optimized nearly every single class with performance in mind. We have fully stress-tested the entire plugin. In
