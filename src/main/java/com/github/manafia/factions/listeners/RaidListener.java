@@ -1,5 +1,5 @@
 package com.github.manafia.factions.listeners;
-
+/*
 import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.entity.Player;
@@ -45,3 +45,5 @@ public class RaidListener implements Listener {
 
     }
 }
+
+ */

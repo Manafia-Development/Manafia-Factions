@@ -1,5 +1,5 @@
 package com.github.manafia.factions.listeners;
-
+/*
 import com.github.manafia.factions.Board;
 import com.github.manafia.factions.FLocation;
 import com.github.manafia.factions.Faction;
@@ -41,3 +41,5 @@ public class NewRaidListener implements Listener {
 
   }
 }
+
+ */

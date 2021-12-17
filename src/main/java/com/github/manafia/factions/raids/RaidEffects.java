@@ -1,5 +1,5 @@
 package com.github.manafia.factions.raids;
-
+/*
 import com.github.manafia.factions.FactionsPlugin;
 import de.fabilucius.advancedperks.command.PerksCommand;
 
@@ -30,5 +30,7 @@ public ItemStack getPerkIcon() {
 }
 
 
-} 
+}
+
+ */
 
