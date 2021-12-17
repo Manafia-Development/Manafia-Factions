@@ -1,5 +1,6 @@
 package com.github.manafia.factions.listeners;
-/*
+
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,6 +13,9 @@ public class RaidListener implements Listener {
 
     public boolean raidSpawners = false;
 
+    @Eventhandler
+
+    public void
 
     @EventHandler
     public void onSpawnerMine(BlockBreakEvent event) {
@@ -41,5 +45,3 @@ public class RaidListener implements Listener {
 
     }
 }
-
- */
