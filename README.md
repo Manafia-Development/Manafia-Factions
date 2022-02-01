@@ -3,12 +3,17 @@
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-java.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/open-source.svg)](https://forthebadge.com)
-
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-black-magic.svg)](https://forthebadge.com)
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![](https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg)](https://jitpack.io/#Manafia-Development/Manafia-Factions)
-[![CodeFactor](https://www.codefactor.io/repository/github/manafia-development/manafia-factions/badge)](https://www.codefactor.io/repository/github/manafia-development/manafia-factions)
+<div align="center">
+    <a href="https://github.com/SaberLLC/SaberFactions"><img src="https://img.shields.io/badge/SaberFactions%20-Fork-e64c65"></a>
+    <a href=https://jitpack.io/#Manafia-Development/Manafia-Factions"><img src="https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg"></a>
+</div>
+
+<div align="center">
+    <a href="https://www.codefactor.io/repository/github/manafia-development/manafia-factions"><img src="https://www.codefactor.io/repository/github/manafia-development/manafia-factions/badge"></a>
+    <a href="https://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
+</div>
 
 
 ## 🎮 What is Manafia factions
