@@ -196,11 +196,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.ocpsoft.prettytime</groupId>
-            <artifactId>prettytime</artifactId>
-            <version>5.0.2.Final</version>
-        </dependency>
-        <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
@@ -564,10 +559,6 @@
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>org.ocpsoft.prettytime</id>
-            <url>https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime</url>
         </repository>
         <repository>
             <id>rayzr-repo</id>
