@@ -534,8 +534,8 @@
     </dependencies>
     <repositories>
         <repository>
-            <id>spigot-maven</id>
-            <url>http://dev.fabilucius.de/artifactory/spigot-maven</url>
+            <id>artifactory-repo</id>
+            <url>https://fabianbullik.jfrog.io/artifactory/release-artifiact-repo</url>
         </repository>
         <repository>
             <id>rosewood-repo</id>
