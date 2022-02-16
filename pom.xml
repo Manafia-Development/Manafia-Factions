@@ -578,6 +578,10 @@
             <url>https://maven.sk89q.com/repo/</url>
         </repository>
         <repository>
+            <id>sk89q-repo</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
             <id>jcenter</id>
             <name>jcenter-bintray</name>
             <url>https://jcenter.bintray.com</url>
