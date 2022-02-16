@@ -46,7 +46,7 @@ Install Vault, EssentialsX and Lunar-API if you wish to enable Lunar integration
 After the plugin is compiled, the final jar will be located in the ``/target`` directory. Take the *non-shaded* jar and
 upload that into your servers ``/plugins`` folder.
 
-## ⚙️ Dependency with Maven
+## ⚙️ Dependency for developers
 
 	<repositories>
 		<repository>
@@ -60,6 +60,20 @@ upload that into your servers ``/plugins`` folder.
 	    <artifactId>Manafia-Factions</artifactId>
 	    <version>Version</version>
 	</dependency>
+																
+```
+allprojects {
+		repositories {
+			maven { url 'https://jitpack.io' }
+		}
+	}
+																
+dependencies {
+	        implementation 'com.github.Manafia-Development:Manafia-Factions:Tag'
+	}
+```
+
+																
 
 ## For the future
 
