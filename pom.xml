@@ -566,7 +566,7 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>org.ocpsoft.prettytime</id>
+            <id>prettytime</id>
             <url>https://mvnrepository.com/artifact/org.ocpsoft.prettytime/prettytime</url>
         </repository>
         <repository>
