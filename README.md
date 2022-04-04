@@ -15,6 +15,11 @@
     <a href="https://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square"></a>
 </div>
 
+																
+### Disclaimer: We make proper commits here 
+
+- [1](https://github.com/SaberLLC/Saber-Factions/releases) 
+- [2](https://github.com/SaberLLC/Saber-Factions/commits/1.6.x)																
 
 ## 🎮 What is Manafia factions
 
