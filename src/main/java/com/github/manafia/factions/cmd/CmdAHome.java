@@ -12,7 +12,7 @@ public class CmdAHome extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdAHome () {
+    public CmdAHome() {
         super();
         this.aliases.addAll(Aliases.ahome);
 
@@ -23,7 +23,7 @@ public class CmdAHome extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer target = context.argAsBestFPlayerMatch(0);
         if (target == null) {
             context.msg(TL.GENERIC_NOPLAYERMATCH, context.argAsString(0));
@@ -36,14 +36,16 @@ public class CmdAHome extends FCommand {
                 target.getPlayer().teleport(faction.getHome(), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 context.msg(TL.COMMAND_AHOME_SUCCESS, target.getName());
                 target.msg(TL.COMMAND_AHOME_TARGET);
-            } else
+            } else {
                 context.msg(TL.COMMAND_AHOME_NOHOME, target.getName());
-        } else
+            }
+        } else {
             context.msg(TL.COMMAND_AHOME_OFFLINE, target.getName());
+        }
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_AHOME_DESCRIPTION;
     }
 }

@@ -1,6 +1,8 @@
 package com.github.manafia.factions.cmd;
 
+import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.integration.Econ;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +20,7 @@ public class CmdHelp extends FCommand {
     public ArrayList<ArrayList<String>> helpPages;
 
     //TODO: Add Help GUI
-    public CmdHelp () {
+    public CmdHelp() {
         super();
         this.aliases.addAll(Aliases.help);
 
@@ -34,8 +36,11 @@ public class CmdHelp extends FCommand {
     //----------------------------------------------//
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (FactionsPlugin.getInstance().getConfig().getBoolean("use-old-help", true)) {
+            if (helpPages == null) {
+                updateHelp(context);
+            }
 
             int page = context.argAsInt(0, 1);
             context.sendMessage(FactionsPlugin.getInstance().txt.titleize("Factions Help (" + page + "/" + helpPages.size() + ")"));
@@ -63,11 +68,11 @@ public class CmdHelp extends FCommand {
             context.msg(TL.COMMAND_HELP_404.format(pageArg));
             return;
         }
-        for (String helpLine : page)
+        for (String helpLine : page) {
             context.sendMessage(FactionsPlugin.getInstance().txt.parse(helpLine));
+        }
     }
 
-    /*
     public void updateHelp(CommandContext context) {
         helpPages = new ArrayList<>();
         ArrayList<String> pageLines;
@@ -86,7 +91,7 @@ public class CmdHelp extends FCommand {
         helpPages.add(pageLines);
 
         pageLines = new ArrayList<>();
-
+        pageLines.add(FactionsPlugin.getInstance().cmdBase.cmdCreate.getUsageTemplate(context));
         pageLines.add(FactionsPlugin.getInstance().cmdBase.cmdDescription.getUsageTemplate(context));
         pageLines.add(FactionsPlugin.getInstance().cmdBase.cmdTag.getUsageTemplate(context));
         pageLines.add(FactionsPlugin.getInstance().txt.parse(TL.COMMAND_HELP_INVITATIONS.toString()));
@@ -201,10 +206,10 @@ public class CmdHelp extends FCommand {
         pageLines.add(FactionsPlugin.getInstance().cmdBase.cmdSaveAll.getUsageTemplate(context));
         pageLines.add(FactionsPlugin.getInstance().cmdBase.cmdVersion.getUsageTemplate(context));
         helpPages.add(pageLines);
-     */
+    }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_HELP_DESCRIPTION;
     }
 }

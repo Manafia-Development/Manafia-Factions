@@ -1,6 +1,10 @@
 package com.github.manafia.factions.util.timer;
 
-
+/**
+ * Factions - Developed by Driftay.
+ * All rights reserved 2020.
+ * Creation Date: 4/7/2020
+ */
 public abstract class GlobalTimer extends Timer {
     private TimerRunnable runnable;
 
@@ -27,8 +31,9 @@ public abstract class GlobalTimer extends Timer {
 
 
     public void setPaused(boolean paused) {
-        if ((this.runnable != null) && (this.runnable.isPaused() != paused))
+        if ((this.runnable != null) && (this.runnable.isPaused() != paused)) {
             this.runnable.setPaused(paused);
+        }
     }
 
 
@@ -49,12 +54,14 @@ public abstract class GlobalTimer extends Timer {
     public boolean setRemaining(long duration, boolean overwrite) {
         boolean hadCooldown = false;
         if (this.runnable != null) {
-            if (!overwrite)
+            if (!overwrite) {
                 return false;
+            }
             hadCooldown = this.runnable.getRemaining() > 0L;
             this.runnable.setRemaining(duration);
-        } else
+        } else {
             this.runnable = new TimerRunnable(this, duration);
+        }
         return !hadCooldown;
     }
 }

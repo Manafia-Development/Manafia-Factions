@@ -12,7 +12,7 @@ public class CmdUnban extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdUnban () {
+    public CmdUnban() {
         super();
         this.aliases.addAll(Aliases.unban);
         this.requiredArgs.add("target");
@@ -25,16 +25,20 @@ public class CmdUnban extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // Good on permission checks. Now lets just ban the player.
         FPlayer target = context.argAsFPlayer(0);
-        if (target == null)
+        if (target == null) {
             return; // the above method sends a message if fails to find someone.
+        }
 
-        if (target.getFaction() != context.fPlayer.getFaction())
-            if (target.getFaction().getAccess(context.fPlayer, PermissableAction.BAN) != Access.ALLOW)
-                if (!context.fPlayer.isAdminBypassing())
+        if (target.getFaction() != context.fPlayer.getFaction()) {
+            if (target.getFaction().getAccess(context.fPlayer, PermissableAction.BAN) != Access.ALLOW) {
+                if (!context.fPlayer.isAdminBypassing()) {
                     context.fPlayer.msg(TL.COMMAND_UNBAN_TARGET_IN_OTHER_FACTION, target.getName());
+                }
+            }
+        }
 
         if (!context.faction.isBanned(target)) {
             context.msg(TL.COMMAND_UNBAN_NOTBANNED, target.getName());
@@ -48,7 +52,7 @@ public class CmdUnban extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_UNBAN_DESCRIPTION;
     }
 }

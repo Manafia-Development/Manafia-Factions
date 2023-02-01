@@ -32,9 +32,10 @@ public class CmdViewChest extends FCommand {
         Faction myFaction = context.fPlayer.getFaction();
 
         Faction faction = context.argAsFaction(0, context.fPlayer == null ? null : myFaction);
-        if (faction == null)
+        if (faction == null) {
             return;
-        context.player.openInventory(context.faction.getChestInventory());
+        }
+        context.player.openInventory(faction.getChestInventory());
     }
 
     @Override

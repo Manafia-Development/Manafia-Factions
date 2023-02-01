@@ -26,12 +26,14 @@ public class CmdDelFWarp extends FCommand {
     public void perform(CommandContext context) {
         String warp = context.argAsString(0);
         if (context.faction.isWarp(warp)) {
-            if (!transact(context.fPlayer, context))
+            if (!transact(context.fPlayer, context)) {
                 return;
+            }
             context.faction.removeWarp(warp);
             context.msg(TL.COMMAND_DELFWARP_DELETED, warp);
-        } else
+        } else {
             context.msg(TL.COMMAND_DELFWARP_INVALID, warp);
+        }
     }
 
     private boolean transact(FPlayer player, CommandContext context) {

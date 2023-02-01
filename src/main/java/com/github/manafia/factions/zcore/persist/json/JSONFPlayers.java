@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FPlayers;
 import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.persist.MemoryFPlayer;
 import com.github.manafia.factions.zcore.persist.MemoryFPlayers;
 import com.github.manafia.factions.zcore.util.DiscUtil;
@@ -20,12 +21,12 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 public class JSONFPlayers extends MemoryFPlayers {
-    private final File file;
     // Info on how to persist
     private Gson gson;
+    private File file;
 
     public JSONFPlayers() {
-        file = new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "data" + File.separator, "players.json");
+        file = new File(FactionsPlugin.getInstance().getDataFolder(), "players.json");
         gson = FactionsPlugin.getInstance().gson;
     }
 
@@ -49,9 +50,11 @@ public class JSONFPlayers extends MemoryFPlayers {
 
     public void forceSave(boolean sync) {
         final Map<String, JSONFPlayer> entitiesThatShouldBeSaved = new HashMap<>();
-        for (FPlayer entity : this.fPlayers.values())
-            if (((MemoryFPlayer) entity).shouldBeSaved())
+        for (FPlayer entity : this.fPlayers.values()) {
+            if (((MemoryFPlayer) entity).shouldBeSaved()) {
                 entitiesThatShouldBeSaved.put(entity.getId(), (JSONFPlayer) entity);
+            }
+        }
         saveCore(file, entitiesThatShouldBeSaved, sync);
     }
 
@@ -64,7 +67,7 @@ public class JSONFPlayers extends MemoryFPlayers {
         if (fplayers == null) return;
         this.fPlayers.clear();
         this.fPlayers.putAll(fplayers);
-        FactionsPlugin.getInstance().log("Successfully initiated & loaded a total of " + fPlayers.size() + " cached players.");
+        Logger.print("Loaded " + fPlayers.size() + " players", Logger.PrefixType.DEFAULT);
     }
 
     private Map<String, JSONFPlayer> loadCore() {
@@ -80,16 +83,17 @@ public class JSONFPlayers extends MemoryFPlayers {
                 String key = entry.getKey();
                 entry.getValue().setId(key);
                 if (doesKeyNeedMigration(key)) {
-                    if (!isKeyInvalid(key))
+                    if (!isKeyInvalid(key)) {
                         list.add(key);
-                    else
+                    } else {
                         invalidList.add(key);
+                    }
                 }
             }
 
             if (list.size() > 0) {
                 // We've got some converting to do!
-                Bukkit.getLogger().log(Level.INFO, "Attempting module update of file players.json!");
+                Bukkit.getLogger().log(Level.INFO, "Factions is now updating players.json");
 
                 // First we'll make a backup, because god forbid anybody heed a
                 // warning
@@ -100,18 +104,20 @@ public class JSONFPlayers extends MemoryFPlayers {
                     e.printStackTrace();
                 }
                 saveCore(file, data, true);
-                Bukkit.getLogger().log(Level.INFO, "For safety purposes, your old data has been backed-up at this path:\n " + file.getAbsolutePath());
+                Bukkit.getLogger().log(Level.INFO, "Backed up your old data at " + file.getAbsolutePath());
 
                 // Start fetching those UUIDs
-                Bukkit.getLogger().log(Level.INFO, "(WARNING) Please wait while Factions converts " + list.size() + " old player names to UUID. This process might take a while.");
+                Bukkit.getLogger().log(Level.INFO, "Please wait while Factions converts " + list.size() + " old player names to UUID. This may take a while.");
                 UUIDFetcher fetcher = new UUIDFetcher(new ArrayList<>(list));
                 try {
                     Map<String, UUID> response = fetcher.call();
-                    for (String s : list)
+                    for (String s : list) {
                         // Are we missing any responses?
-                        if (!response.containsKey(s))
+                        if (!response.containsKey(s)) {
                             // They don't have a UUID so they should just be removed
                             invalidList.add(s);
+                        }
+                    }
                     for (String value : response.keySet()) {
                         // For all the valid responses, let's replace their old
                         // named entry with a UUID key
@@ -134,23 +140,25 @@ public class JSONFPlayers extends MemoryFPlayers {
                     e.printStackTrace();
                 }
                 if (invalidList.size() > 0) {
-                    for (String name : invalidList)
+                    for (String name : invalidList) {
                         // Remove all the invalid names we collected
                         data.remove(name);
+                    }
                     Bukkit.getLogger().log(Level.INFO, "While converting we found names that either don't have a UUID or aren't players and removed them from storage.");
                     Bukkit.getLogger().log(Level.INFO, "The following names were detected as being invalid: " + StringUtils.join(invalidList, ", "));
                 }
                 saveCore(this.file, data, true); // Update the
                 // flatfile
-                Bukkit.getLogger().log(Level.INFO, "Successfully converted players.json to UUID.");
+                Bukkit.getLogger().log(Level.INFO, "Done converting players.json to UUID.");
             }
             return data;
         } catch (NullPointerException exception) {
             exception.printStackTrace();
-            if (this.file.length() < 200)
+            if (this.file.length() < 200) {
                 return new HashMap<>();
-            else
+            } else {
                 throw exception;
+            }
         }
     }
 

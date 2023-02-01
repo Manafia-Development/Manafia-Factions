@@ -14,7 +14,7 @@ public class CmdChat extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdChat () {
+    public CmdChat() {
         super();
         this.aliases.addAll(Aliases.chat);
 
@@ -29,7 +29,7 @@ public class CmdChat extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!Conf.factionOnlyChat) {
             context.msg(TL.COMMAND_CHAT_DISABLED.toString());
             return;
@@ -41,20 +41,20 @@ public class CmdChat extends FCommand {
         if (modeString != null) {
             modeString = modeString.toLowerCase();
             // Only allow Mods and higher rank to switch to this channel.
-            if (modeString.startsWith("m"))
+            if (modeString.startsWith("m")) {
                 if (!context.fPlayer.getRole().isAtLeast(Role.MODERATOR)) {
                     context.msg(TL.COMMAND_CHAT_MOD_ONLY);
                     return;
                 } else modeTarget = ChatMode.MOD;
-            else if (modeString.startsWith("p"))
+            } else if (modeString.startsWith("p")) {
                 modeTarget = ChatMode.PUBLIC;
-            else if (modeString.startsWith("a"))
+            } else if (modeString.startsWith("a")) {
                 modeTarget = ChatMode.ALLIANCE;
-            else if (modeString.startsWith("f"))
+            } else if (modeString.startsWith("f")) {
                 modeTarget = ChatMode.FACTION;
-            else if (modeString.startsWith("t"))
+            } else if (modeString.startsWith("t")) {
                 modeTarget = ChatMode.TRUCE;
-            else {
+            } else {
                 context.msg(TL.COMMAND_CHAT_INVALIDMODE);
                 return;
             }
@@ -82,13 +82,13 @@ public class CmdChat extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CHAT_DESCRIPTION;
     }
 
     protected class ChatBrigadier implements BrigadierProvider {
         @Override
-        public ArgumentBuilder<Object, ?> get (ArgumentBuilder<Object, ?> parent) {
+        public ArgumentBuilder<Object, ?> get(ArgumentBuilder<Object, ?> parent) {
             return parent.then(LiteralArgumentBuilder.literal("public"))
                     .then(LiteralArgumentBuilder.literal("mod"))
                     .then(LiteralArgumentBuilder.literal("alliance"))

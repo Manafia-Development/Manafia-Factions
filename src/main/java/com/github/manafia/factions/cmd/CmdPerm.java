@@ -1,9 +1,9 @@
 package com.github.manafia.factions.cmd;
 
-import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Relation;
 import com.github.manafia.factions.struct.Role;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.fperms.Access;
 import com.github.manafia.factions.zcore.fperms.Permissable;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
@@ -21,7 +21,7 @@ public class CmdPerm extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdPerm () {
+    public CmdPerm() {
         super();
         this.aliases.addAll(Aliases.perm);
 
@@ -37,7 +37,7 @@ public class CmdPerm extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
         if (context.args.size() == 0) {
             new PermissableRelationFrame(context.faction).buildGUI(context.fPlayer);
@@ -59,9 +59,9 @@ public class CmdPerm extends FCommand {
         boolean allRelations = context.argAsString(0).equalsIgnoreCase("all");
         boolean allActions = context.argAsString(1).equalsIgnoreCase("all");
 
-        if (allRelations)
+        if (allRelations) {
             permissables.addAll(context.faction.getPermissions().keySet());
-        else {
+        } else {
             Permissable permissable = getPermissable(context.argAsString(0));
 
             if (permissable == null) {
@@ -72,9 +72,9 @@ public class CmdPerm extends FCommand {
             permissables.add(permissable);
         }
 
-        if (allActions)
+        if (allActions) {
             permissableActions.addAll(Arrays.asList(PermissableAction.values()));
-        else {
+        } else {
             PermissableAction permissableAction = PermissableAction.fromString(context.argAsString(1));
             if (permissableAction == null) {
                 context.msg(TL.COMMAND_PERM_INVALID_ACTION);
@@ -91,25 +91,28 @@ public class CmdPerm extends FCommand {
             return;
         }
 
-        for (Permissable permissable : permissables)
-            for (PermissableAction permissableAction : permissableActions)
+        for (Permissable permissable : permissables) {
+            for (PermissableAction permissableAction : permissableActions) {
                 context.faction.setPermission(permissable, permissableAction, access);
+            }
+        }
 
         context.msg(TL.COMMAND_PERM_SET, context.argAsString(1), access.name(), context.argAsString(0));
-        FactionsPlugin.getInstance().log(String.format(TL.COMMAND_PERM_SET.toString(), context.argAsString(1), access.name(), context.argAsString(0)) + " for faction " + context.fPlayer.getTag());
+        Logger.print(String.format(TL.COMMAND_PERM_SET.toString(), context.argAsString(1), access.name(), context.argAsString(0)) + " for faction " + context.fPlayer.getTag(), Logger.PrefixType.DEFAULT);
     }
 
-    private Permissable getPermissable (String name) {
-        if (Role.fromString(name.toUpperCase()) != null)
+    private Permissable getPermissable(String name) {
+        if (Role.fromString(name.toUpperCase()) != null) {
             return Role.fromString(name.toUpperCase());
-        else if (Relation.fromString(name.toUpperCase()) != null)
+        } else if (Relation.fromString(name.toUpperCase()) != null) {
             return Relation.fromString(name.toUpperCase());
-        else
+        } else {
             return null;
+        }
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_PERM_DESCRIPTION;
     }
 

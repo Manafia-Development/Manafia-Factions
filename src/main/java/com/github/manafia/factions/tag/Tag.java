@@ -3,7 +3,6 @@ package com.github.manafia.factions.tag;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.Faction;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.PlaceholderUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
@@ -50,12 +49,18 @@ public interface Tag {
     }
 
     static String parsePlaceholders(Player player, String line) {
-        if (player == null || line == null)
+        if (player == null || line == null) {
             return line;
-        if (PlaceholderUtil.isClipPlaceholderAPIHooked() && player.isOnline())
+        }
+
+        if (FactionsPlugin.getInstance().isClipPlaceholderAPIHooked() && player.isOnline()) {
             line = PlaceholderAPI.setPlaceholders(player, line);
-        if (PlaceholderUtil.isMVdWPlaceholderAPIHooked() && player.isOnline())
+        }
+
+        if (FactionsPlugin.getInstance().isMVdWPlaceholderAPIHooked() && player.isOnline()) {
             line = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, line);
+        }
+
         return line;
     }
 

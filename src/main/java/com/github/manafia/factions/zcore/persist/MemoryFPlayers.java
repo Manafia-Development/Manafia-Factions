@@ -3,7 +3,7 @@ package com.github.manafia.factions.zcore.persist;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FPlayers;
 import com.github.manafia.factions.Factions;
-import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ public abstract class MemoryFPlayers extends FPlayers {
     public void clean() {
         for (FPlayer fplayer : this.fPlayers.values()) {
             if (!Factions.getInstance().isValidFactionId(fplayer.getFactionId())) {
-                FactionsPlugin.getInstance().log("Reset faction data (invalid faction:" + fplayer.getFactionId() + ") for player " + fplayer.getName());
+                Logger.print("Reset faction data (invalid faction:" + fplayer.getFactionId() + ") for player " + fplayer.getName(), Logger.PrefixType.DEFAULT);
                 fplayer.resetFactionData(false);
             }
         }
@@ -25,8 +25,9 @@ public abstract class MemoryFPlayers extends FPlayers {
 
     public Collection<FPlayer> getOnlinePlayers() {
         Set<FPlayer> entities = new HashSet<>();
-        for (Player player : Bukkit.getServer().getOnlinePlayers())
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             entities.add(this.getByPlayer(player));
+        }
         return entities;
     }
 
@@ -53,8 +54,9 @@ public abstract class MemoryFPlayers extends FPlayers {
     @Override
     public FPlayer getById(String id) {
         FPlayer player = fPlayers.get(id);
-        if (player == null)
+        if (player == null) {
             player = generateFPlayer(id);
+        }
         return player;
     }
 

@@ -1,7 +1,7 @@
 package com.github.manafia.factions.tag;
 
 import com.github.manafia.factions.FPlayer;
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.integration.Econ;
 import com.github.manafia.factions.zcore.util.TL;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -18,10 +18,11 @@ public enum PlayerTag implements Tag {
      */
 
     GROUP("{group}", (fp) -> {
-        if (fp.isOnline())
-            return Util.getPrimaryGroup(fp.getPlayer());
-        else
+        if (fp.isOnline()) {
+            return FactionsPlugin.getInstance().getPrimaryGroup(fp.getPlayer());
+        } else {
             return "";
+        }
     }),
     LAST_SEEN("{lastSeen}", (fp) -> {
         String humanized = DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - fp.getLastLoginTime(), true, true) + TL.COMMAND_STATUS_AGOSUFFIX;
@@ -40,10 +41,12 @@ public enum PlayerTag implements Tag {
         }
         int count = 0;
         Player me = fp.getPlayer();
-        for (Player player : Bukkit.getOnlinePlayers())
-            if (me.canSee(player))
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (me.canSee(player)) {
                 count++;
-        return String.valueOf(count);
+            }
+        }
+        return Integer.toString(count);
     }),
     ;
 
@@ -56,8 +59,9 @@ public enum PlayerTag implements Tag {
     }
 
     public static String parse(String text, FPlayer player) {
-        for (PlayerTag tag : PlayerTag.values())
+        for (PlayerTag tag : VALUES) {
             text = tag.replace(text, player);
+        }
         return text;
     }
 
@@ -72,9 +76,13 @@ public enum PlayerTag implements Tag {
     }
 
     public String replace(String text, FPlayer player) {
-        if (!this.foundInString(text))
+        if (!this.foundInString(text)) {
             return text;
+        }
         String result = this.function.apply(player);
         return result == null ? null : text.replace(this.tag, result);
     }
+
+    public static final PlayerTag[] VALUES = PlayerTag.values();
+
 }

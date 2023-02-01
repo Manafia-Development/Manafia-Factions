@@ -15,7 +15,7 @@ public class CmdChest extends FCommand {
      * @author Illyria Team
      */
 
-    public CmdChest () {
+    public CmdChest() {
         this.aliases.addAll(Aliases.chest);
 
         this.requirements = new CommandRequirements.Builder(Permission.CHEST)
@@ -26,7 +26,7 @@ public class CmdChest extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
 
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("fchest.Enabled")) {
@@ -39,7 +39,7 @@ public class CmdChest extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_VAULT_DESCRIPTION;
     }
 }

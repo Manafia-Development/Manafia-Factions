@@ -4,7 +4,10 @@ package com.github.manafia.factions.cmd.audit;
  * @author Saser
  */
 
-import com.github.manafia.factions.*;
+import com.github.manafia.factions.FPlayer;
+import com.github.manafia.factions.FPlayers;
+import com.github.manafia.factions.Faction;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.util.CC;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -24,7 +27,7 @@ import java.util.Arrays;
 public class FChestListener implements Listener {
 
     @EventHandler
-    public void onInventoryDrag (InventoryDragEvent e) {
+    public void onInventoryDrag(InventoryDragEvent e) {
 
         Player player = (Player) e.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
@@ -35,15 +38,15 @@ public class FChestListener implements Listener {
     }
 
 
-    @EventHandler (
+    @EventHandler(
             priority = EventPriority.HIGHEST,
             ignoreCancelled = true
     )
-    public void onPlayerClickInventory (InventoryClickEvent event) {
+    public void onPlayerClickInventory(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         Faction faction;
-        if (!event.getView().getTitle().equalsIgnoreCase(Util.color(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title"))))
+        if (!event.getView().getTitle().equalsIgnoreCase(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title"))))
             return;
         if (event.getClick() == ClickType.UNKNOWN) {
             event.setCancelled(true);
@@ -64,10 +67,10 @@ public class FChestListener implements Listener {
             return;
         }
         if (event.getClickedInventory() == null) return;
-        if (event.getView().getTitle().equalsIgnoreCase(Util.color(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title"))) && !event.getClick().isShiftClick())
+        if (event.getView().getTitle().equalsIgnoreCase(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title"))) && !event.getClick().isShiftClick()) {
             if (currentItemType != Material.AIR) {
                 Inventory ours = faction.getChestInventory();
-                if (event.getClickedInventory() == ours)
+                if (event.getClickedInventory() == ours) {
                     if (ours == null || !ours.contains(currentItem)) {
                         event.setCancelled(true);
                         player.sendMessage(CC.RedB + "(!) That item not longer exists!");
@@ -75,20 +78,23 @@ public class FChestListener implements Listener {
                         player.closeInventory();
                         return;
                     }
+                }
                 logRemoveItem(currentItem, fPlayer, player);
-            } else if (cursorItemType != Material.AIR && !event.isShiftClick())
+            } else if (cursorItemType != Material.AIR && !event.isShiftClick()) {
                 logAddItem(cursorItem, fPlayer, player);
-            else if (event.isShiftClick() && currentItemType != Material.AIR)
-                logAddItem(currentItem, fPlayer, player);
+            }
+        } else if (event.isShiftClick() && currentItemType != Material.AIR) {
+            logAddItem(currentItem, fPlayer, player);
+        }
     }
 
-    private void logAddItem (ItemStack cursorItem, FPlayer fplayer, Player player) {
+    private void logAddItem(ItemStack cursorItem, FPlayer fplayer, Player player) {
         String itemName = cursorItem.hasItemMeta() && cursorItem.getItemMeta().hasDisplayName() ? cursorItem.getItemMeta().getDisplayName() : StringUtils.capitaliseAllWords(cursorItem.getType().name().replace("_", " ").toLowerCase());
-        Util.logFactionEvent(fplayer.getFaction(), FLogType.FCHEST_EDIT, player.getName(), CC.GreenB + "ADDED", itemName);
+        FactionsPlugin.instance.logFactionEvent(fplayer.getFaction(), FLogType.FCHEST_EDIT, player.getName(), CC.GreenB + "ADDED", itemName);
     }
 
-    private void logRemoveItem (ItemStack currentItem, FPlayer fplayer, Player player) {
+    private void logRemoveItem(ItemStack currentItem, FPlayer fplayer, Player player) {
         String itemName = currentItem.hasItemMeta() && currentItem.getItemMeta().hasDisplayName() ? currentItem.getItemMeta().getDisplayName() : StringUtils.capitaliseAllWords(currentItem.getType().name().replace("_", " ").toLowerCase());
-        Util.logFactionEvent(fplayer.getFaction(), FLogType.FCHEST_EDIT, player.getName(), CC.RedB + "TOOK", itemName);
+        FactionsPlugin.instance.logFactionEvent(fplayer.getFaction(), FLogType.FCHEST_EDIT, player.getName(), CC.RedB + "TOOK", itemName);
     }
 }

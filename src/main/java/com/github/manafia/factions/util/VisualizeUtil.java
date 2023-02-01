@@ -16,8 +16,11 @@ public class VisualizeUtil {
     }
 
     public static Set<Location> getPlayerLocations(UUID uuid) {
-        Set<Location> ret = playerLocations.computeIfAbsent(uuid, k -> new HashSet<>());
-        return ret;
+        return playerLocations.computeIfAbsent(uuid, k -> new HashSet<>());
+    }
+
+    public static Set<Location> getPlayerLocationsRaw(UUID uuid) {
+        return playerLocations.get(uuid);
     }
 
     @SuppressWarnings("deprecation")
@@ -32,9 +35,29 @@ public class VisualizeUtil {
         player.sendBlockChange(location, material, (byte) 0);
     }
 
+
+    @SuppressWarnings("deprecation")
+    public static void addLocations(Player player, Collection<Location> locations, Material material) {
+        Set<Location> ploc = getPlayerLocations(player);
+        for (Location location : locations) {
+            ploc.add(location);
+            player.sendBlockChange(location, material, (byte) 0);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static void addBlocks(Player player, Collection<Block> blocks, Material material) {
+        Set<Location> ploc = getPlayerLocations(player);
+        for (Block block : blocks) {
+            Location location = block.getLocation();
+            ploc.add(location);
+            player.sendBlockChange(location, material, (byte) 0);
+        }
+    }
+
     @SuppressWarnings("deprecation")
     public static void clear(Player player) {
-        Set<Location> locations = getPlayerLocations(player);
+        Set<Location> locations = getPlayerLocationsRaw(player.getUniqueId());
         if (locations == null) {
             return;
         }

@@ -44,8 +44,10 @@ public class Essentials {
     }
 
     public static boolean isOverBalCap(EconomyParticipator participator, double amount) {
-        if (essentials == null)
+        if (essentials == null) {
             return false;
+        }
+
         return amount > essentials.getSettings().getMaxMoney().doubleValue();
     }
 

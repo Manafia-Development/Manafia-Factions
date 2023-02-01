@@ -10,7 +10,7 @@ public class CmdBoom extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdBoom () {
+    public CmdBoom() {
         super();
         this.aliases.addAll(Aliases.boom);
 
@@ -23,15 +23,16 @@ public class CmdBoom extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!context.faction.isPeaceful()) {
             context.msg(TL.COMMAND_BOOM_PEACEFULONLY);
             return;
         }
 
         // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-        if (!context.payForCommand(Conf.econCostNoBoom, TL.COMMAND_BOOM_TOTOGGLE, TL.COMMAND_BOOM_FORTOGGLE))
+        if (!context.payForCommand(Conf.econCostNoBoom, TL.COMMAND_BOOM_TOTOGGLE, TL.COMMAND_BOOM_FORTOGGLE)) {
             return;
+        }
 
         context.faction.setPeacefulExplosionsEnabled(context.argAsBool(0, !context.faction.getPeacefulExplosionsEnabled()));
 
@@ -42,7 +43,7 @@ public class CmdBoom extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_BOOM_DESCRIPTION;
     }
 }

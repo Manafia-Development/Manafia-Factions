@@ -36,13 +36,12 @@ public enum ChatMode {
     }
 
     public ChatMode getNext() {
-        switch (this) {
-            case PUBLIC:
-                return ALLIANCE;
-            case ALLIANCE:
-                return FACTION;
-            default:
-                return PUBLIC;
+        if (this == PUBLIC) {
+            return ALLIANCE;
         }
+        if (this == ALLIANCE) {
+            return FACTION;
+        }
+        return PUBLIC;
     }
 }

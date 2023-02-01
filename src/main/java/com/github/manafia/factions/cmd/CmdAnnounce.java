@@ -35,12 +35,14 @@ public class CmdAnnounce extends FCommand {
         String prefix = ChatColor.GREEN + context.faction.getTag() + ChatColor.YELLOW + " [" + ChatColor.GRAY + context.player.getName() + ChatColor.YELLOW + "] " + ChatColor.RESET;
         String message = StringUtils.join(context.args, " ");
 
-        for (Player player : context.faction.getOnlinePlayers())
+        for (Player player : context.faction.getOnlinePlayers()) {
             player.sendMessage(prefix + message);
+        }
 
         // Add for offline players.
-        for (FPlayer fp : context.faction.getFPlayersWhereOnline(false))
+        for (FPlayer fp : context.faction.getFPlayersWhereOnline(false)) {
             context.faction.addAnnouncement(fp, prefix + message);
+        }
     }
 
     @Override

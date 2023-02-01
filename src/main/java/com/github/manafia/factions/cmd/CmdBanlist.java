@@ -32,8 +32,9 @@ public class CmdBanlist extends FCommand {
     @Override
     public void perform(CommandContext context) {
         Faction target = context.faction;
-        if (!context.args.isEmpty())
+        if (!context.args.isEmpty()) {
             target = context.argAsFaction(0);
+        }
 
         if (target == Factions.getInstance().getWilderness()) {
             context.sender.sendMessage(TL.COMMAND_BANLIST_NOFACTION.toString());
@@ -58,8 +59,9 @@ public class CmdBanlist extends FCommand {
             i++;
         }
 
-        for (String s : lines)
+        for (String s : lines) {
             context.fPlayer.getPlayer().sendMessage(s);
+        }
     }
 
     @Override

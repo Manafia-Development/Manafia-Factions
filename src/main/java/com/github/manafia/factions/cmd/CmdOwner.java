@@ -12,7 +12,7 @@ public class CmdOwner extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdOwner () {
+    public CmdOwner() {
         super();
         this.aliases.addAll(Aliases.owner_owner);
         this.optionalArgs.put("player name", "you");
@@ -27,11 +27,12 @@ public class CmdOwner extends FCommand {
     // TODO: Fix colors!
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         boolean hasBypass = context.fPlayer.isAdminBypassing();
 
-        if (!hasBypass && !context.assertHasFaction())
+        if (!hasBypass && !context.assertHasFaction()) {
             return;
+        }
 
         if (!Conf.ownedAreasEnabled) {
             context.msg(TL.COMMAND_OWNER_DISABLED);
@@ -43,25 +44,29 @@ public class CmdOwner extends FCommand {
             return;
         }
 
-        if (!hasBypass && !context.assertMinRole(Conf.ownedAreasModeratorsCanSet ? Role.MODERATOR : Role.LEADER))
+        if (!hasBypass && !context.assertMinRole(Conf.ownedAreasModeratorsCanSet ? Role.MODERATOR : Role.LEADER)) {
             return;
+        }
 
         FLocation flocation = new FLocation(context.fPlayer);
 
         Faction factionHere = Board.getInstance().getFactionAt(flocation);
-        if (factionHere != context.faction)
+        if (factionHere != context.faction) {
             if (!factionHere.isNormal()) {
                 context.msg(TL.COMMAND_OWNER_NOTCLAIMED);
                 return;
             }
-        if (!hasBypass) {
-            context.msg(TL.COMMAND_OWNER_WRONGFACTION);
-            return;
+
+            if (!hasBypass) {
+                context.msg(TL.COMMAND_OWNER_WRONGFACTION);
+                return;
+            }
         }
 
         FPlayer target = context.argAsBestFPlayerMatch(0, context.fPlayer);
-        if (target == null)
+        if (target == null) {
             return;
+        }
 
         String playerName = target.getName();
 
@@ -84,15 +89,17 @@ public class CmdOwner extends FCommand {
         }
 
         // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-        if (!context.payForCommand(Conf.econCostOwner, TL.COMMAND_OWNER_TOSET, TL.COMMAND_OWNER_FORSET))
+        if (!context.payForCommand(Conf.econCostOwner, TL.COMMAND_OWNER_TOSET, TL.COMMAND_OWNER_FORSET)) {
             return;
+        }
 
         context.faction.setPlayerAsOwner(target, flocation);
+
         context.msg(TL.COMMAND_OWNER_ADDED, playerName);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_OWNER_DESCRIPTION;
     }
 }

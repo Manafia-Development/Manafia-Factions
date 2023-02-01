@@ -52,8 +52,9 @@ public class FScoreboard {
         FScoreboard fboard = new FScoreboard(fplayer);
         fscoreboards.put(fplayer, fboard);
 
-        if (fplayer.hasFaction())
+        if (fplayer.hasFaction()) {
             FTeamWrapper.applyUpdates(fplayer.getFaction());
+        }
         FTeamWrapper.track(fboard);
     }
 
@@ -61,8 +62,11 @@ public class FScoreboard {
         FScoreboard fboard = fscoreboards.remove(fplayer);
 
         if (fboard != null) {
-            if (fboard.scoreboard == player.getScoreboard())// No equals method implemented, so may as well skip a nullcheck
-                player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+            if(Bukkit.getScoreboardManager() != null) {
+                if (fboard.scoreboard == player.getScoreboard()) { // No equals method implemented, so may as well skip a nullcheck
+                    player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+                }
+            }
             fboard.removed = true;
             FTeamWrapper.untrack(fboard);
         }
@@ -85,20 +89,23 @@ public class FScoreboard {
     }
 
     public void setSidebarVisibility(boolean visible) {
-        if (!isSupportedByServer())
+        if (!isSupportedByServer()) {
             return;
+        }
 
         bufferedObjective.setDisplaySlot(visible ? DisplaySlot.SIDEBAR : null);
     }
 
     public void setDefaultSidebar(final FSidebarProvider provider) {
-        if (!isSupportedByServer())
+        if (!isSupportedByServer()) {
             return;
+        }
 
         defaultProvider = provider;
-        if (temporaryProvider == null)
+        if (temporaryProvider == null) {
             // We have no temporary provider; update the BufferedObjective!
             updateObjective();
+        }
 
         new BukkitRunnable() {
             @Override
@@ -108,38 +115,42 @@ public class FScoreboard {
                     return;
                 }
 
-                if (temporaryProvider == null)
+                if (temporaryProvider == null) {
                     updateObjective();
+                }
             }
-        }.runTaskTimer(FactionsPlugin.instance, 20, 20);
+        }.runTaskTimer(FactionsPlugin.getInstance(), 20, 20);
     }
 
     public void setTemporarySidebar(final FSidebarProvider provider) {
-        if (!isSupportedByServer())
+        if (!isSupportedByServer()) {
             return;
+        }
+
         temporaryProvider = provider;
         updateObjective();
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (removed)
+                if (removed) {
                     return;
+                }
 
                 if (temporaryProvider == provider) {
                     temporaryProvider = null;
                     updateObjective();
                 }
             }
-        }.runTaskLater(FactionsPlugin.instance, FactionsPlugin.instance.getConfig().getInt("scoreboard.expiration", 7) * 20);
+        }.runTaskLater(FactionsPlugin.getInstance(), FactionsPlugin.getInstance().getConfig().getInt("scoreboard.expiration", 7) * 20L);
     }
 
     private void updateObjective() {
         FSidebarProvider provider = temporaryProvider != null ? temporaryProvider : defaultProvider;
 
-        if (provider == null)
+        if (provider == null) {
             bufferedObjective.hide();
-        else {
+        } else {
             bufferedObjective.setTitle(provider.getTitle(fplayer));
             bufferedObjective.setAllLines(provider.getLines(fplayer));
             bufferedObjective.flip();

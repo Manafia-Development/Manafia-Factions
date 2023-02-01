@@ -349,7 +349,7 @@
         <dependency>
             <groupId>mkremins</groupId>
             <artifactId>fanciful</artifactId>
-            <version>0.4.0-SNAPSHOT</version>
+            <version>0.4.0-20200501.174429-1</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>

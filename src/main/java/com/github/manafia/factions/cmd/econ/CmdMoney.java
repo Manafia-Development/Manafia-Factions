@@ -20,7 +20,7 @@ public class CmdMoney extends FCommand {
     public CmdMoneyTransferFp cmdMoneyTransferFp = new CmdMoneyTransferFp();
     public CmdMoneyTransferPf cmdMoneyTransferPf = new CmdMoneyTransferPf();
 
-    public CmdMoney () {
+    public CmdMoney() {
         super();
         this.aliases.addAll(Aliases.money_money);
 
@@ -38,7 +38,7 @@ public class CmdMoney extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!Conf.econEnabled || !Conf.bankEnabled) {
             context.msg(TL.ECON_OFF, "economy option is enabled, please set 'econEnabled' to true in conf.json");
             return;
@@ -48,7 +48,7 @@ public class CmdMoney extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MONEY_DESCRIPTION;
     }
 

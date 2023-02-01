@@ -11,12 +11,12 @@ import org.bukkit.event.Cancellable;
  */
 public class LandClaimEvent extends FactionPlayerEvent implements Cancellable {
 
-    private final FLocation location;
     /**
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
     private boolean cancelled;
+    private FLocation location;
 
     public LandClaimEvent(FLocation loc, Faction f, FPlayer p) {
         super(f, p);

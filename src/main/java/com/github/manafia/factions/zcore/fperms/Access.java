@@ -36,6 +36,17 @@ public enum Access {
         else return Access.DENY;
     }
 
+    public String getInlinedName(Access access) {
+        if(access == Access.ALLOW) {
+            return "Granted";
+        } else if(access == Access.UNDEFINED) {
+            return "Undefined";
+        } else if(access == Access.DENY) {
+            return "Denied";
+        }
+        return null;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -50,6 +61,6 @@ public enum Access {
     }
 
     public String getColor() {
-        return FactionsPlugin.getInstance().getConfig().getString("fperm-gui.action.Access-Colors." + this.name);
+        return FactionsPlugin.getInstance().getFileManager().getFperms().getConfig().getString("fperm-gui.action.Access-Colors." + this.name);
     }
 }

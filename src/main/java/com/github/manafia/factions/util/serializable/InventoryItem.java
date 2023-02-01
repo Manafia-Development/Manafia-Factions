@@ -2,6 +2,7 @@ package com.github.manafia.factions.util.serializable;
 
 import com.github.manafia.factions.util.ItemBuilder;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -11,8 +12,8 @@ import java.util.Map;
  * @author Driftay
  */
 public class InventoryItem {
-    private final ItemStack item;
-    private final Map<ClickType, Runnable> clickMap;
+    private ItemStack item;
+    private Map<ClickType, Runnable> clickMap;
     private Runnable runnable;
 
     public InventoryItem(ItemStack original) {
@@ -32,6 +33,18 @@ public class InventoryItem {
     public InventoryItem click(Runnable runnable) {
         this.runnable = runnable;
         return this;
+    }
+
+    public void handleClick(InventoryClickEvent event) {
+        if (clickMap.isEmpty() && runnable != null) {
+            runnable.run();
+        } else {
+            Runnable found = this.clickMap.get(event.getClick());
+            if (found != null) {
+                found.run();
+            }
+        }
+
     }
 
     public ItemStack getItem() {

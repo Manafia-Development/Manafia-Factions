@@ -15,10 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class CheckHistoryFrame implements FactionGUI {
 
@@ -26,55 +23,72 @@ public class CheckHistoryFrame implements FactionGUI {
      * @author Driftay
      */
 
-    private final FactionsPlugin plugin;
-    private final Faction faction;
-    private final Inventory inventory;
-    private final SimpleDateFormat simpleDateFormat;
+    private FactionsPlugin plugin;
+    private Faction faction;
+    private Inventory inventory;
+    private SimpleDateFormat simpleDateFormat;
 
-    public CheckHistoryFrame (FactionsPlugin plugin, Faction faction) {
+    public CheckHistoryFrame(FactionsPlugin plugin, Faction faction) {
         this.simpleDateFormat = new SimpleDateFormat(Conf.dateFormat);
         this.plugin = plugin;
         this.faction = faction;
         this.inventory = plugin.getServer().createInventory(this, 54, TL.CHECK_HISTORY_GUI_TITLE.toString());
     }
 
-    public void onClick (int slot, ClickType action) {
+    public void onClick(int slot, ClickType action) {
     }
 
-    public void build () {
+    public void build() {
         int currentSlot = 0;
         for (Map.Entry<Long, String> entry : Lists.reverse(new ArrayList<>(faction.getChecks().entrySet()))) {
-            if (currentSlot >= 54)
+            if (currentSlot >= 54) {
                 continue;
-            String str = entry.getValue().substring(0, 1);
-            ItemStack itemStack = new ItemStack(XMaterial.MAGENTA_STAINED_GLASS_PANE.parseItem());
-            itemStack.setDurability((short) 2);
-            MaterialData data = itemStack.getData();
-            data.setData(DyeColor.MAGENTA.getWoolData());
-            itemStack.setData(data);
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            switch (str) {
-                case "U":
-                    itemMeta.setDisplayName(TL.CHECK_WALLS_CHECKED_GUI_ICON.toString());
-                    break;
-                case "Y":
-                    itemMeta.setDisplayName(TL.CHECK_BUFFERS_CHECKED_GUI_ICON.toString());
-                    break;
-                case "J":
-                    itemMeta.setDisplayName(TL.CHECK_WALLS_UNCHECKED_GUI_ICON.toString());
-                    break;
-                case "H":
-                    itemMeta.setDisplayName(TL.CHECK_BUFFERS_UNCHECKED_GUI_ICON.toString());
-                    break;
             }
-            itemMeta.setLore(Arrays.asList(TL.CHECK_TIME_LORE_LINE.format(simpleDateFormat.format(new Date(entry.getKey()))), TL.CHECK_PLAYER_LORE_LINE.format(entry.getValue().substring(1))));
-            itemStack.setItemMeta(itemMeta);
+
+            ItemStack itemStack = new ItemStack(XMaterial.MAGENTA_STAINED_GLASS_PANE.parseItem());
+            if (entry.getValue().startsWith("U")) {
+                itemStack.setDurability((short) 2);
+                MaterialData data = itemStack.getData();
+                data.setData(DyeColor.MAGENTA.getWoolData());
+                itemStack.setData(data);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(TL.CHECK_WALLS_CHECKED_GUI_ICON.toString());
+                itemMeta.setLore(Arrays.asList(TL.CHECK_TIME_LORE_LINE.format(simpleDateFormat.format(new Date(entry.getKey()))), TL.CHECK_PLAYER_LORE_LINE.format(entry.getValue().substring(1))));
+                itemStack.setItemMeta(itemMeta);
+            } else if (entry.getValue().startsWith("Y")) {
+                itemStack.setDurability((short) 2);
+                MaterialData data = itemStack.getData();
+                data.setData(DyeColor.MAGENTA.getWoolData());
+                itemStack.setData(data);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(TL.CHECK_BUFFERS_CHECKED_GUI_ICON.toString());
+                itemMeta.setLore(Arrays.asList(TL.CHECK_TIME_LORE_LINE.format(simpleDateFormat.format(new Date(entry.getKey()))), TL.CHECK_PLAYER_LORE_LINE.format(entry.getValue().substring(1))));
+                itemStack.setItemMeta(itemMeta);
+            } else if (entry.getValue().startsWith("J")) {
+                itemStack.setDurability((short) 0);
+                MaterialData data = itemStack.getData();
+                data.setData(DyeColor.WHITE.getWoolData());
+                itemStack.setData(data);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(TL.CHECK_WALLS_UNCHECKED_GUI_ICON.toString());
+                itemMeta.setLore(Collections.singletonList(TL.CHECK_TIME_LORE_LINE.format(simpleDateFormat.format(new Date(entry.getKey())))));
+                itemStack.setItemMeta(itemMeta);
+            } else if (entry.getValue().startsWith("H")) {
+                itemStack.setDurability((short) 0);
+                MaterialData data = itemStack.getData();
+                data.setData(DyeColor.WHITE.getWoolData());
+                itemStack.setData(data);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(TL.CHECK_BUFFERS_UNCHECKED_GUI_ICON.toString());
+                itemMeta.setLore(Collections.singletonList(TL.CHECK_TIME_LORE_LINE.format(simpleDateFormat.format(new Date(entry.getKey())))));
+                itemStack.setItemMeta(itemMeta);
+            }
             inventory.setItem(currentSlot, itemStack);
             ++currentSlot;
         }
     }
 
-    public Inventory getInventory () {
+    public Inventory getInventory() {
         return inventory;
     }
 }

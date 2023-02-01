@@ -3,8 +3,6 @@ package com.github.manafia.factions.zcore.frame.fupgrades;
 import com.bgsoftware.wildstacker.api.WildStackerAPI;
 import com.cryptomorin.xseries.XMaterial;
 import com.github.manafia.factions.*;
-import com.github.manafia.factions.boosters.Booster;
-import com.github.manafia.factions.boosters.BoosterType;
 import dev.rosewood.rosestacker.api.RoseStackerAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.CropState;
@@ -35,16 +33,16 @@ public class UpgradesListener implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         Entity killer = e.getEntity().getKiller();
-        if (killer == null || !(killer instanceof Player))
-            return;
+        if (killer == null || !(killer instanceof Player)) return;
 
         FLocation floc = new FLocation(e.getEntity().getLocation());
         Faction faction = Board.getInstance().getFactionAt(floc);
         if (!faction.isWilderness()) {
             int level = faction.getUpgrade(UpgradeType.EXP);
-            double multiplier = FactionsPlugin.getInstance().getConfig().getDouble("fupgrades.MainMenu.EXP.EXP-Boost.level-" + level);
-            if (level != 0 && multiplier > 0.0)
+            double multiplier = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.EXP.EXP-Boost.level-" + level);
+            if (level != 0 && multiplier > 0.0) {
                 this.spawnMoreExp(e, multiplier);
+            }
         }
     }
 
@@ -59,24 +57,8 @@ public class UpgradesListener implements Listener {
         Faction factionAtLoc = Board.getInstance().getFactionAt(floc);
         if (!factionAtLoc.isWilderness()) {
             int level = factionAtLoc.getUpgrade(UpgradeType.SPAWNER);
-            if (level == 0 && !factionAtLoc.hasBooster(BoosterType.MOBSPAWN))
-                return;
-
-            double multiplier = 0;
-
-            if (level > 0) {
-                multiplier += FactionsPlugin.getInstance().getConfig().getDouble("fupgrades.MainMenu.Spawners.Spawner-Boost.level-" + level);
-            }
-
-            if (factionAtLoc.hasBooster(BoosterType.MOBSPAWN)) {
-                Booster booster = factionAtLoc.getActiveBoosters().get(BoosterType.MOBSPAWN);
-                multiplier += booster.getMultiplier();
-            }
-
-            if (multiplier == 0)
-                return;
-
-            this.lowerSpawnerDelay(e, multiplier);
+            if (level == 0) return;
+            this.lowerSpawnerDelay(e, FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.Spawners.Spawner-Boost.level-" + level));
         }
     }
 
@@ -98,13 +80,11 @@ public class UpgradesListener implements Listener {
         Faction factionAtLoc = Board.getInstance().getFactionAt(floc);
         if (!factionAtLoc.isWilderness()) {
             int level = factionAtLoc.getUpgrade(UpgradeType.CROP);
-            int chance = FactionsPlugin.getInstance().getConfig().getInt("fupgrades.MainMenu.Crops.Crop-Boost.level-" + level);
-            if (level == 0 || chance == 0)
-                return;
+            int chance = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getInt("fupgrades.MainMenu.Crops.Crop-Boost.level-" + level);
+            if (level == 0 || chance == 0) return;
 
             int randomNum = ThreadLocalRandom.current().nextInt(1, 101);
-            if (randomNum <= chance)
-                this.growCrop(e);
+            if (randomNum <= chance) this.growCrop(e);
         }
     }
 
@@ -117,15 +97,16 @@ public class UpgradesListener implements Listener {
             bs.update();
         }
         Block below = e.getBlock().getLocation().subtract(0.0, 1.0, 0.0).getBlock();
-        switch (below.getType()) {
-            case SUGAR_CANE:
-                Block above1 = e.getBlock().getLocation().add(0.0, 1.0, 0.0).getBlock();
-                if (above1.getType() == Material.AIR && above1.getLocation().add(0.0, -2.0, 0.0).getBlock().getType() != Material.AIR)
-                    above1.setType(XMaterial.SUGAR_CANE.parseMaterial());
-            case CACTUS:
-                Block above2 = e.getBlock().getLocation().add(0.0, 1.0, 0.0).getBlock();
-                if (above2.getType() == Material.AIR && above2.getLocation().add(0.0, -2.0, 0.0).getBlock().getType() != Material.AIR)
-                    above2.setType(XMaterial.CACTUS.parseMaterial());
+        if (below.getType() == XMaterial.SUGAR_CANE.parseMaterial()) {
+            Block above = e.getBlock().getLocation().add(0.0, 1.0, 0.0).getBlock();
+            if (above.getType() == Material.AIR && above.getLocation().add(0.0, -2.0, 0.0).getBlock().getType() != Material.AIR) {
+                above.setType(XMaterial.SUGAR_CANE.parseMaterial());
+            }
+        } else if (below.getType() == Material.CACTUS) {
+            Block above = e.getBlock().getLocation().add(0.0, 1.0, 0.0).getBlock();
+            if (above.getType() == Material.AIR && above.getLocation().add(0.0, -2.0, 0.0).getBlock().getType() != Material.AIR) {
+                above.setType(Material.CACTUS);
+            }
         }
     }
 
@@ -160,16 +141,13 @@ public class UpgradesListener implements Listener {
         }
     }
 
-
     @EventHandler
     public void onArmorDamage(PlayerItemDamageEvent e) {
-        if (FPlayers.getInstance().getByPlayer(e.getPlayer()) == null)
-            return;
+        if (FPlayers.getInstance().getByPlayer(e.getPlayer()) == null) return;
 
-        if (e.getItem().getType().toString().contains("LEGGINGS") || e.getItem().getType().toString().contains("CHESTPLATE") || e.getItem().getType()
-                .toString().contains("HELMET") || e.getItem().getType().toString().contains("BOOTS")) {
+        if (e.getItem().getType().toString().contains("LEGGINGS") || e.getItem().getType().toString().contains("CHESTPLATE") || e.getItem().getType().toString().contains("HELMET") || e.getItem().getType().toString().contains("BOOTS")) {
             int lvl = FPlayers.getInstance().getByPlayer(e.getPlayer()).getFaction().getUpgrade(UpgradeType.REINFORCEDARMOR);
-            double drop = FactionsPlugin.getInstance().getConfig().getDouble("fupgrades.MainMenu.Armor.Armor-HP-Drop.level-" + lvl);
+            double drop = FactionsPlugin.getInstance().getFileManager().getUpgrades().getConfig().getDouble("fupgrades.MainMenu.Armor.Armor-HP-Drop.level-" + lvl);
             int newDamage = (int) Math.round(e.getDamage() - e.getDamage() * drop);
             e.setDamage(newDamage);
         }

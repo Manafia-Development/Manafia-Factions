@@ -9,35 +9,30 @@ public class AsciiCompass {
 
     public static Point getCompassPointForDirection(double inDegrees) {
         double degrees = (inDegrees - 180) % 360;
-        if (degrees < 0)
+        if (degrees < 0) {
             degrees += 360;
-        degrees += 22.5;
-        // we can't do thing down there with a single switch statement in which
-        // we compare the values. I'll create a while loop and decrease 45
-        // each time it's possible and increment the value i. therefore I'll be able
-        // to switch for i.
-        int i = 0;
-        while (degrees - 45 >= 0) {
-            i++;
-            degrees -= 45;
         }
-        switch (i) {
-            case 1:
-                return Point.NE;
-            case 2:
-                return Point.E;
-            case 3:
-                return Point.SE;
-            case 4:
-                return Point.S;
-            case 5:
-                return Point.SW;
-            case 6:
-                return Point.W;
-            case 7:
-                return Point.NW;
-            default:
-                return Point.N;
+
+        if (0 <= degrees && degrees < 22.5) {
+            return Point.N;
+        } else if (22.5 <= degrees && degrees < 67.5) {
+            return Point.NE;
+        } else if (67.5 <= degrees && degrees < 112.5) {
+            return Point.E;
+        } else if (112.5 <= degrees && degrees < 157.5) {
+            return Point.SE;
+        } else if (157.5 <= degrees && degrees < 202.5) {
+            return Point.S;
+        } else if (202.5 <= degrees && degrees < 247.5) {
+            return Point.SW;
+        } else if (247.5 <= degrees && degrees < 292.5) {
+            return Point.W;
+        } else if (292.5 <= degrees && degrees < 337.5) {
+            return Point.NW;
+        } else if (337.5 <= degrees && degrees < 360.0) {
+            return Point.N;
+        } else {
+            return null;
         }
     }
 
@@ -93,18 +88,19 @@ public class AsciiCompass {
         }
 
         public String getTranslation() {
-            switch (this) {
-                case N:
-                    return TL.COMPASS_SHORT_NORTH.toString();
-                case E:
-                    return TL.COMPASS_SHORT_EAST.toString();
-                case S:
-                    return TL.COMPASS_SHORT_SOUTH.toString();
-                case W:
-                    return TL.COMPASS_SHORT_WEST.toString();
-                default:
-                    return toString();
+            if (this == N) {
+                return TL.COMPASS_SHORT_NORTH.toString();
             }
+            if (this == E) {
+                return TL.COMPASS_SHORT_EAST.toString();
+            }
+            if (this == S) {
+                return TL.COMPASS_SHORT_SOUTH.toString();
+            }
+            if (this == W) {
+                return TL.COMPASS_SHORT_WEST.toString();
+            }
+            return toString();
         }
 
         public String toString(boolean isActive, ChatColor colorActive, String colorDefault) {

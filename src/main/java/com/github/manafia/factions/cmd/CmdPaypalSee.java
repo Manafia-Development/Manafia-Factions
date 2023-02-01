@@ -28,24 +28,28 @@ public class CmdPaypalSee extends FCommand {
             return;
         }
 
-        switch (context.args.size()) {
-            case 0:
-                if (context.fPlayer.getFaction().getPaypal() == null)
-                    context.msg(TL.COMMAND_PAYPAL_NOTSET);
-                else
-                    context.msg(TL.PAYPALSEE_PLAYER_PAYPAL, context.fPlayer.getFaction().getPaypal());
-            case 1:
-                if (context.fPlayer.isAdminBypassing()) {
-                    Faction faction = context.argAsFaction(0);
-                    if (faction != null)
-                        if (faction.getPaypal() == null)
-                            context.msg(TL.COMMAND_PAYPALSEE_FACTION_NOTSET, faction.getTag());
-                        else
-                            context.msg(TL.COMMAND_PAYPALSEE_FACTION_PAYPAL.toString(), faction.getTag(), faction.getPaypal());
-                } else
-                    context.msg(TL.GENERIC_NOPERMISSION, "see another factions paypal.");
-            default:
-                context.msg(FactionsPlugin.getInstance().cmdBase.cmdPaypalSee.getUsageTemplate(context));
+
+        if (context.args.size() == 0) {
+            if (context.fPlayer.getFaction().getPaypal() == null) {
+                context.msg(TL.COMMAND_PAYPAL_NOTSET);
+            } else {
+                context.msg(TL.PAYPALSEE_PLAYER_PAYPAL, context.fPlayer.getFaction().getPaypal());
+            }
+        } else if (context.args.size() == 1) {
+            if (context.fPlayer.isAdminBypassing()) {
+                Faction faction = context.argAsFaction(0);
+                if (faction != null) {
+                    if (faction.getPaypal() == null) {
+                        context.msg(TL.COMMAND_PAYPALSEE_FACTION_NOTSET, faction.getTag());
+                    } else {
+                        context.msg(TL.COMMAND_PAYPALSEE_FACTION_PAYPAL.toString(), faction.getTag(), faction.getPaypal());
+                    }
+                }
+            } else {
+                context.msg(TL.GENERIC_NOPERMISSION, "see another factions paypal.");
+            }
+        } else {
+            context.msg(FactionsPlugin.getInstance().cmdBase.cmdPaypalSee.getUsageTemplate(context));
         }
     }
 

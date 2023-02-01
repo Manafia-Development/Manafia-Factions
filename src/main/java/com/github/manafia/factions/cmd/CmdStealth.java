@@ -29,8 +29,9 @@ public class CmdStealth extends FCommand {
         if (context.faction != null && !context.faction.getId().equalsIgnoreCase("0") && !context.faction.getId().equalsIgnoreCase("none") && !context.faction.getId().equalsIgnoreCase("safezone") && !context.faction.getId().equalsIgnoreCase("warzone")) {
             context.fPlayer.setStealth(!context.fPlayer.isStealthEnabled());
             context.msg(context.fPlayer.isStealthEnabled() ? TL.COMMAND_STEALTH_ENABLE : TL.COMMAND_STEALTH_DISABLE);
-        } else
+        } else {
             context.msg(TL.COMMAND_STEALTH_MUSTBEMEMBER);
+        }
     }
 
     public TL getUsageTranslation() {

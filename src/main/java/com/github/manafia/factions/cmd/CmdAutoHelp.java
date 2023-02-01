@@ -29,10 +29,12 @@ public class CmdAutoHelp extends FCommand {
 
         ArrayList<String> lines = new ArrayList<>(pcmd.helpLong);
 
-        for (FCommand scmd : pcmd.subCommands)
-            if (scmd.visibility == CommandVisibility.VISIBLE)
+        for (FCommand scmd : pcmd.subCommands) {
+            if (scmd.visibility == CommandVisibility.VISIBLE) {
                 lines.add(scmd.getUsageTemplate(context, true));
-        // TODO deal with other visibilities
+            }
+            // TODO deal with other visibilities
+        }
 
         context.sendMessage(FactionsPlugin.getInstance().txt.getPage(lines, context.argAsInt(0, 1), TL.COMMAND_AUTOHELP_HELPFOR + pcmd.aliases.get(0) + "\""));
     }

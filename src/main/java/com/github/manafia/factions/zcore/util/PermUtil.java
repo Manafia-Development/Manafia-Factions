@@ -6,6 +6,7 @@ import org.bukkit.permissions.Permission;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class PermUtil {
 
@@ -26,8 +27,9 @@ public class PermUtil {
      * This method hooks into all permission plugins we are supporting
      */
     public final void setup() {
-        for (Permission permission : p.getDescription().getPermissions())
+        for (Permission permission : p.getDescription().getPermissions()) {
             this.permissionDescriptions.put(permission.getName(), permission.getDescription());
+        }
     }
 
     public String getPermissionDescription(String perm) {
@@ -48,5 +50,17 @@ public class PermUtil {
         else if (informSenderIfNot && me != null)
             me.sendMessage(this.getForbiddenMessage(perm));
         return false;
+    }
+
+    public <T> T pickFirstVal(CommandSender me, Map<String, T> perm2val) {
+        if (perm2val == null) return null;
+        T ret = null;
+        for (Entry<String, T> entry : perm2val.entrySet()) {
+            ret = entry.getValue();
+            if (has(me, entry.getKey())) {
+                break;
+            }
+        }
+        return ret;
     }
 }

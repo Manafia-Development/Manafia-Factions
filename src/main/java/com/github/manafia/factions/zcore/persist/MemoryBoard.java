@@ -8,8 +8,8 @@ import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Relation;
 import com.github.manafia.factions.util.AsciiCompass;
 import com.github.manafia.factions.util.CC;
-import com.github.manafia.factions.util.CloakUtil;
-import com.github.manafia.factions.util.SpawnerChunkUtil;
+import com.github.manafia.factions.util.FastChunk;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.util.TL;
 import com.github.manafia.factions.zcore.util.TagReplacer;
 import com.github.manafia.factions.zcore.util.TagUtil;
@@ -103,7 +103,6 @@ public abstract class MemoryBoard extends Board {
             faction.clearAllClaimOwnership();
             faction.clearWarps();
             faction.clearSpawnerChunks();
-            faction.clearCloakChunks();
         }
         clean(factionId);
     }
@@ -172,7 +171,7 @@ public abstract class MemoryBoard extends Board {
         while (iter.hasNext()) {
             Entry<FLocation, String> entry = iter.next();
             if (!Factions.getInstance().isValidFactionId(entry.getValue())) {
-                FactionsPlugin.getInstance().log("Board cleaner removed " + entry.getValue() + " from " + entry.getKey());
+                Logger.print("Board cleaner removed " + entry.getValue() + " from " + entry.getKey(), Logger.PrefixType.DEFAULT);
                 iter.remove();
             }
         }
@@ -219,11 +218,15 @@ public abstract class MemoryBoard extends Board {
 
 
         // Get the compass
-        ArrayList<String> asciiCompass = AsciiCompass.getAsciiCompass(inDegrees, ChatColor.DARK_GREEN, FactionsPlugin.getInstance().txt.parse("<gray>"));
+        List<String> asciiCompass = AsciiCompass.getAsciiCompass(inDegrees, ChatColor.DARK_GREEN, FactionsPlugin.getInstance().txt.parse("<gray>"));
+
+        //Still use the player defined mapHeight, but if a server owner decides /f map command needs a nerf,
+        //Use the smaller config value to allow for mapHeight updating without rewriting the entire players.json file
+        int mapHeight = fplayer.getMapHeight();
+        if (mapHeight > Conf.mapHeight) mapHeight = Conf.mapHeight;
 
         int halfWidth = Conf.mapWidth / 2;
-        // Use player's value for height
-        int halfHeight = fplayer.getMapHeight() / 2;
+        int halfHeight = mapHeight / 2;
         FLocation topLeft = flocation.getRelative(-halfWidth, -halfHeight);
         int width = halfWidth * 2 + 1;
         int height = halfHeight * 2 + 1;
@@ -248,6 +251,7 @@ public abstract class MemoryBoard extends Board {
                     row.then("+").color(ChatColor.AQUA).tooltip(TL.CLAIM_YOUAREHERE.toString());
                 } else {
                     FLocation flocationHere = topLeft.getRelative(dx, dz);
+                    FastChunk fastChunk = new FastChunk(flocationHere);
                     Faction factionHere = getFactionAt(flocationHere);
                     Relation relation = fplayer.getRelationTo(factionHere);
                     if (flocationHere.isOutsideWorldBorder(buffer)) {
@@ -274,23 +278,13 @@ public abstract class MemoryBoard extends Board {
                         }
                         char tag = fList.get(factionHere.getTag());
 
-
-                        if (SpawnerChunkUtil.isSpawnerChunk(flocationHere)) {
-                            row.then(String.valueOf(tag)).color(Conf.spawnerChunkColor).tooltip(oneLineToolTip(factionHere, fplayer) + CC.Reset + CC.Blue + " " + Conf.spawnerChunkString);
-                            continue;
-                        }
-
-                        if (CloakUtil.isCloaked(flocationHere)) {
-                            row.then(String.valueOf(tag)).color(ChatColor.GRAY).tooltip(oneLineToolTip(factionHere, fplayer) + CC.Reset + CC.Blue + " " + "Cloaked");
-                            continue;
-                        }
-
-
-
                         //row.then(String.valueOf(tag)).color(factionHere.getColorTo(faction)).tooltip(getToolTip(factionHere, fplayer));
                         //changed out with a performance friendly one line tooltip :D
-                        row.then(String.valueOf(tag)).color(factionHere.getColorTo(faction)).tooltip(oneLineToolTip(factionHere, fplayer));
-                    } else {
+                        if (factionHere.getSpawnerChunks().contains(fastChunk) && Conf.userSpawnerChunkSystem) {
+                            row.then(String.valueOf(tag)).color(Conf.spawnerChunkColor).tooltip(oneLineToolTip(factionHere, fplayer) + CC.Reset + CC.Blue + " " + Conf.spawnerChunkString);
+                        } else {
+                            row.then(String.valueOf(tag)).color(factionHere.getColorTo(faction)).tooltip(oneLineToolTip(factionHere, fplayer));
+                        }            } else {
                         row.then("-").color(ChatColor.GRAY);
                     }
                 }

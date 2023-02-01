@@ -60,18 +60,21 @@ public enum FactionTag implements Tag {
     CREATE_DATE("{create-date}", (fac) -> TL.sdf.format(fac.getFoundedDate())),
     LAND_REFUND("{land-refund}", (fac) -> Econ.shouldBeUsed() ? Econ.moneyString(Econ.calculateTotalLandRefund(fac.getLandRounded())) : Tag.isMinimalShow() ? null : TL.ECON_OFF.format("refund")),
     BANK_BALANCE("{faction-balance}", (fac) -> {
-        if (Econ.shouldBeUsed())
-            return Conf.bankEnabled ? Econ.moneyString(Econ.getBalance(fac.getAccountId())) : Tag.isMinimalShow() ? null : TL.ECON_OFF.format("balance");
+        if (Econ.shouldBeUsed()) {
+            return Conf.bankEnabled ? Econ.insertCommas(Econ.getFactionBalance(fac)) : Tag.isMinimalShow() ? null : TL.ECON_OFF.format("balance");
+        }
         return Tag.isMinimalShow() ? null : TL.ECON_OFF.format("balance");
     }),
     TNT_BALANCE("{tnt-balance}", (fac) -> {
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("ftnt.Enabled"))
+        if (FactionsPlugin.instance.getConfig().getBoolean("ftnt.Enabled")) {
             return String.valueOf(fac.getTnt());
+        }
         return Tag.isMinimalShow() ? null : "";
     }),
     TNT_MAX("{tnt-max-balance}", (fac) -> {
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("ftnt.Enabled"))
+        if (FactionsPlugin.instance.getConfig().getBoolean("ftnt.Enabled")) {
             return String.valueOf(fac.getTntBankLimit());
+        }
         return Tag.isMinimalShow() ? null : "";
     }),
 
@@ -79,18 +82,20 @@ public enum FactionTag implements Tag {
     ENEMIES_COUNT("{enemies}", (fac) -> String.valueOf(fac.getRelationCount(Relation.ENEMY))),
     TRUCES_COUNT("{truces}", (fac) -> String.valueOf(fac.getRelationCount(Relation.TRUCE))),
     ONLINE_COUNT("{online}", (fac, fp) -> {
-        if (fp != null && fp.isOnline())
+        if (fp != null && fp.isOnline()) {
             return String.valueOf(fac.getFPlayersWhereOnline(true, fp).size());
-        else
+        } else {
             // Only console should ever get here.
             return String.valueOf(fac.getFPlayersWhereOnline(true).size());
+        }
     }),
     OFFLINE_COUNT("offline", (fac, fp) -> {
-        if (fp != null && fp.isOnline())
+        if (fp != null && fp.isOnline()) {
             return String.valueOf(fac.getFPlayers().size() - fac.getFPlayersWhereOnline(true, fp).size());
-        else
+        } else {
             // Only console should ever get here.
             return String.valueOf(fac.getFPlayersWhereOnline(false).size());
+        }
     }),
     FACTION_STRIKES("{faction-strikes}", (fac) -> String.valueOf(fac.getStrikes())),
     FACTION_POINTS("{faction-points}", (fac) -> String.valueOf(fac.getPoints())),
@@ -117,16 +122,21 @@ public enum FactionTag implements Tag {
     }
 
     public static String parse(String text, Faction faction, FPlayer player) {
-        for (FactionTag tag : FactionTag.values())
+        for (FactionTag tag : VALUES) {
             text = tag.replace(text, faction, player);
+        }
         return text;
     }
 
     public static String parse(String text, Faction faction) {
-        for (FactionTag tag : FactionTag.values())
+        for (FactionTag tag : VALUES) {
             text = tag.replace(text, faction);
+        }
         return text;
     }
+
+    public static final FactionTag[] VALUES = FactionTag.values();
+
 
     @Override
     public String getTag() {
@@ -139,13 +149,15 @@ public enum FactionTag implements Tag {
     }
 
     public String replace(String text, Faction faction, FPlayer player) {
-        if (!this.foundInString(text))
+        if (!this.foundInString(text)) {
             return text;
+        }
         String result = this.function == null ? this.biFunction.apply(faction, player) : this.function.apply(faction);
         return result == null ? null : text.replace(this.tag, result);
     }
 
     public String replace(String text, Faction faction) {
         return this.replace(text, faction, null);
+
     }
 }

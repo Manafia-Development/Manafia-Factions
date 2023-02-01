@@ -4,19 +4,14 @@ import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.cmd.alts.CmdAlts;
 import com.github.manafia.factions.cmd.audit.CmdAudit;
-import com.github.manafia.factions.cmd.boosters.CmdBoosterAdd;
-import com.github.manafia.factions.cmd.boosters.CmdBoosterRemove;
-import com.github.manafia.factions.cmd.boosters.CmdBoosters;
 import com.github.manafia.factions.cmd.check.CmdCheck;
 import com.github.manafia.factions.cmd.check.CmdWeeWoo;
 import com.github.manafia.factions.cmd.chest.CmdChest;
 import com.github.manafia.factions.cmd.claim.*;
-import com.github.manafia.factions.cmd.cloaks.CmdCloaks;
-import com.github.manafia.factions.cmd.cloaks.CmdCloaksAdd;
+import com.github.manafia.factions.cmd.drain.CmdDrain;
 import com.github.manafia.factions.cmd.econ.CmdMoney;
 import com.github.manafia.factions.cmd.grace.CmdGrace;
 import com.github.manafia.factions.cmd.points.CmdPoints;
-import com.github.manafia.factions.cmd.raids.CmdRaid;
 import com.github.manafia.factions.cmd.relational.CmdRelationAlly;
 import com.github.manafia.factions.cmd.relational.CmdRelationEnemy;
 import com.github.manafia.factions.cmd.relational.CmdRelationNeutral;
@@ -27,10 +22,10 @@ import com.github.manafia.factions.cmd.roles.CmdPromote;
 import com.github.manafia.factions.cmd.tnt.CmdSetTnt;
 import com.github.manafia.factions.cmd.tnt.CmdTnt;
 import com.github.manafia.factions.cmd.tnt.CmdTntFill;
-import com.github.manafia.factions.cmd.wild.CmdWild;
+import com.github.manafia.factions.discord.CmdInviteBot;
+import com.github.manafia.factions.discord.CmdSetGuild;
 import com.github.manafia.factions.missions.CmdMissions;
-import com.github.manafia.factions.shop.CmdShop;
-import com.github.manafia.factions.shop.ShopGUIFrame;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.util.TL;
 import me.lucko.commodore.CommodoreProvider;
 import org.bukkit.Bukkit;
@@ -44,6 +39,9 @@ import java.util.Collections;
 
 public class FCmdRoot extends FCommand implements CommandExecutor {
 
+    /**
+     * @author FactionsUUID Team - Modified By CmdrKittens
+     */
 
     public static FCmdRoot instance;
     public BrigadierManager brigadierManager;
@@ -113,6 +111,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdModifyPower cmdModifyPower = new CmdModifyPower();
     public CmdLogins cmdLogins = new CmdLogins();
     public CmdClaimLine cmdClaimLine = new CmdClaimLine();
+    public CmdTop cmdTop = new CmdTop();
     public CmdAHome cmdAHome = new CmdAHome();
     public CmdPerm cmdPerm = new CmdPerm();
     public CmdPromote cmdPromote = new CmdPromote();
@@ -135,7 +134,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdBanner cmdBanner = new CmdBanner();
     public CmdTpBanner cmdTpBanner = new CmdTpBanner();
     public CmdKillHolograms cmdKillHolograms = new CmdKillHolograms();
-    public CmdInspect cmdInspect = new CmdInspect();
+    //public CmdInspect cmdInspect = new CmdInspect();
     public CmdCoords cmdCoords = new CmdCoords();
     public CmdShowClaims cmdShowClaims = new CmdShowClaims();
     public CmdLowPower cmdLowPower = new CmdLowPower();
@@ -149,13 +148,16 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdViewChest cmdViewChest = new CmdViewChest();
     public CmdPoints cmdPoints = new CmdPoints();
     //public CmdLogout cmdLogout = new CmdLogout();
-    public CmdShop cmdShop = new CmdShop();
     public CmdMissions cmdMissions = new CmdMissions();
     public CmdStrikes cmdStrikes = new CmdStrikes();
     public CmdCheck cmdCheck = new CmdCheck();
     public CmdWeeWoo cmdWeeWoo = new CmdWeeWoo();
-    public CmdWild cmdWild = new CmdWild();
     public CmdSpawnerLock cmdSpawnerLock = new CmdSpawnerLock();
+    public CmdSetDiscord cmdSetDiscord = new CmdSetDiscord();
+    public CmdSeeDiscord cmdSeeDiscord = new CmdSeeDiscord();
+    public CmdInviteBot cmdInviteBot = new CmdInviteBot();
+    public CmdSetGuild cmdSetGuild = new CmdSetGuild();
+    public CmdDiscord cmdDiscord = new CmdDiscord();
     public CmdDebug cmdDebug = new CmdDebug();
     public CmdDrain cmdDrain = new CmdDrain();
     public CmdLookup cmdLookup = new CmdLookup();
@@ -168,13 +170,11 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public CmdSetPower cmdSetPower = new CmdSetPower();
     public CmdSpawnerChunk cmdSpawnerChunk = new CmdSpawnerChunk();
     public CmdSetTnt cmdSetTnt = new CmdSetTnt();
-    public CmdShield cmdShield = new CmdShield();
-    public CmdBoosterAdd cmdBoosterAdd = new CmdBoosterAdd();
-    public CmdBoosterRemove cmdBoosterRemove = new CmdBoosterRemove();
-    public CmdBoosters cmdBoosters = new CmdBoosters();
-    public CmdRaid cmdRaid = new CmdRaid();
-    public CmdCloaksAdd cmdCloaksAdd = new CmdCloaksAdd();
+    public CmdCornerList cmdCornerList = new CmdCornerList();
+
+
     //Variables to know if we already setup certain sub commands
+    public Boolean discordEnabled = false;
     public Boolean checkEnabled = false;
     public Boolean missionsEnabled = false;
     public Boolean fShopEnabled = false;
@@ -183,7 +183,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public Boolean fAltsEnabled = false;
     public Boolean fGraceEnabled = false;
     public Boolean fFocusEnabled = false;
-    public Boolean ShieldEnabled = false;
     public Boolean fFlyEnabled = false;
     public Boolean fPayPalEnabled = false;
     public Boolean coreProtectEnabled = false;
@@ -191,11 +190,8 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     public Boolean fWildEnabled = false;
     public Boolean fAuditEnabled = false;
     public Boolean fStrikes = false;
-    public Boolean fBoosterEnabled = false;
-    public Boolean raidEnabled = false;
-    public boolean cloaksEnabled = false;
 
-    public FCmdRoot () {
+    public FCmdRoot() {
         super();
         instance = this;
 
@@ -304,6 +300,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdChest);
         this.addSubCommand(this.cmdSetBanner);
         this.addSubCommand(this.cmdCorner);
+        this.addSubCommand(this.cmdCornerList);
         this.addSubCommand(this.cmdFGlobal);
         this.addSubCommand(this.cmdViewChest);
         this.addSubCommand(this.cmdSpawnerLock);
@@ -313,8 +310,6 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
         this.addSubCommand(this.cmdFriendlyFire);
         this.addSubCommand(this.cmdSetPower);
         this.addSubCommand(this.cmdSetTnt);
-        this.addSubCommand(this.cmdRaid);
-        this.addSubCommand(this.cmdCloaksAdd);
         addVariableCommands();
         if (CommodoreProvider.isSupported()) brigadierManager.build();
     }
@@ -322,10 +317,20 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     /**
      * Add sub commands to the root if they are enabled
      */
-    public void addVariableCommands () {
+    public void addVariableCommands() {
+        //Discord
+        if (FactionsPlugin.getInstance().getFileManager().getDiscord().fetchBoolean("Discord.useDiscordSystem") && !discordEnabled) {
+            this.addSubCommand(this.cmdInviteBot);
+            this.addSubCommand(this.cmdSetGuild);
+            this.addSubCommand(this.cmdSetDiscord);
+            this.addSubCommand(this.cmdSeeDiscord);
+            this.addSubCommand(this.cmdDiscord);
+            discordEnabled = true;
+        }
         //Reserve
-        if (Conf.useReserveSystem)
+        if (Conf.useReserveSystem) {
             this.addSubCommand(this.cmdReserve);
+        }
 
         //PayPal
         if (FactionsPlugin.getInstance().getConfig().getBoolean("fpaypal.Enabled", false) && !fPayPalEnabled) {
@@ -340,42 +345,39 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
             checkEnabled = true;
         }
         //CoreProtect
-        if (Bukkit.getServer().getPluginManager().getPlugin("CoreProtect") != null && !coreProtectEnabled) {
-            FactionsPlugin.getInstance().log("Found CoreProtect, enabling Inspect");
-            this.addSubCommand(this.cmdInspect);
-            coreProtectEnabled = true;
-        } else
-            FactionsPlugin.getInstance().log("CoreProtect not found, disabling Inspect");
-
-        //Other
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("Wild.Enabled", false) && !fWildEnabled) {
-            this.addSubCommand(this.cmdWild);
-            fWildEnabled = true;
-
+        //if (Bukkit.getServer().getPluginManager().getPlugin("CoreProtect") != null && !coreProtectEnabled) {
+        //    FactionsPlugin.getInstance().log("Found CoreProtect, enabling Inspect");
+        //    this.addSubCommand(this.cmdInspect);
+        //    coreProtectEnabled = true;
+        //} else {
+        //    FactionsPlugin.getInstance().log("CoreProtect not found, disabling Inspect");
+        //}
+        //FTOP
+        if ((Bukkit.getServer().getPluginManager().getPlugin("FactionsTop") != null || Bukkit.getServer().getPluginManager().getPlugin("SavageFTOP") != null || Bukkit.getServer().getPluginManager().getPlugin("SaberFTOP") != null) && !internalFTOPEnabled) {
+            Logger.print( "Found FactionsTop plugin. Disabling our own /f top command.", Logger.PrefixType.DEFAULT);
+        } else {
+            Logger.print( "Internal Factions Top Being Used. NOTE: Very Basic", Logger.PrefixType.DEFAULT);
+            this.addSubCommand(this.cmdTop);
+            internalFTOPEnabled = true;
         }
+
+        if (Conf.useAuditSystem) {
+            this.addSubCommand(cmdAudit);
+            fAuditEnabled = true;
+        }
+
         if (Conf.useStrikeSystem) {
             this.addSubCommand(this.cmdStrikes);
             fStrikes = true;
         }
 
-
         if (Conf.userSpawnerChunkSystem) {
             this.addSubCommand(this.cmdSpawnerChunk);
         }
 
-        if (FactionsPlugin.getInstance().getFileManager().getRaids().getConfig().getBoolean("Enabled", false) && !raidEnabled) {
-            this.addSubCommand(this.cmdRaid);
-            raidEnabled = true;
-        }
-
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("Missions-Enabled", false) && !missionsEnabled) {
+        if (FactionsPlugin.getInstance().getFileManager().getMissions().getConfig().getBoolean("Missions-Enabled", false) && !missionsEnabled) {
             this.addSubCommand(this.cmdMissions);
             missionsEnabled = true;
-        }
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("F-Shop.Enabled", false) && !fShopEnabled) {
-            this.addSubCommand(this.cmdShop);
-            new ShopGUIFrame(null).checkShopConfig();
-            fShopEnabled = true;
         }
         if (FactionsPlugin.getInstance().getConfig().getBoolean("f-inventory-see.Enabled", false) && !invSeeEnabled) {
             this.addSubCommand(this.cmdInventorySee);
@@ -401,37 +403,26 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
             this.addSubCommand(this.cmdFly);
             fFlyEnabled = true;
         }
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("Shields.Enabled", true) && !ShieldEnabled) {
-            this.addSubCommand(this.cmdShield);
-            ShieldEnabled = true;
-        }
-
-        if (FactionsPlugin.getInstance().getConfig().getBoolean("fboosters.Enabled", true) && !fBoosterEnabled) {
-            this.addSubCommand(this.cmdBoosters);
-            this.addSubCommand(this.cmdBoosterAdd);
-            this.addSubCommand(this.cmdBoosterRemove);
-            fBoosterEnabled = true;
-        }
     }
 
-    public void rebuild () {
+    public void rebuild() {
         if (CommodoreProvider.isSupported()) brigadierManager.build();
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         context.commandChain.add(this);
         this.cmdHelp.execute(context);
     }
 
     @Override
-    public boolean onCommand (CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         this.execute(new CommandContext(sender, new ArrayList<>(Arrays.asList(args)), label));
         return true;
     }
 
     @Override
-    public void addSubCommand (FCommand subCommand) {
+    public void addSubCommand(FCommand subCommand) {
         super.addSubCommand(subCommand);
         // People were getting NPE's as somehow CommodoreProvider#isSupported returned true on legacy versions.
         if (CommodoreProvider.isSupported()) {
@@ -440,7 +431,7 @@ public class FCmdRoot extends FCommand implements CommandExecutor {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.GENERIC_PLACEHOLDER;
     }
 

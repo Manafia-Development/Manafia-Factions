@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class CustomFile {
 
-    private final HashMap<String, Object> cachedObjects = new HashMap<>();
     private File file;
     private YamlConfiguration fileConfig;
+    private HashMap<String, Object> cachedObjects = new HashMap<>();
 
     public CustomFile(File file) {
         this.file = file;
@@ -26,18 +26,19 @@ public class CustomFile {
 
     public void setup(boolean loadFromProject, String inFolder) {
         if (!getFile().exists()) {
-            if (loadFromProject)
-                if (!inFolder.equalsIgnoreCase(""))
+            if (loadFromProject) {
+                if (!inFolder.equalsIgnoreCase("")) {
                     FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
-                   // FactionsPlugin.getInstance().saveResource(inFolder + "/" + file.getName(), false);
-                else
+                } else {
                     FactionsPlugin.getInstance().saveResource(file.getName(), false);
-            else
+                }
+            } else {
                 try {
                     getFile().createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
         }
         loadFile();
     }
@@ -82,8 +83,9 @@ public class CustomFile {
     public Object getObj(String key, Enum<dataTypes> data) {
         //check for cache first
 
-        if (getCachedObjects().containsKey(key))
+        if (getCachedObjects().containsKey(key)) {
             return getCachedObjects().get(key);
+        }
 
         if (data.equals(dataTypes.STRING)) {
             String d = getConfig().getString(key);
@@ -136,7 +138,6 @@ public class CustomFile {
     public YamlConfiguration getConfig() {
         return fileConfig;
     }
-
 
     public enum dataTypes {
         STRING, INT, DOUBLE, STRINGLIST, BOOLEAN, MAP

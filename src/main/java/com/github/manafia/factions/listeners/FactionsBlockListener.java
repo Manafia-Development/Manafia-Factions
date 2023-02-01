@@ -8,6 +8,7 @@ import com.github.manafia.factions.integration.Worldguard;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Relation;
 import com.github.manafia.factions.struct.Role;
+import com.github.manafia.factions.util.CC;
 import com.github.manafia.factions.util.ItemBuilder;
 import com.github.manafia.factions.zcore.fperms.Access;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
@@ -45,8 +46,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FactionsBlockListener implements Listener {
 
     public static HashMap<String, Location> bannerLocations = new HashMap<>();
-    private final HashMap<String, Boolean> bannerCooldownMap = new HashMap<>();
-    private final long placeTimer = TimeUnit.SECONDS.toMillis(15L);
+    private HashMap<String, Boolean> bannerCooldownMap = new HashMap<>();
+    private long placeTimer = TimeUnit.SECONDS.toMillis(15L);
 
 
     public static boolean playerCanBuildDestroyBlock(Player player, Location location, String action, boolean justCheck) {
@@ -62,7 +63,7 @@ public class FactionsBlockListener implements Listener {
         if (otherFaction.isWilderness()) {
             if (Conf.worldGuardBuildPriority && Worldguard.getInstance().playerCanBuild(player, location)) return true;
             if (location.getWorld() != null) {
-                if (!Conf.wildernessDenyBuild || Conf.worldsNoWildernessProtection.contains(location.getWorld().getName()))
+                if (!Conf.wildernessDenyBuild || ((Conf.worldsNoWildernessProtection.contains(location.getWorld().getName()) && !Conf.useWorldConfigurationsAsWhitelist) || (!Conf.worldsNoWildernessProtection.contains(location.getWorld().getName()) && Conf.useWorldConfigurationsAsWhitelist)) )
                     return true;
             }
             if (!justCheck) me.msg(TL.ACTION_DENIED_WILDERNESS, action);
@@ -129,7 +130,7 @@ public class FactionsBlockListener implements Listener {
     }
 
     public void handleSpawnerUpdate(Faction at, Player player, ItemStack spawnerItem, LogTimer.TimerSubType subType) {
-        FLogManager manager = Util.getFlogManager();
+        FLogManager manager = FactionsPlugin.instance.getFlogManager();
         LogTimer logTimer = manager.getLogTimers().computeIfAbsent(player.getUniqueId(), e -> new LogTimer(player.getName(), at.getId()));
         LogTimer.Timer timer = logTimer.attemptLog(LogTimer.TimerType.SPAWNER_EDIT, subType, 0L);
         Map<MaterialData, AtomicInteger> currentCounts = (timer.getExtraData() == null) ? new HashMap<>() : ((Map) timer.getExtraData());
@@ -140,26 +141,9 @@ public class FactionsBlockListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.HIGH,
-            ignoreCancelled = true
-    )
-    public void onPlayerPlace(BlockPlaceEvent event) {
-        ItemStack item = event.getItemInHand();
-        if (item != null && item.getType() == XMaterial.SPAWNER.parseMaterial()) {
-            Faction at = Board.getInstance().getFactionAt(new FLocation(event.getBlockPlaced()));
-            if (at != null && at.isNormal()) {
-                FPlayer fplayer = FPlayers.getInstance().getByPlayer(event.getPlayer());
-                if (fplayer != null && at.getRelationTo(fplayer.getFaction()).isAtLeast(Relation.TRUCE)) {
-                    this.handleSpawnerUpdate(at, event.getPlayer(), item, LogTimer.TimerSubType.SPAWNER_PLACE);
-                }
-            }
-        }
-    }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-
         if (!event.canBuild()) return;
         if (event.getBlockPlaced().getType() == Material.FIRE) return;
         boolean isSpawner = event.getBlock().getType().equals(XMaterial.SPAWNER.parseMaterial());
@@ -171,10 +155,11 @@ public class FactionsBlockListener implements Listener {
         if (isSpawner) {
             if (Conf.spawnerLock) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(Util.color(TL.COMMAND_SPAWNER_LOCK_CANNOT_PLACE.toString()));
+                event.getPlayer().sendMessage(CC.translate(TL.COMMAND_SPAWNER_LOCK_CANNOT_PLACE.toString()));
             }
         }
     }
+
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockFromTo(BlockFromToEvent event) {
@@ -210,6 +195,8 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPistonExtend(BlockPistonExtendEvent event) {
+
+
         if (!Conf.pistonProtectionThroughDenyBuild) return;
         Faction pistonFaction = Board.getInstance().getFactionAt(new FLocation(event.getBlock()));
 
@@ -224,6 +211,7 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler
     public void onVaultPlace(BlockPlaceEvent e) {
+
         if (e.getItemInHand().getType() == Material.CHEST) {
 
             ItemStack vault = new ItemBuilder(Material.CHEST)
@@ -271,6 +259,7 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler
     public void onHopperPlace(BlockPlaceEvent e) {
+
         if (e.getItemInHand().getType() != Material.HOPPER && !FactionsPlugin.instance.getConfig().getBoolean("fvault.No-Hoppers-near-vault"))
             return;
         Faction factionAt = Board.getInstance().getFactionAt(new FLocation(e.getBlockPlaced().getLocation()));
@@ -301,6 +290,8 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockPistonRetract(BlockPistonRetractEvent event) {
+
+
         // if not a sticky piston, retraction should be fine
         if (!event.isSticky() || !Conf.pistonProtectionThroughDenyBuild) return;
 
@@ -321,8 +312,9 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler
     public void onBannerBreak(BlockBreakEvent e) {
+
         FPlayer fme = FPlayers.getInstance().getByPlayer(e.getPlayer());
-        if (FactionsPlugin.instance.version == 7) {
+        if (FactionsPlugin.getInstance().version == 7) {
             return;
         }
 
@@ -336,7 +328,8 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler
     public void onBannerPlace(BlockPlaceEvent e) {
-        if (FactionsPlugin.instance.version == 7) return;
+
+        if (FactionsPlugin.getInstance().version == 7) return;
 
         if (e.getItemInHand().getType().name().contains("BANNER")) {
             ItemStack bannerInHand = e.getItemInHand();
@@ -344,8 +337,8 @@ public class FactionsBlockListener implements Listener {
             ItemStack warBanner = fme.getFaction().getBanner();
             if (warBanner == null) return;
             ItemMeta warmeta = warBanner.getItemMeta();
-            warmeta.setDisplayName(Util.color(FactionsPlugin.getInstance().getConfig().getString("fbanners.Item.Name")));
-            warmeta.setLore(Util.colorList(FactionsPlugin.getInstance().getConfig().getStringList("fbanners.Item.Lore")));
+            warmeta.setDisplayName(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fbanners.Item.Name")));
+            warmeta.setLore(CC.translate(FactionsPlugin.getInstance().getConfig().getStringList("fbanners.Item.Lore")));
             warBanner.setItemMeta(warmeta);
             if (warBanner.isSimilar(bannerInHand)) {
                 if (fme.getFaction().isWilderness()) {
@@ -363,7 +356,7 @@ public class FactionsBlockListener implements Listener {
                         return;
                     }
                     for (FPlayer fplayer : fme.getFaction().getFPlayers()) {
-                        fplayer.getPlayer().sendTitle(Util.color(fme.getTag() + " Placed A WarBanner!"), Util.color("&7use &c/f tpbanner&7 to tp to the banner!"));
+                        fplayer.getPlayer().sendTitle(CC.translate(fme.getTag() + " Placed A WarBanner!"), CC.translate("&7use &c/f tpbanner&7 to tp to the banner!"));
                     }
                     bannerCooldownMap.put(fme.getTag(), true);
                     FactionsBlockListener.bannerLocations.put(fme.getTag(), e.getBlockPlaced().getLocation());
@@ -372,7 +365,7 @@ public class FactionsBlockListener implements Listener {
                     as.setVisible(false);
                     as.setGravity(false);
                     as.setCanPickupItems(false);
-                    as.setCustomName(Util.color(FactionsPlugin.getInstance().getConfig().getString("fbanners.BannerHolo").replace("{Faction}", fme.getTag())));
+                    as.setCustomName(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fbanners.BannerHolo").replace("{Faction}", fme.getTag())));
                     as.setCustomNameVisible(true);
                     String tag = fme.getTag();
                     Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.getInstance(), () -> bannerCooldownMap.remove(tag), Long.parseLong(bannerCooldown + ""));
@@ -418,6 +411,8 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onFrostWalker(EntityBlockFormEvent event) {
+
+
         if (event.getEntity() == null || event.getEntity().getType() != EntityType.PLAYER || event.getBlock() == null)
             return;
 
@@ -436,6 +431,8 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler
     public void onFallingBlock(EntityChangeBlockEvent event) {
+
+
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("Falling-Block-Fix.Enabled"))
             return;
 
@@ -452,7 +449,7 @@ public class FactionsBlockListener implements Listener {
         if (pistonFaction == otherFaction) return true;
 
         if (otherFaction.isWilderness())
-            return !Conf.wildernessDenyBuild || Conf.worldsNoWildernessProtection.contains(target.getWorld().getName());
+            return !Conf.wildernessDenyBuild || ((Conf.worldsNoWildernessProtection.contains(target.getWorld().getName()) && !Conf.useWorldConfigurationsAsWhitelist) || (!Conf.worldsNoWildernessProtection.contains(target.getWorld().getName()) && Conf.useWorldConfigurationsAsWhitelist) );
         else if (otherFaction.isSafeZone()) return !Conf.safeZoneDenyBuild;
         else if (otherFaction.isWarZone()) return !Conf.warZoneDenyBuild;
 
@@ -462,12 +459,14 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+
+
         //If there is an error its much safer to not allow the block to be broken
         try {
             Block block = event.getBlock();
 
             Faction at = Board.getInstance().getFactionAt(new FLocation(block));
-            boolean isSpawner = event.getBlock().getType().equals(XMaterial.SPAWNER.parseMaterial());
+            boolean isSpawner = event.getBlock().getType().equals(XMaterial.matchXMaterial("MOB_SPAWNER").get().parseMaterial());
             if (!playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock().getLocation(), "destroy", false)) {
                 event.setCancelled(true);
                 return;
@@ -482,21 +481,6 @@ public class FactionsBlockListener implements Listener {
                     fme.msg(TL.GENERIC_FPERM_NOPERMISSION, "mine spawners");
                 }
             }
-
-            if (isSpawner && !fme.isAdminBypassing()) {
-                ItemStack item = new ItemStack(block.getType(), 1, block.getData());
-                if (at != null && at.isNormal()) {
-                    FPlayer fplayer = FPlayers.getInstance().getByPlayer(event.getPlayer());
-                    if (fplayer != null) {
-                        BlockState state = block.getState();
-                        if (state instanceof CreatureSpawner) {
-                            CreatureSpawner spawner = (CreatureSpawner) state;
-                            item.setDurability(spawner.getSpawnedType().getTypeId());
-                        }
-                        handleSpawnerUpdate(at, event.getPlayer(), item, LogTimer.TimerSubType.SPAWNER_BREAK);
-                    }
-                }
-            }
         } catch (Exception e) {
             event.setCancelled(true);
             e.printStackTrace();
@@ -506,9 +490,10 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void FrameRemove(HangingBreakByEntityEvent event) {
+
         if (event.getRemover() == null) return;
         if ((event.getRemover() instanceof Player)) {
-            if (event.getEntity().getType().equals(EntityType.ITEM_FRAME)) {
+            if (event.getEntity().getType().name().contains("ITEM_FRAME")) {
                 Player p = (Player) event.getRemover();
                 if (!playerCanBuildDestroyBlock(p, event.getEntity().getLocation(), "destroy", true)) {
                     event.setCancelled(true);
@@ -519,6 +504,8 @@ public class FactionsBlockListener implements Listener {
 
     @EventHandler
     public void onFarmLandDamage(EntityChangeBlockEvent event) {
+
+
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (!playerCanBuildDestroyBlock(player, event.getBlock().getLocation(), "destroy", true)) {

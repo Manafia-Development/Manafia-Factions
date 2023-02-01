@@ -2,8 +2,8 @@ package com.github.manafia.factions.cmd;
 
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.Util;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.CC;
 import com.github.manafia.factions.zcore.util.TL;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
@@ -40,8 +40,8 @@ public class CmdBanner extends FCommand {
         }
         ItemStack warBanner = context.fPlayer.getFaction().getBanner();
         ItemMeta warmeta = warBanner.getItemMeta();
-        warmeta.setDisplayName(Util.color(FactionsPlugin.getInstance().getConfig().getString("fbanners.Item.Name")));
-        warmeta.setLore(Util.colorList(FactionsPlugin.getInstance().getConfig().getStringList("fbanners.Item.Lore")));
+        warmeta.setDisplayName(CC.translate(FactionsPlugin.getInstance().getConfig().getString("fbanners.Item.Name")));
+        warmeta.setLore(CC.translate(FactionsPlugin.getInstance().getConfig().getStringList("fbanners.Item.Lore")));
         warBanner.setItemMeta(warmeta);
         context.msg(TL.COMMAND_BANNER_SUCCESS);
         warBanner.setAmount(1);
@@ -50,9 +50,10 @@ public class CmdBanner extends FCommand {
 
     @Deprecated
     public boolean hasMoney(FPlayer fme, int amt) {
-        Economy econ = Util.getEcon();
-        if (econ.getBalance(fme.getPlayer()) >= amt)
+        Economy econ = FactionsPlugin.getInstance().getEcon();
+        if (econ.getBalance(fme.getPlayer()) >= amt) {
             return true;
+        }
         fme.msg(TL.COMMAND_BANNER_NOTENOUGHMONEY);
         return false;
     }
@@ -60,7 +61,6 @@ public class CmdBanner extends FCommand {
     @Deprecated
     public void takeMoney(FPlayer fme, int amt) {
         if (this.hasMoney(fme, amt)) {
-            Economy econ = Util.getEcon();
             fme.sendMessage(TL.COMMAND_BANNER_MONEYTAKE.toString().replace("{amount}", amt + ""));
         }
     }
@@ -68,16 +68,21 @@ public class CmdBanner extends FCommand {
     public boolean inventoryContains(Inventory inventory, ItemStack item) {
         int count = 0;
         ItemStack[] items = inventory.getContents();
-        for (ItemStack item1 : items)
-            if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability())
+        for (ItemStack item1 : items) {
+            if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability()) {
                 count += item1.getAmount();
-        return count >= item.getAmount();
+            }
+            if (count >= item.getAmount()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();
         ItemStack[] items = inventory.getContents();
-        for (int i = 0; i < items.length; ++i)
+        for (int i = 0; i < items.length; ++i) {
             if (items[i] != null && items[i].getType() == item.getType() && items[i].getDurability() == item.getDurability()) {
                 if (items[i].getAmount() > amt) {
                     items[i].setAmount(items[i].getAmount() - amt);
@@ -90,6 +95,7 @@ public class CmdBanner extends FCommand {
                 amt -= items[i].getAmount();
                 items[i] = null;
             }
+        }
         inventory.setContents(items);
     }
 
@@ -97,9 +103,11 @@ public class CmdBanner extends FCommand {
         PlayerInventory inventory = p.getInventory();
         ItemStack[] cont = inventory.getContents();
         int i = 0;
-        for (ItemStack item : cont)
-            if (item != null && item.getType() != Material.AIR)
+        for (ItemStack item : cont) {
+            if (item != null && item.getType() != Material.AIR) {
                 ++i;
+            }
+        }
         return 36 - i;
     }
 

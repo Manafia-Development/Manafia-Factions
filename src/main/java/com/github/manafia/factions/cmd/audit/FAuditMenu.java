@@ -7,7 +7,6 @@ package com.github.manafia.factions.cmd.audit;
 import com.google.common.collect.Lists;
 import com.github.manafia.factions.Faction;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.Util;
 import com.github.manafia.factions.util.CC;
 import com.github.manafia.factions.util.ItemBuilder;
 import com.github.manafia.factions.util.serializable.ClickableItemStack;
@@ -22,21 +21,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FAuditMenu extends GUIMenu {
-    private final Player player;
-    private final Faction faction;
+    private Player player;
     private boolean showTimestamps = true;
+    private Faction faction;
 
-    public FAuditMenu (Player player, Faction faction) {
+    public FAuditMenu(Player player, Faction faction) {
         super("Faction Logs", 18);
         this.faction = faction;
         this.player = player;
     }
 
-    public void drawItems () {
+    public void drawItems() {
         for (FLogType type : FLogType.values()) {
             if (type.getSlot() == -1) continue;
             if (type != FLogType.F_TNT || FactionsPlugin.getInstance().getConfig().getBoolean("f-points.Enabled")) {
-                FactionLogs logs = Util.getFlogManager().getFactionLogMap().get(faction.getId());
+                FactionLogs logs = FactionsPlugin.instance.getFlogManager().getFactionLogMap().get(faction.getId());
                 if (logs == null) logs = new FactionLogs();
                 LinkedList<FactionLogs.FactionLog> recentLogs = logs.getMostRecentLogs().get(type);
                 if (recentLogs == null) recentLogs = Lists.newLinkedList();
@@ -67,7 +66,7 @@ public class FAuditMenu extends GUIMenu {
                             player.sendMessage(CC.Red + "No extra logs to load.");
                             return;
                         }
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.getInstance(), () -> (new FAuditLogMenu(player, faction, type)).open(player));
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.instance, () -> (new FAuditLogMenu(player, faction, type)).open(player));
                     }
                 }));
             }
@@ -75,20 +74,20 @@ public class FAuditMenu extends GUIMenu {
     }
 
     static class FAuditLogMenu extends GUIMenu {
-        private final Player player;
-        private final Faction faction;
-        private final FLogType logType;
+        private Player player;
+        private Faction faction;
+        private FLogType logType;
         private boolean timeStamp = false;
 
-        public FAuditLogMenu (Player player, Faction faction, FLogType type) {
+        public FAuditLogMenu(Player player, Faction faction, FLogType type) {
             super("Faction Logs", 9);
             this.player = player;
             this.faction = faction;
             this.logType = type;
         }
 
-        public void drawItems () {
-            FactionLogs logs = Util.getFlogManager().getFactionLogMap().get(faction.getId());
+        public void drawItems() {
+            FactionLogs logs = FactionsPlugin.instance.getFlogManager().getFactionLogMap().get(faction.getId());
             int perPage = logType == FLogType.F_TNT ? 25 : 20;
             if (logs != null) {
                 LinkedList<FactionLogs.FactionLog> log = logs.getMostRecentLogs().get(logType);
@@ -98,18 +97,21 @@ public class FAuditMenu extends GUIMenu {
 
                     for (int page = 1; page <= pagesToShow; ++page) {
                         int startIndex = log.size() - (page * perPage - perPage);
-                        if (startIndex >= log.size())
+                        if (startIndex >= log.size()) {
                             startIndex = log.size() - 1;
+                        }
 
                         List<String> lore = Lists.newArrayList("", CC.GreenB + "Logs");
 
-                        for (int i = startIndex; i > startIndex - perPage; --i)
+                        for (int i = startIndex; i > startIndex - perPage; --i) {
                             if (i < log.size()) {
-                                if (i < 0)
+                                if (i < 0) {
                                     break;
+                                }
                                 FactionLogs.FactionLog l = log.get(i);
                                 lore.add(" " + CC.Yellow + l.getLogLine(logType, timeStamp));
                             }
+                        }
                         lore.add("");
                         lore.add(CC.Gray + "Click to toggle timestamp");
                         setItem(slot++, (new ClickableItemStack((new ItemBuilder(Material.PAPER)).name(CC.GreenB + "Log #" + page).lore(lore).build())).setClickCallback((e) -> {
@@ -122,7 +124,7 @@ public class FAuditMenu extends GUIMenu {
             }
             setItem(getSize() - 1, (new ClickableItemStack((new ItemBuilder(Material.ARROW)).name(CC.Green + "Previous Page").lore("", CC.Gray + "Click to view previous page!").build())).setClickCallback((event) -> {
                 event.setCancelled(true);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.getInstance(), () -> (new FAuditMenu(player, faction)).open(player));
+                Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.instance, () -> (new FAuditMenu(player, faction)).open(player));
             }));
         }
     }

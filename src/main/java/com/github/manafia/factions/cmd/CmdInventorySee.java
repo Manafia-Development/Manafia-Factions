@@ -2,6 +2,7 @@ package com.github.manafia.factions.cmd;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.github.manafia.factions.FPlayer;
+import com.github.manafia.factions.FPlayers;
 import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Role;
@@ -61,25 +62,29 @@ public class CmdInventorySee extends FCommand {
 
 
     public Inventory createCopy(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, player.getInventory().getSize() + 9, player.getName() + "'s Inventory");
-        ItemStack[] armor = player.getEquipment().getArmorContents();
+        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+        Inventory inventory = Bukkit.createInventory(null, player.getInventory().getSize() + 9, fPlayer.getNameAndTag() + "'s Player Inventory");
+        ItemStack[] armor = Objects.requireNonNull(player.getEquipment()).getArmorContents();
         ItemStack[] items = player.getInventory().getContents();
         for (int i = 0; i < items.length; ++i) {
             ItemStack item = items[i];
-            if (item != null && item.getType() != Material.AIR)
+            if (item != null && item.getType() != Material.AIR) {
                 item = item.clone();
+            }
             inventory.setItem(i, item);
         }
         for (int slot = inventory.getSize() - 9; slot < inventory.getSize(); ++slot) {
             ItemStack item = inventory.getItem(slot);
-            if (item == null || item.getType() == Material.AIR)
+            if (item == null || item.getType() == Material.AIR) {
                 inventory.setItem(slot, XMaterial.GRAY_STAINED_GLASS_PANE.parseItem());
-        }
-        if (FactionsPlugin.getInstance().version == 8)
-            for (int i = 1; i >= 0; i--) {
-                inventory.setItem(inventory.getSize() - (6 + i), armor[2 + i]);
-                inventory.setItem(inventory.getSize() - (3 + i), armor[i]);
             }
+        }
+        if (FactionsPlugin.getInstance().version == 8) {
+            inventory.setItem(inventory.getSize() - 7, armor[3]);
+            inventory.setItem(inventory.getSize() - 6, armor[2]);
+            inventory.setItem(inventory.getSize() - 4, armor[1]);
+            inventory.setItem(inventory.getSize() - 3, armor[0]);
+        }
         return inventory;
     }
 

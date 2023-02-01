@@ -2,13 +2,13 @@ package com.github.manafia.factions.cmd.tnt;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.Util;
 import com.github.manafia.factions.cmd.Aliases;
 import com.github.manafia.factions.cmd.CommandContext;
 import com.github.manafia.factions.cmd.CommandRequirements;
 import com.github.manafia.factions.cmd.FCommand;
 import com.github.manafia.factions.cmd.audit.FLogType;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.CC;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.Material;
@@ -22,7 +22,7 @@ public class CmdTnt extends FCommand {
      * @author Illyria Team
      */
 
-    public CmdTnt () {
+    public CmdTnt() {
         super();
         this.aliases.addAll(Aliases.tnt_tnt);
         this.optionalArgs.put("add/take/addall", "");
@@ -35,7 +35,7 @@ public class CmdTnt extends FCommand {
                 .build();
     }
 
-    public static void removeItems (Inventory inventory, ItemStack item, int toRemove) {
+    public static void removeItems(Inventory inventory, ItemStack item, int toRemove) {
         if (toRemove <= 0 || inventory == null || item == null)
             return;
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -54,8 +54,8 @@ public class CmdTnt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
-        if (!FactionsPlugin.getInstance().getConfig().getBoolean("ftnt.Enabled")) {
+    public void perform(CommandContext context) {
+        if (!FactionsPlugin.instance.getConfig().getBoolean("ftnt.Enabled")) {
             context.msg(TL.COMMAND_TNT_DISABLED_MSG);
             return;
         }
@@ -76,8 +76,9 @@ public class CmdTnt extends FCommand {
                 Inventory inv = context.player.getInventory();
                 int invTnt = 0;
                 for (int i = 0; i <= inv.getSize(); i++) {
-                    if (inv.getItem(i) == null)
+                    if (inv.getItem(i) == null) {
                         continue;
+                    }
                     if (inv.getItem(i).getType() == Material.TNT) {
                         if (inv.getItem(i).hasItemMeta() || inv.getItem(i).getItemMeta().hasDisplayName() || inv.getItem(i).getItemMeta().hasLore())
                             continue;
@@ -98,8 +99,8 @@ public class CmdTnt extends FCommand {
 
                 context.faction.addTnt(amount);
                 context.msg(TL.COMMAND_TNT_DEPOSIT_SUCCESS);
-                Util.getFlogManager().log(context.faction, FLogType.F_TNT, context.fPlayer.getName(), "DEPOSITED", amount + "x TNT");
-                context.fPlayer.sendMessage(Util.color(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + "")));
+                FactionsPlugin.instance.getFlogManager().log(context.faction, FLogType.F_TNT, context.fPlayer.getName(), "DEPOSITED", amount + "x TNT");
+                context.fPlayer.sendMessage(CC.translate(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + "")));
                 return;
 
             }
@@ -138,17 +139,19 @@ public class CmdTnt extends FCommand {
                 context.faction.takeTnt(amount);
                 context.player.updateInventory();
                 context.msg(TL.COMMAND_TNT_WIDTHDRAW_SUCCESS);
-                Util.getFlogManager().log(context.faction, FLogType.F_TNT, context.fPlayer.getName(), "WITHDREW", amount + "x TNT");
+                FactionsPlugin.instance.getFlogManager().log(context.faction, FLogType.F_TNT, context.fPlayer.getName(), "WITHDREW", amount + "x TNT");
             }
         } else if (context.args.size() == 1) {
             if (context.args.get(0).equalsIgnoreCase("addall")) {
                 Inventory inv = context.player.getInventory();
                 int invTnt = 0;
                 for (int i = 0; i <= inv.getSize(); i++) {
-                    if (inv.getItem(i) == null)
+                    if (inv.getItem(i) == null) {
                         continue;
-                    if (inv.getItem(i).getType() == Material.TNT)
+                    }
+                    if (inv.getItem(i).getType() == Material.TNT) {
                         invTnt += inv.getItem(i).getAmount();
+                    }
                 }
                 if (invTnt <= 0) {
                     context.msg(TL.COMMAND_TNT_DEPOSIT_NOTENOUGH);
@@ -162,9 +165,9 @@ public class CmdTnt extends FCommand {
                 context.player.updateInventory();
                 context.faction.addTnt(invTnt);
                 context.msg(TL.COMMAND_TNT_DEPOSIT_SUCCESS);
-                Util.getFlogManager().log(context.faction, FLogType.F_TNT, context.fPlayer.getName(), "DEPOSITED", invTnt + "x TNT");
+                FactionsPlugin.instance.getFlogManager().log(context.faction, FLogType.F_TNT, context.fPlayer.getName(), "DEPOSITED", invTnt + "x TNT");
 
-                context.fPlayer.sendMessage(Util.color(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + "")));
+                context.fPlayer.sendMessage(CC.translate(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + "")));
                 return;
 
             }
@@ -174,27 +177,34 @@ public class CmdTnt extends FCommand {
         context.sendMessage(TL.COMMAND_TNT_AMOUNT.toString().replace("{amount}", context.faction.getTnt() + "").replace("{maxAmount}", context.faction.getTntBankLimit() + ""));
     }
 
-    public boolean inventoryContains (Inventory inventory, ItemStack item) {
+    public boolean inventoryContains(Inventory inventory, ItemStack item) {
         int count = 0;
         ItemStack[] items = inventory.getContents();
-        for (ItemStack item1 : items)
-            if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability())
+        for (ItemStack item1 : items) {
+            if (item1 != null && item1.getType() == item.getType() && item1.getDurability() == item.getDurability()) {
                 count += item1.getAmount();
-        return count >= item.getAmount();
+            }
+            if (count >= item.getAmount()) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean hasAvaliableSlot (Player player, int howmany) {
+    public boolean hasAvaliableSlot(Player player, int howmany) {
         int check = 0;
-        for (ItemStack item : player.getInventory().getContents())
-            if (item == null)
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) {
                 check++;
+            }
+        }
         return check >= howmany;
     }
 
-    public void removeFromInventory (Inventory inventory, ItemStack item) {
+    public void removeFromInventory(Inventory inventory, ItemStack item) {
         int amt = item.getAmount();
         ItemStack[] items = inventory.getContents();
-        for (int i = 0; i < items.length; i++)
+        for (int i = 0; i < items.length; i++) {
             if (items[i] != null && items[i].getType() == item.getType() && items[i].getDurability() == item.getDurability()) {
                 if (items[i].hasItemMeta() || items[i].getItemMeta().hasLore() || items[i].getItemMeta().hasDisplayName())
                     continue;
@@ -209,11 +219,12 @@ public class CmdTnt extends FCommand {
                     items[i] = null;
                 }
             }
+        }
         inventory.setContents(items);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_TNT_DESCRIPTION;
     }
 }

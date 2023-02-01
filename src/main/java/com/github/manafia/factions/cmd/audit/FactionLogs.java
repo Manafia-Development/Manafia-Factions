@@ -18,12 +18,12 @@ import java.util.concurrent.TimeUnit;
 
 public class FactionLogs {
     public static transient SimpleDateFormat format = new SimpleDateFormat("MM/dd hh:mmaa");
-    private final Map<FLogType, LinkedList<FactionLog>> mostRecentLogs = new ConcurrentHashMap<>();
+    private Map<FLogType, LinkedList<FactionLog>> mostRecentLogs = new ConcurrentHashMap<>();
 
-    public FactionLogs () {
+    public FactionLogs() {
     }
 
-    public void log (FLogType type, String... arguments) {
+    public void log(FLogType type, String... arguments) {
         if (type.getRequiredArgs() > arguments.length) {
             Bukkit.getLogger().info("INVALID ARGUMENT COUNT MET: " + type.getRequiredArgs() + " REQUIRED: ");
             Thread.dumpStack();
@@ -31,28 +31,31 @@ public class FactionLogs {
             LinkedList<FactionLog> logs = mostRecentLogs.computeIfAbsent(type, (lists) -> new LinkedList<>());
             logs.add(new FactionLog(System.currentTimeMillis(), Lists.newArrayList(arguments)));
             int maxLog = type == FLogType.F_TNT ? 200 : 60;
-            if (logs.size() > maxLog)
+            if (logs.size() > maxLog) {
                 logs.pop();
+            }
+
         }
     }
 
-    public boolean isEmpty () {
+    public boolean isEmpty() {
         return this.mostRecentLogs.isEmpty();
     }
 
-    public void checkExpired () {
+    public void checkExpired() {
         long duration = TimeUnit.DAYS.toMillis(7L);
         List<FLogType> toRemove = Lists.newArrayList();
         mostRecentLogs.forEach((logType, logs) -> {
-            if (logs == null)
+            if (logs == null) {
                 toRemove.add(logType);
-            else if (logType != FLogType.F_TNT) {
-                Iterator iter = logs.iterator();
+            } else if (logType != FLogType.F_TNT) {
+                Iterator<FactionLog> iter = logs.iterator();
                 while (iter.hasNext()) {
                     try {
-                        FactionLog log = (FactionLog) iter.next();
-                        if (log == null || log.isExpired(duration))
+                        FactionLog log = iter.next();
+                        if (log == null || log.isExpired(duration)) {
                             iter.remove();
+                        }
                     } catch (Exception e) {
                         Bukkit.getLogger().info("ERROR TRYING TO GET next FACTION LOG: " + e.getMessage());
                         try {
@@ -69,30 +72,31 @@ public class FactionLogs {
         toRemove.forEach((rem) -> mostRecentLogs.remove(rem));
     }
 
-    public Map<FLogType, LinkedList<FactionLog>> getMostRecentLogs () {
+    public Map<FLogType, LinkedList<FactionLog>> getMostRecentLogs() {
         return mostRecentLogs;
     }
 
     public static class FactionLog {
-        private final long t;
-        private final List<String> a;
+        private long t;
+        private List<String> a;
 
-        public FactionLog (long t, List<String> a) {
+        public FactionLog(long t, List<String> a) {
             this.t = t;
             this.a = a;
         }
 
-        public boolean isExpired (long duration) {
+        public boolean isExpired(long duration) {
             return System.currentTimeMillis() - t >= duration;
         }
 
-        public String getLogLine (FLogType type, boolean timestamp) {
+        public String getLogLine(FLogType type, boolean timestamp) {
             String[] args = a.toArray(new String[0]);
             String timeFormat = "";
             if (timestamp) {
                 timeFormat = FactionLogs.format.format(t);
-                if (timeFormat.startsWith("0"))
+                if (timeFormat.startsWith("0")) {
                     timeFormat = timeFormat.substring(1);
+                }
             }
             return String.format(ChatColor.translateAlternateColorCodes('&', type.getMsg()), args) + (timestamp ? ChatColor.GRAY + " - " + timeFormat : "");
         }

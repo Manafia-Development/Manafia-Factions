@@ -38,6 +38,11 @@ public class ClickableItemStack extends ItemStack {
         return this;
     }
 
+    public ClickableItemStack setDura(short dura) {
+        this.setDurability(dura);
+        return this;
+    }
+
     public Consumer<InventoryClickEvent> getItemCallback() {
         return this.itemCallback;
     }

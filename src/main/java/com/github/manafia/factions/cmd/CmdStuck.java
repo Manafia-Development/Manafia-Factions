@@ -3,6 +3,7 @@ package com.github.manafia.factions.cmd;
 import com.github.manafia.factions.*;
 import com.github.manafia.factions.integration.Essentials;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.util.SpiralTask;
 import com.github.manafia.factions.zcore.util.TL;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -17,7 +18,7 @@ public class CmdStuck extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdStuck () {
+    public CmdStuck() {
         super();
         this.aliases.addAll(Aliases.stuck);
 
@@ -28,7 +29,7 @@ public class CmdStuck extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         final Player player = context.player;
         final Location sentAt = player.getLocation();
         final FLocation chunk = context.fPlayer.getLastStoodAt();
@@ -48,15 +49,17 @@ public class CmdStuck extends FCommand {
         } else {
 
             // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-            if (!context.payForCommand(Conf.econCostStuck, TL.COMMAND_STUCK_TOSTUCK.format(context.fPlayer.getName()), TL.COMMAND_STUCK_FORSTUCK.format(context.fPlayer.getName())))
+            if (!context.payForCommand(Conf.econCostStuck, TL.COMMAND_STUCK_TOSTUCK.format(context.fPlayer.getName()), TL.COMMAND_STUCK_FORSTUCK.format(context.fPlayer.getName()))) {
                 return;
+            }
 
             final int id = Bukkit.getScheduler().runTaskLater(FactionsPlugin.getInstance(), new Runnable() {
 
                 @Override
-                public void run () {
-                    if (!FactionsPlugin.getInstance().getStuckMap().containsKey(player.getUniqueId()))
+                public void run() {
+                    if (!FactionsPlugin.getInstance().getStuckMap().containsKey(player.getUniqueId())) {
                         return;
+                    }
 
                     // check for world difference or radius exceeding
                     final World world = chunk.getWorld();
@@ -71,10 +74,10 @@ public class CmdStuck extends FCommand {
                     // spiral task to find nearest wilderness chunk
                     new SpiralTask(new FLocation(context.player), radius * 2) {
                         @Override
-                        public boolean work () {
+                        public boolean work() {
                             FLocation chunk = currentFLocation();
                             Faction faction = board.getFactionAt(chunk);
-                            int buffer = FactionsPlugin.getInstance().getConfig().getInt("world-border.buffer", 0) - 1;
+                            int buffer = FactionsPlugin.getInstance().getConfig().getInt("world-border.buffer", 0);
                             if (faction.isWilderness() && !chunk.isOutsideWorldBorder(buffer)) {
                                 int cx = FLocation.chunkToBlock((int) chunk.getX());
                                 int cz = FLocation.chunkToBlock((int) chunk.getZ());
@@ -85,7 +88,7 @@ public class CmdStuck extends FCommand {
                                 FactionsPlugin.getInstance().getStuckMap().remove(player.getUniqueId());
                                 if (!Essentials.handleTeleport(player, tp)) {
                                     player.teleport(tp);
-                                    Util.debug("/f stuck used regular teleport, not essentials!");
+                                    Logger.print("/f stuck used regular teleport, not essentials!", Logger.PrefixType.DEFAULT);
                                 }
                                 this.stop();
                                 return false;
@@ -105,7 +108,7 @@ public class CmdStuck extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_STUCK_DESCRIPTION;
     }
 }

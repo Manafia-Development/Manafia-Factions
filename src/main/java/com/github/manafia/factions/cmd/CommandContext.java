@@ -63,8 +63,9 @@ public class CommandContext {
     }
 
     public void sendMessage(List<String> msgs) {
-        for (String msg : msgs)
+        for (String msg : msgs) {
             this.sendMessage(msg);
+        }
     }
 
     public void sendFancyMessage(FancyMessage message) {
@@ -72,8 +73,9 @@ public class CommandContext {
     }
 
     public void sendFancyMessage(List<FancyMessage> messages) {
-        for (FancyMessage m : messages)
+        for (FancyMessage m : messages) {
             sendFancyMessage(m);
+        }
     }
 
     // TODO: Clean this UP
@@ -88,8 +90,9 @@ public class CommandContext {
 
     // STRING ======================
     public String argAsString(int idx, String def) {
-        if (args.size() < idx + 1)
+        if (args.size() < idx + 1) {
             return def;
+        }
         return args.get(idx);
     }
 
@@ -99,8 +102,9 @@ public class CommandContext {
 
     // INT ======================
     public Integer strAsInt(String str, Integer def) {
-        if (str == null)
+        if (str == null) {
             return def;
+        }
         try {
             return Integer.parseInt(str);
         } catch (Exception e) {
@@ -118,8 +122,9 @@ public class CommandContext {
 
     // Double ======================
     public Double strAsDouble(String str, Double def) {
-        if (str == null)
+        if (str == null) {
             return def;
+        }
         try {
             return Double.parseDouble(str);
         } catch (Exception e) {
@@ -144,8 +149,9 @@ public class CommandContext {
 
     public Boolean argAsBool(int idx, boolean def) {
         String str = argAsString(idx);
-        if (str == null)
+        if (str == null) {
             return def;
+        }
 
         return strAsBool(str);
     }
@@ -160,12 +166,14 @@ public class CommandContext {
 
         if (name != null) {
             Player player = Bukkit.getServer().getPlayer(name);
-            if (player != null)
+            if (player != null) {
                 ret = player;
+            }
         }
 
-        if (msg && ret == null)
+        if (msg && ret == null) {
             sender.sendMessage(TL.GENERIC_NOPLAYERFOUND.format(name));
+        }
 
         return ret;
     }
@@ -188,12 +196,14 @@ public class CommandContext {
 
         if (name != null) {
             List<Player> players = Bukkit.getServer().matchPlayer(name);
-            if (players.size() > 0)
+            if (players.size() > 0) {
                 ret = players.get(0);
+            }
         }
 
-        if (msg && ret == null)
+        if (msg && ret == null) {
             sender.sendMessage(TL.GENERIC_NOPLAYERMATCH.format(name));
+        }
 
         return ret;
     }
@@ -219,15 +229,18 @@ public class CommandContext {
     public FPlayer strAsFPlayer(String name, FPlayer def, boolean msg) {
         FPlayer ret = def;
 
-        if (name != null)
-            for (FPlayer fplayer : FPlayers.getInstance().getAllFPlayers())
+        if (name != null) {
+            for (FPlayer fplayer : FPlayers.getInstance().getAllFPlayers()) {
                 if (fplayer.getName().equalsIgnoreCase(name)) {
                     ret = fplayer;
                     break;
                 }
+            }
+        }
 
-        if (msg && ret == null)
+        if (msg && ret == null) {
             msg(TL.GENERIC_NOPLAYERFOUND, name);
+        }
 
         return ret;
     }
@@ -272,29 +285,35 @@ public class CommandContext {
             // Now lets try for warzone / safezone. Helpful for custom warzone / safezone names.
             // Do this after we check for an exact match in case they rename the warzone / safezone
             // and a player created faction took one of the names.
-            if (faction == null)
-                if (name.equalsIgnoreCase("warzone"))
+            if (faction == null) {
+                if (name.equalsIgnoreCase("warzone")) {
                     faction = Factions.getInstance().getWarZone();
-                else if (name.equalsIgnoreCase("safezone"))
+                } else if (name.equalsIgnoreCase("safezone")) {
                     faction = Factions.getInstance().getSafeZone();
+                }
+            }
 
             // Next we match faction tags
-            if (faction == null)
+            if (faction == null) {
                 faction = Factions.getInstance().getBestTagMatch(name);
+            }
 
             // Next we match player names
             if (faction == null) {
                 FPlayer fplayer = strAsFPlayer(name, null, false);
-                if (fplayer != null)
+                if (fplayer != null) {
                     faction = fplayer.getFaction();
+                }
             }
 
-            if (faction != null)
+            if (faction != null) {
                 ret = faction;
+            }
         }
 
-        if (msg && ret == null)
+        if (msg && ret == null) {
             sender.sendMessage(TL.GENERIC_NOFACTION_FOUND.format(name));
+        }
 
         return ret;
     }
@@ -316,8 +335,9 @@ public class CommandContext {
      */
 
     public boolean assertHasFaction() {
-        if (player == null)
+        if (player == null) {
             return true;
+        }
 
         if (!fPlayer.hasFaction()) {
             sendMessage("You are not member of any faction.");
@@ -327,8 +347,10 @@ public class CommandContext {
     }
 
     public boolean assertMinRole(Role role) {
-        if (player == null)
+        if (player == null) {
             return true;
+        }
+
         if (fPlayer.getRole().value < role.value) {
             msg("<b>You <h>must be " + role);
             return false;
@@ -345,29 +367,26 @@ public class CommandContext {
             return false;
         }
 
-        if (i.getRole().value > you.getRole().value || i.getRole().equals(Role.LEADER)) return true;
+        if (i.getRole().value >= you.getRole().value || i.getRole() == Role.LEADER) {
+            return true;
+        }
 
-        if (you.getRole().equals(Role.LEADER)) i.msg(TL.COMMAND_CONTEXT_ADMINISTER_ADMIN_REQUIRED);
-
-        else if (i.getRole().equals(Role.MODERATOR)) {
-
-            if (i == you) return true; //Moderators can control themselves
-            else i.msg(TL.COMMAND_CONTEXT_ADMINISTER_SAME_RANK_CONTROL);
-
-        } else i.msg(TL.COMMAND_CONTEXT_ADMINISTER_MOD_REQUIRED);
+        i.sendMessage(FactionsPlugin.getInstance().txt.parse("%s <b>has a higher rank than you.", you.describeTo(i, true)));
 
         return false;
     }
 
     // if economy is enabled and they're not on the bypass list, make 'em pay; returns true unless person can't afford the cost
     public boolean payForCommand(double cost, String toDoThis, String forDoingThis) {
-        if (!Econ.shouldBeUsed() || this.fPlayer == null || cost == 0.0 || fPlayer.isAdminBypassing())
+        if (!Econ.shouldBeUsed() || this.fPlayer == null || cost == 0.0 || fPlayer.isAdminBypassing()) {
             return true;
+        }
 
-        if (Conf.bankEnabled && Conf.bankFactionPaysCosts && fPlayer.hasFaction())
+        if (Conf.bankEnabled && Conf.bankFactionPaysCosts && fPlayer.hasFaction()) {
             return Econ.modifyMoney(faction, -cost, toDoThis, forDoingThis);
-        else
+        } else {
             return Econ.modifyMoney(fPlayer, -cost, toDoThis, forDoingThis);
+        }
     }
 
     public boolean payForCommand(double cost, TL toDoThis, TL forDoingThis) {
@@ -376,13 +395,15 @@ public class CommandContext {
 
     // like above, but just make sure they can pay; returns true unless person can't afford the cost
     public boolean canAffordCommand(double cost, String toDoThis) {
-        if (!Econ.shouldBeUsed() || fPlayer == null || cost == 0.0 || fPlayer.isAdminBypassing())
+        if (!Econ.shouldBeUsed() || fPlayer == null || cost == 0.0 || fPlayer.isAdminBypassing()) {
             return true;
+        }
 
-        if (Conf.bankEnabled && Conf.bankFactionPaysCosts && fPlayer.hasFaction())
+        if (Conf.bankEnabled && Conf.bankFactionPaysCosts && fPlayer.hasFaction()) {
             return Econ.hasAtLeast(faction, cost, toDoThis);
-        else
+        } else {
             return Econ.hasAtLeast(fPlayer, cost, toDoThis);
+        }
     }
 
     public void doWarmUp(WarmUpUtil.Warmup warmup, TL translationKey, String action, Runnable runnable, long delay) {

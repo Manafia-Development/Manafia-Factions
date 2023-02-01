@@ -13,11 +13,16 @@ public class AutoLeaveTask implements Runnable {
     }
 
     public synchronized void run() {
-        if (task != null && !task.isFinished())
+        if (task != null && !task.isFinished()) {
             return;
+        }
+
         task = new AutoLeaveProcessTask();
         task.runTaskTimer(FactionsPlugin.getInstance(), 1, 1);
-        if (this.rate != Conf.autoLeaveRoutineRunsEveryXMinutes)
+
+        // maybe setting has been changed? if so, restart this task at new rate
+        if (this.rate != Conf.autoLeaveRoutineRunsEveryXMinutes) {
             FactionsPlugin.getInstance().startAutoLeaveTask(true);
+        }
     }
 }

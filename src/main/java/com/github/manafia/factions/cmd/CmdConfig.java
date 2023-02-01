@@ -1,8 +1,8 @@
 package com.github.manafia.factions.cmd;
 
 import com.github.manafia.factions.Conf;
-import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class CmdConfig extends FCommand {
 
-    private static final HashMap<String, String> properFieldNames = new HashMap<>();
+    private static HashMap<String, String> properFieldNames = new HashMap<>();
 
     public CmdConfig() {
         super();
@@ -36,13 +36,15 @@ public class CmdConfig extends FCommand {
         // that way, if the person using this command messes up the capitalization, we can fix that
         if (properFieldNames.isEmpty()) {
             Field[] fields = Conf.class.getDeclaredFields();
-            for (Field field : fields)
+            for (Field field : fields) {
                 properFieldNames.put(field.getName().toLowerCase(), field.getName());
+            }
         }
-        // can't apply switch statements to Fields. :(
+
         String field = context.argAsString(0).toLowerCase();
-        if (field.startsWith("\"") && field.endsWith("\""))
+        if (field.startsWith("\"") && field.endsWith("\"")) {
             field = field.substring(1, field.length() - 1);
+        }
         String fieldName = properFieldNames.get(field);
 
         if (fieldName == null || fieldName.isEmpty()) {
@@ -53,24 +55,27 @@ public class CmdConfig extends FCommand {
         String success;
 
         StringBuilder value = new StringBuilder(context.args.get(1));
-        for (int i = 2; i < context.args.size(); i++)
+        for (int i = 2; i < context.args.size(); i++) {
             value.append(' ').append(context.args.get(i));
+        }
 
         try {
             Field target = Conf.class.getField(fieldName);
 
+            // boolean
             if (target.getType() == boolean.class) {
                 boolean targetValue = context.strAsBool(value.toString());
                 target.setBoolean(null, targetValue);
 
-                if (targetValue)
+                if (targetValue) {
                     success = "\"" + fieldName + TL.COMMAND_CONFIG_SET_TRUE;
-                else
+                } else {
                     success = "\"" + fieldName + TL.COMMAND_CONFIG_SET_FALSE;
+                }
             }
 
             // int
-            else if (target.getType() == int.class)
+            else if (target.getType() == int.class) {
                 try {
                     int intVal = Integer.parseInt(value.toString());
                     target.setInt(null, intVal);
@@ -79,9 +84,10 @@ public class CmdConfig extends FCommand {
                     context.sendMessage(TL.COMMAND_CONFIG_INTREQUIRED.format(fieldName));
                     return;
                 }
+            }
 
-                // long
-            else if (target.getType() == long.class)
+            // long
+            else if (target.getType() == long.class) {
                 try {
                     long longVal = Long.parseLong(value.toString());
                     target.setLong(null, longVal);
@@ -90,9 +96,10 @@ public class CmdConfig extends FCommand {
                     context.sendMessage(TL.COMMAND_CONFIG_LONGREQUIRED.format(fieldName));
                     return;
                 }
+            }
 
-                // double
-            else if (target.getType() == double.class)
+            // double
+            else if (target.getType() == double.class) {
                 try {
                     double doubleVal = Double.parseDouble(value.toString());
                     target.setDouble(null, doubleVal);
@@ -101,9 +108,10 @@ public class CmdConfig extends FCommand {
                     context.sendMessage(TL.COMMAND_CONFIG_DOUBLEREQUIRED.format(fieldName));
                     return;
                 }
+            }
 
-                // float
-            else if (target.getType() == float.class)
+            // float
+            else if (target.getType() == float.class) {
                 try {
                     float floatVal = Float.parseFloat(value.toString());
                     target.setFloat(null, floatVal);
@@ -112,8 +120,9 @@ public class CmdConfig extends FCommand {
                     context.sendMessage(TL.COMMAND_CONFIG_FLOATREQUIRED.format(fieldName));
                     return;
                 }
+            }
 
-                // String
+            // String
             else if (target.getType() == String.class) {
                 target.set(null, value.toString());
                 success = "\"" + fieldName + TL.COMMAND_CONFIG_OPTIONSET + value + "\".";
@@ -216,9 +225,11 @@ public class CmdConfig extends FCommand {
         if (!success.isEmpty()) {
             if (context.sender instanceof Player) {
                 context.sendMessage(success);
-                FactionsPlugin.getInstance().log(success + TL.COMMAND_CONFIG_LOG.format(context.sender));
+                Logger.print(success + TL.COMMAND_CONFIG_LOG.format(context.sender), Logger.PrefixType.DEFAULT);
             } else  // using FactionsPlugin.getInstance().log() instead of sendMessage if run from server console so that "[Factions v#.#.#]" is prepended in server log
-                FactionsPlugin.getInstance().log(success);
+            {
+                Logger.print(success, Logger.PrefixType.DEFAULT);
+            }
         }
         // save change to disk
         Conf.save();

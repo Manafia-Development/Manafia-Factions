@@ -4,14 +4,12 @@ import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.Faction;
 import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Permission;
-import com.github.manafia.factions.zcore.util.LangUtil;
 import com.github.manafia.factions.zcore.util.TL;
 import com.github.manafia.factions.zcore.util.TagReplacer;
 import com.github.manafia.factions.zcore.util.TagUtil;
 import mkremins.fanciful.FancyMessage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CmdShow extends FCommand {
@@ -20,19 +18,13 @@ public class CmdShow extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    List<String> defaults = Arrays.asList(LangUtil.getLangMap().get("command_show_header"), LangUtil.getLangMap().get("command_show_owner"),
-            LangUtil.getLangMap().get("command_show_description"), LangUtil.getLangMap().get("command_show_power"),
-            LangUtil.getLangMap().get("command_show_strikes"), LangUtil.getLangMap().get("command_show_points"),
-            LangUtil.getLangMap().get("command_show_founded"), LangUtil.getLangMap().get("command_show_balance"),
-            LangUtil.getLangMap().get("command_show_allies"), LangUtil.getLangMap().get("command_show_enemies"),
-            LangUtil.getLangMap().get("command_show_membersonline"), LangUtil.getLangMap().get("command_show_membersoffline"),
-            LangUtil.getLangMap().get("command_show_alts"), LangUtil.getLangMap().get("command_show_bans"));
+    List<String> defaults = new ArrayList<>();
 
-    public CmdShow () {
+    public CmdShow() {
         this.aliases.addAll(Aliases.show_show);
 
         // add defaults to /f show in case config doesnt have it
-        /*defaults.add("&8&m--------------&7 &8<&e{faction}&8> &8&m--------------");
+        defaults.add("&8&m--------------&7 &8<&e{faction}&8> &8&m--------------");
         defaults.add("&4* &cOwner: &f{leader}");
         defaults.add("&4* &cDescription: &f{description}");
         defaults.add("&4* &cLand / Power / Max Power: &f{chunks} &8/ &f{power} &8/ &f{maxPower}");
@@ -47,7 +39,6 @@ public class CmdShow extends FCommand {
         defaults.add("&4* &cAlts: &f{alts}");
         defaults.add("&4* &cBans: &f{faction-bancount}");
         defaults.add("&8&m----------------------------------------");
-        # SUPPORTS PLACEHOLDERS*/
 
         // this.requiredArgs.add("");
         this.optionalArgs.put("faction tag", "yours");
@@ -56,7 +47,7 @@ public class CmdShow extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.faction;
         FactionsPlugin instance = FactionsPlugin.getInstance();
         if (context.argIsSet(0))
@@ -72,22 +63,23 @@ public class CmdShow extends FCommand {
         }
 
         // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-        if (!context.payForCommand(Conf.econCostShow, TL.COMMAND_SHOW_TOSHOW, TL.COMMAND_SHOW_FORSHOW))
+        if (!context.payForCommand(Conf.econCostShow, TL.COMMAND_SHOW_TOSHOW, TL.COMMAND_SHOW_FORSHOW)) {
             return;
+        }
 
         List<String> show = instance.getConfig().getStringList("show");
-        boolean useConf = instance.getConfig().getBoolean("use-config-fshow");
-        if (!useConf || show == null || show.isEmpty())
+        if (show == null || show.isEmpty())
             show = defaults;
 
         if (!faction.isNormal()) {
             String tag = faction.getTag(context.fPlayer);
             // send header and that's all
             String header = show.get(0);
-            if (TagReplacer.HEADER.contains(header))
+            if (TagReplacer.HEADER.contains(header)) {
                 context.msg(instance.txt.titleize(tag));
-            else
+            } else {
                 context.msg(instance.txt.parse(TagReplacer.FACTION.replace(header, tag)));
+            }
             return; // we only show header for non-normal factions
         }
 
@@ -97,11 +89,13 @@ public class CmdShow extends FCommand {
         instance.getServer().getScheduler().runTaskAsynchronously(instance, () -> {
             for (String raw : finalShow) {
                 String parsed = instance.getConfig().getBoolean("relational-show", true) ? TagUtil.parsePlain(finalFaction, context.fPlayer, raw) : TagUtil.parsePlain(finalFaction, raw); // use relations
-                if (parsed == null)
+                if (parsed == null) {
                     continue; // Due to minimal f show.
+                }
 
-                if (context.fPlayer != null)
+                if (context.fPlayer != null) {
                     parsed = TagUtil.parsePlaceholders(context.fPlayer.getPlayer(), parsed);
+                }
 
                 if (TagUtil.hasFancy(parsed)) {
                     List<FancyMessage> localFancy = TagUtil.parseFancy(finalFaction, context.fPlayer, parsed);
@@ -115,8 +109,9 @@ public class CmdShow extends FCommand {
                         // replaces all variables with no home TL
                         parsed = parsed.substring(0, parsed.indexOf("{ig}")) + TL.COMMAND_SHOW_NOHOME;
                     }
-                    if (parsed.contains("%"))
+                    if (parsed.contains("%")) {
                         parsed = parsed.replaceAll("%", ""); // Just in case it got in there before we disallowed it.
+                    }
                     parsed = FactionsPlugin.getInstance().txt.parse(parsed);
                     FancyMessage localFancy = instance.txt.parseFancy(parsed);
                     fancy.add(localFancy);
@@ -127,7 +122,7 @@ public class CmdShow extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SHOW_COMMANDDESCRIPTION;
     }
 

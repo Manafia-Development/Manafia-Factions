@@ -69,8 +69,9 @@ public abstract class MemoryFactions extends Factions {
 
     public Faction getByTag(String str) {
         String compStr = MiscUtil.getComparisonString(str);
-        for (Faction faction : factions.values())
+        for (Faction faction : factions.values()) {
             if (faction.getComparisonTag().equals(compStr)) return faction;
+        }
         return null;
     }
 
@@ -125,6 +126,11 @@ public abstract class MemoryFactions extends Factions {
     @Override
     public ArrayList<Faction> getAllFactions() {
         return new ArrayList<>(factions.values());
+    }
+
+    @Override
+    public Faction getNone() {
+        return factions.get("0");
     }
 
     @Override

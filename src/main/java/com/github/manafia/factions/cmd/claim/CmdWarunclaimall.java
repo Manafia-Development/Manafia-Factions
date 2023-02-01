@@ -9,6 +9,7 @@ import com.github.manafia.factions.cmd.CommandContext;
 import com.github.manafia.factions.cmd.CommandRequirements;
 import com.github.manafia.factions.cmd.FCommand;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -19,7 +20,7 @@ public class CmdWarunclaimall extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdWarunclaimall () {
+    public CmdWarunclaimall() {
         this.aliases.addAll(Aliases.unclaim_all_war);
         this.optionalArgs.put("world", "all");
 
@@ -28,7 +29,7 @@ public class CmdWarunclaimall extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         String worldName = context.argAsString(0);
         World world = null;
 
@@ -36,18 +37,22 @@ public class CmdWarunclaimall extends FCommand {
 
         String id = Factions.getInstance().getWarZone().getId();
 
-        if (world == null)
+        if (world == null) {
             Board.getInstance().unclaimAll(id);
-        else
+        } else {
             Board.getInstance().unclaimAllInWorld(id, world);
+        }
 
         context.msg(TL.COMMAND_WARUNCLAIMALL_SUCCESS);
-        if (Conf.logLandUnclaims)
-            FactionsPlugin.getInstance().log(TL.COMMAND_WARUNCLAIMALL_LOG.format(context.fPlayer.getName()));
+        FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.instance, () -> {
+            if (Conf.logLandUnclaims) {
+                Logger.print(TL.COMMAND_WARUNCLAIMALL_LOG.format(context.fPlayer.getName()), Logger.PrefixType.DEFAULT);
+            }
+        });
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_WARUNCLAIMALL_DESCRIPTION;
     }
 

@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 
 public class CmdAudit extends FCommand {
 
-    public CmdAudit () {
+    public CmdAudit() {
         super();
         this.aliases.addAll(Aliases.audit);
 
@@ -30,13 +30,13 @@ public class CmdAudit extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.args.size() == 1 && context.sender.isOp() ? context.argAsFaction(0) : context.faction;
         new FAuditMenu((Player) context.sender, faction).open((Player) context.sender);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return null;
     }
 }

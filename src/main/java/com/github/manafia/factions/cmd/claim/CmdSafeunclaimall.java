@@ -9,6 +9,7 @@ import com.github.manafia.factions.cmd.CommandContext;
 import com.github.manafia.factions.cmd.CommandRequirements;
 import com.github.manafia.factions.cmd.FCommand;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -19,7 +20,7 @@ public class CmdSafeunclaimall extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdSafeunclaimall () {
+    public CmdSafeunclaimall() {
         this.aliases.addAll(Aliases.unclaim_all_safe);
         this.optionalArgs.put("world", "all");
 
@@ -28,28 +29,35 @@ public class CmdSafeunclaimall extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
-        String worldName = context.argAsString(0);
-        World world = null;
+    public void perform(CommandContext context) {
+        FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.instance, () -> {
 
-        if (worldName != null)
-            world = Bukkit.getWorld(worldName);
 
-        String id = Factions.getInstance().getSafeZone().getId();
+            String worldName = context.argAsString(0);
+            World world = null;
 
-        if (world == null)
-            Board.getInstance().unclaimAll(id);
-        else
-            Board.getInstance().unclaimAllInWorld(id, world);
+            if (worldName != null) {
+                world = Bukkit.getWorld(worldName);
+            }
 
-        context.msg(TL.COMMAND_SAFEUNCLAIMALL_UNCLAIMED);
+            String id = Factions.getInstance().getSafeZone().getId();
 
-        if (Conf.logLandUnclaims)
-            FactionsPlugin.getInstance().log(TL.COMMAND_SAFEUNCLAIMALL_UNCLAIMEDLOG.format(context.sender.getName()));
+            if (world == null) {
+                Board.getInstance().unclaimAll(id);
+            } else {
+                Board.getInstance().unclaimAllInWorld(id, world);
+            }
+
+            context.msg(TL.COMMAND_SAFEUNCLAIMALL_UNCLAIMED);
+
+            if (Conf.logLandUnclaims) {
+                Logger.print(TL.COMMAND_SAFEUNCLAIMALL_UNCLAIMEDLOG.format(context.sender.getName()), Logger.PrefixType.DEFAULT);
+            }
+        });
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SAFEUNCLAIMALL_DESCRIPTION;
     }
 

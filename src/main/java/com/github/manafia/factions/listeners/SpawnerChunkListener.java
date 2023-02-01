@@ -13,13 +13,11 @@ public class SpawnerChunkListener implements Listener {
 
     @EventHandler
     public void onSpawnerPlace(BlockPlaceEvent e) {
-
-
         if (e.getBlockPlaced().getType() == XMaterial.SPAWNER.parseMaterial()) {
             Location location = e.getBlockPlaced().getLocation();
+            FastChunk fastChunk = new FastChunk(location.getWorld().getName(), location.getChunk().getX(), location.getChunk().getZ());
             FLocation fLoc = new FLocation(location);
             Faction fac = Board.getInstance().getFactionAt(fLoc);
-            FastChunk fc = new FastChunk(location.getWorld().getName(), location.getChunk().getX(), location.getChunk().getZ());
             FPlayer fPlayer = FPlayers.getInstance().getByPlayer(e.getPlayer());
 
             if (fPlayer.isAdminBypassing()) {
@@ -28,7 +26,7 @@ public class SpawnerChunkListener implements Listener {
 
             if (!Conf.allowSpawnersPlacedInWilderness) {
                 if (fac.isNormal()) {
-                    if (!fac.getSpawnerChunks().contains(fc)) {
+                    if (!fac.getSpawnerChunks().contains(fastChunk)) {
                         e.setCancelled(true);
                         e.getPlayer().sendMessage(TL.SPAWNER_CHUNK_PLACE_DENIED_NOT_SPAWNERCHUNK.toString());
                     }

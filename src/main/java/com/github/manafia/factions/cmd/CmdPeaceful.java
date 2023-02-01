@@ -25,8 +25,9 @@ public class CmdPeaceful extends FCommand {
     @Override
     public void perform(CommandContext context) {
         Faction faction = context.argAsFaction(0);
-        if (faction == null)
+        if (faction == null) {
             return;
+        }
 
         String change;
         if (faction.isPeaceful()) {
@@ -40,10 +41,11 @@ public class CmdPeaceful extends FCommand {
         // Inform all players
         for (FPlayer fplayer : FPlayers.getInstance().getOnlinePlayers()) {
             String blame = (context.fPlayer == null ? TL.GENERIC_SERVERADMIN.toString() : context.fPlayer.describeTo(fplayer, true));
-            if (fplayer.getFaction() == faction)
+            if (fplayer.getFaction() == faction) {
                 fplayer.msg(TL.COMMAND_PEACEFUL_YOURS, blame, change);
-            else
+            } else {
                 fplayer.msg(TL.COMMAND_PEACEFUL_OTHER, blame, change, faction.getTag(fplayer));
+            }
         }
 
     }

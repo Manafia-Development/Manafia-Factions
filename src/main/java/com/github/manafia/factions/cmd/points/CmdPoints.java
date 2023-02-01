@@ -19,7 +19,7 @@ public class CmdPoints extends FCommand {
     public CmdPointsAdd cmdPointsAdd = new CmdPointsAdd();
     public CmdPointsBalance cmdPointsBalance = new CmdPointsBalance();
 
-    public CmdPoints () {
+    public CmdPoints() {
         super();
         this.aliases.addAll(Aliases.points_points);
 
@@ -27,25 +27,33 @@ public class CmdPoints extends FCommand {
                 .playerOnly()
                 .build();
 
+
         this.addSubCommand(this.cmdPointsBalance);
         this.addSubCommand(this.cmdPointsAdd);
         this.addSubCommand(this.cmdPointsRemove);
         this.addSubCommand(this.cmdPointsSet);
+        this.addSubCommand(this.cmdPointsBalance);
     }
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("f-points.Enabled", true)) {
             context.msg(TL.GENERIC_DISABLED, "Faction Points");
             return;
         }
-        context.commandChain.add(this);
+
+        if (context.fPlayer.isAdminBypassing() || context.player.isOp()) {
+            context.commandChain.add(this);
+        } else {
+            context.commandChain.add(this.cmdPointsBalance);
+        }
+
         FactionsPlugin.getInstance().cmdAutoHelp.execute(context);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_POINTS_DESCRIPTION;
     }
 

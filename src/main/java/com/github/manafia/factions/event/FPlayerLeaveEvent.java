@@ -6,12 +6,12 @@ import org.bukkit.event.Cancellable;
 
 public class FPlayerLeaveEvent extends FactionPlayerEvent implements Cancellable {
 
-    private final PlayerLeaveReason reason;
     /**
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
     boolean cancelled = false;
+    private PlayerLeaveReason reason;
 
     public FPlayerLeaveEvent(FPlayer p, Faction f, PlayerLeaveReason r) {
         super(f, p);

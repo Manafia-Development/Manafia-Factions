@@ -1,6 +1,9 @@
 package com.github.manafia.factions.cmd.claim;
 
-import com.github.manafia.factions.*;
+import com.github.manafia.factions.Board;
+import com.github.manafia.factions.Conf;
+import com.github.manafia.factions.FLocation;
+import com.github.manafia.factions.Faction;
 import com.github.manafia.factions.cmd.Aliases;
 import com.github.manafia.factions.cmd.CommandContext;
 import com.github.manafia.factions.cmd.CommandRequirements;
@@ -10,7 +13,7 @@ import com.github.manafia.factions.integration.Econ;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Role;
 import com.github.manafia.factions.util.ChunkReference;
-import com.github.manafia.factions.util.FastChunk;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.util.SpiralTask;
 import com.github.manafia.factions.zcore.fperms.Access;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
@@ -23,7 +26,7 @@ public class CmdUnclaim extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdUnclaim () {
+    public CmdUnclaim() {
         this.aliases.addAll(Aliases.unclaim_unclaim);
 
         this.optionalArgs.put("radius", "1");
@@ -36,7 +39,7 @@ public class CmdUnclaim extends FCommand {
     }
 
     @Override
-    public void perform (final CommandContext context) {
+    public void perform(final CommandContext context) {
         // Read and validate input
         int radius = context.argAsInt(0, 1); // Default to 1
         final Faction forFaction = context.argAsFaction(1, context.faction); // Default to own
@@ -61,11 +64,11 @@ public class CmdUnclaim extends FCommand {
                 private int failCount = 0;
 
                 @Override
-                public boolean work () {
+                public boolean work() {
                     boolean success = unClaim(this.currentFLocation(), context, forFaction);
-                    if (success)
+                    if (success) {
                         failCount = 0;
-                    else if (failCount++ >= limit) {
+                    } else if (failCount++ >= limit) {
                         this.stop();
                         return false;
                     }
@@ -76,7 +79,7 @@ public class CmdUnclaim extends FCommand {
         }
     }
 
-    private boolean unClaim (FLocation target, CommandContext context, Faction faction) {
+    private boolean unClaim(FLocation target, CommandContext context, Faction faction) {
         Faction targetFaction = Board.getInstance().getFactionAt(target);
 
         if (context.faction != targetFaction && !context.fPlayer.isAdminBypassing()) {
@@ -89,8 +92,9 @@ public class CmdUnclaim extends FCommand {
                 Board.getInstance().removeAt(target);
                 context.msg(TL.COMMAND_UNCLAIM_SAFEZONE_SUCCESS);
 
-                if (Conf.logLandUnclaims)
-                    FactionsPlugin.getInstance().log(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()));
+                if (Conf.logLandUnclaims) {
+                    Logger.print(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()), Logger.PrefixType.DEFAULT);
+                }
                 return true;
             } else {
                 context.msg(TL.COMMAND_UNCLAIM_SAFEZONE_NOPERM);
@@ -101,8 +105,9 @@ public class CmdUnclaim extends FCommand {
                 Board.getInstance().removeAt(target);
                 context.msg(TL.COMMAND_UNCLAIM_WARZONE_SUCCESS);
 
-                if (Conf.logLandUnclaims)
-                    FactionsPlugin.getInstance().log(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()));
+                if (Conf.logLandUnclaims) {
+                    Logger.print(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()), Logger.PrefixType.DEFAULT);
+                }
                 return true;
             } else {
                 context.msg(TL.COMMAND_UNCLAIM_WARZONE_NOPERM);
@@ -113,16 +118,18 @@ public class CmdUnclaim extends FCommand {
         if (context.fPlayer.isAdminBypassing()) {
             LandUnclaimEvent unclaimEvent = new LandUnclaimEvent(target, targetFaction, context.fPlayer);
             Bukkit.getServer().getPluginManager().callEvent(unclaimEvent);
-            if (unclaimEvent.isCancelled())
+            if (unclaimEvent.isCancelled()) {
                 return false;
+            }
 
             Board.getInstance().removeAt(target);
 
             targetFaction.msg(TL.COMMAND_UNCLAIM_UNCLAIMED, context.fPlayer.describeTo(targetFaction, true));
             context.msg(TL.COMMAND_UNCLAIM_UNCLAIMS);
 
-            if (Conf.logLandUnclaims)
-                FactionsPlugin.getInstance().log(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()));
+            if (Conf.logLandUnclaims) {
+                Logger.print(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()), Logger.PrefixType.DEFAULT);
+            }
 
             return true;
         }
@@ -141,12 +148,10 @@ public class CmdUnclaim extends FCommand {
             return false;
         }
 
-
-        FastChunk fc = new FastChunk(target.getWorldName(), target.getChunk().getX(), target.getChunk().getZ());
         if (Conf.userSpawnerChunkSystem) {
-            if (faction.getSpawnerChunks().contains(fc) && faction.getSpawnerChunks() != null) {
+            if (faction.getSpawnerChunks().contains(target) && faction.getSpawnerChunks() != null) {
                 if (Conf.allowUnclaimSpawnerChunksWithSpawnersInChunk) {
-                    context.faction.getSpawnerChunks().remove(fc);
+                    context.faction.getSpawnerChunks().remove(target);
                     context.fPlayer.msg(TL.SPAWNER_CHUNK_UNCLAIMED);
                 } else {
                     if (ChunkReference.getSpawnerCount(target.getChunk()) > 0) {
@@ -159,31 +164,37 @@ public class CmdUnclaim extends FCommand {
 
         LandUnclaimEvent unclaimEvent = new LandUnclaimEvent(target, targetFaction, context.fPlayer);
         Bukkit.getServer().getPluginManager().callEvent(unclaimEvent);
-        if (unclaimEvent.isCancelled())
+        if (unclaimEvent.isCancelled()) {
             return false;
+        }
 
         if (Econ.shouldBeUsed()) {
             double refund = Econ.calculateClaimRefund(context.faction.getLandRounded());
 
-            if (Conf.bankEnabled && Conf.bankFactionPaysLandCosts)
-                if (!Econ.modifyMoney(context.faction, refund, TL.COMMAND_UNCLAIM_TOUNCLAIM.toString(), TL.COMMAND_UNCLAIM_FORUNCLAIM.toString()))
+            if (Conf.bankEnabled && Conf.bankFactionPaysLandCosts) {
+                if (!Econ.modifyMoney(context.faction, refund, TL.COMMAND_UNCLAIM_TOUNCLAIM.toString(), TL.COMMAND_UNCLAIM_FORUNCLAIM.toString())) {
                     return false;
-                else if (!Econ.modifyMoney(context.fPlayer, refund, TL.COMMAND_UNCLAIM_TOUNCLAIM.toString(), TL.COMMAND_UNCLAIM_FORUNCLAIM.toString()))
+                }
+            } else {
+                if (!Econ.modifyMoney(context.fPlayer, refund, TL.COMMAND_UNCLAIM_TOUNCLAIM.toString(), TL.COMMAND_UNCLAIM_FORUNCLAIM.toString())) {
                     return false;
+                }
+            }
         }
 
-
         Board.getInstance().removeAt(target);
+
         context.faction.msg(TL.COMMAND_UNCLAIM_FACTIONUNCLAIMED, context.fPlayer.describeTo(context.faction, true));
 
-        if (Conf.logLandUnclaims)
-            FactionsPlugin.getInstance().log(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()));
+        if (Conf.logLandUnclaims) {
+            Logger.print(TL.COMMAND_UNCLAIM_LOG.format(context.fPlayer.getName(), target.getCoordString(), targetFaction.getTag()), Logger.PrefixType.DEFAULT);
+        }
 
         return true;
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_UNCLAIM_DESCRIPTION;
     }
 

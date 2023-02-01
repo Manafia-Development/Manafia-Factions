@@ -1,9 +1,9 @@
 package com.github.manafia.factions.util.adapters;
 
 import com.google.gson.*;
-import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Relation;
 import com.github.manafia.factions.struct.Role;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.fperms.Access;
 import com.github.manafia.factions.zcore.fperms.Permissable;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
@@ -13,7 +13,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissable, Map<PermissableAction, Access>>> {
 
@@ -22,8 +21,9 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
 
         try {
             JsonObject obj = json.getAsJsonObject();
-            if (obj == null)
+            if (obj == null) {
                 return null;
+            }
 
             Map<Permissable, Map<PermissableAction, Access>> permissionsMap = new ConcurrentHashMap<>();
 
@@ -31,14 +31,15 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
             for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
                 Permissable permissable = getPermissable(entry.getKey());
 
-                if (permissable == null)
+                if (permissable == null) {
                     continue;
+                }
 
                 // Second level is the map between action -> access
                 Map<PermissableAction, Access> accessMap = new HashMap<>();
                 for (Map.Entry<String, JsonElement> entry2 : entry.getValue().getAsJsonObject().entrySet()) {
                     PermissableAction permissableAction = PermissableAction.fromString(entry2.getKey());
-                    if (permissableAction == null)
+                    if (permissableAction == null) {
                         switch (entry2.getKey()) {
                             case "frostwalk":
                                 permissableAction = PermissableAction.FROST_WALK;
@@ -50,6 +51,7 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
                                 permissableAction = PermissableAction.ITEM;
                                 break;
                         }
+                    }
                     Access access = Access.fromString(entry2.getValue().getAsString());
                     accessMap.put(permissableAction, access);
                 }
@@ -59,7 +61,7 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
             return permissionsMap;
 
         } catch (Exception ex) {
-            FactionsPlugin.getInstance().log(Level.WARNING, "Error encountered while deserializing a PermissionsMap.");
+            Logger.print("Error encountered while deserializing a PermissionsMap.", Logger.PrefixType.WARNING);
             ex.printStackTrace();
             return null;
         }
@@ -67,25 +69,29 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
 
     private Permissable getPermissable(String name) {
         // If name is uppercase then it is (probably, no way to completely know) valid if not begin conversion
-        if (name.equals(name.toUpperCase()))
-            if (Role.fromString(name.toUpperCase()) != null)
+        if (name.equals(name.toUpperCase())) {
+            if (Role.fromString(name.toUpperCase()) != null) {
                 return Role.fromString(name.toUpperCase());
-            else if (Relation.fromString(name.toUpperCase()) != null)
+            } else if (Relation.fromString(name.toUpperCase()) != null) {
                 return Relation.fromString(name.toUpperCase());
-            else
+            } else {
                 return null;
-        else if (name.equals(TL.ROLE_RECRUIT.toString()))
-            return Role.RECRUIT;
-        else if (name.equals(TL.ROLE_NORMAL.toString()))
-            return Role.NORMAL;
-        else if (name.equals(TL.ROLE_MODERATOR.toString()))
-            return Role.MODERATOR;
-        else {
-            // If it is explicitly member and its old data then it refers to relation member not role, skip it
-            if (name.equals("member"))
-                return null;
-            return Relation.fromString(name);
+            }
+        } else {
+            if (name.equals(TL.ROLE_RECRUIT.toString())) {
+                return Role.RECRUIT;
+            } else if (name.equals(TL.ROLE_NORMAL.toString())) {
+                return Role.NORMAL;
+            } else if (name.equals(TL.ROLE_MODERATOR.toString())) {
+                return Role.MODERATOR;
+            } else {
+                // If it is explicitly member and its old data then it refers to relation member not role, skip it
+                if (name.equals("member")) {
+                    return null;
+                }
+                return Relation.fromString(name);
+            }
         }
     }
-}
 
+}

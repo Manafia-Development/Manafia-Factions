@@ -12,10 +12,10 @@ import com.github.manafia.factions.zcore.util.TL;
 public class CmdMoneyBalance extends FCommand {
 
     /**
-     * @author FactionsUUID Team - Modified By CmdrKittens
+     * @author FactionsUUID Team
      */
 
-    public CmdMoneyBalance () {
+    public CmdMoneyBalance() {
         super();
         this.aliases.addAll(Aliases.money_balance);
 
@@ -28,19 +28,24 @@ public class CmdMoneyBalance extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.faction;
-        if (context.argIsSet(0))
+        if (context.argIsSet(0)) {
             faction = context.argAsFaction(0);
-        if (faction == null)
+        }
+
+        if (faction == null) {
             return;
-        if (faction != context.faction && !Permission.MONEY_BALANCE_ANY.has(context.sender, true))
+        }
+        if (faction != context.faction && !Permission.MONEY_BALANCE_ANY.has(context.sender, true)) {
             return;
-        Econ.sendBalanceInfo(context.sender, faction);
+        }
+
+        Econ.sendBalanceInfo(context.fPlayer, faction);
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MONEYBALANCE_DESCRIPTION;
     }
 

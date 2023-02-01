@@ -8,24 +8,24 @@ import java.util.ArrayList;
  * @author Saser
  */
 public class ListParameterizedType implements ParameterizedType {
-    private final Type type;
+    private Type type;
 
-    public ListParameterizedType (Type type) {
+    public ListParameterizedType(Type type) {
         this.type = type;
     }
 
     @Override
-    public Type[] getActualTypeArguments () {
+    public Type[] getActualTypeArguments() {
         return new Type[]{this.type};
     }
 
     @Override
-    public Type getRawType () {
+    public Type getRawType() {
         return ArrayList.class;
     }
 
     @Override
-    public Type getOwnerType () {
+    public Type getOwnerType() {
         return null;
     }
 }

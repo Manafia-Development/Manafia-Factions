@@ -55,13 +55,15 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
     // Relational placeholders
     @Override
     public String onPlaceholderRequest(Player p1, Player p2, String placeholder) {
-        if (p1 == null || p2 == null || placeholder == null)
+        if (p1 == null || p2 == null || placeholder == null) {
             return "";
+        }
 
         FPlayer fp1 = FPlayers.getInstance().getByPlayer(p1);
         FPlayer fp2 = FPlayers.getInstance().getByPlayer(p2);
-        if (fp1 == null || fp2 == null)
+        if (fp1 == null || fp2 == null) {
             return "";
+        }
 
         switch (placeholder) {
             case "relation":
@@ -71,14 +73,14 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
                 ChatColor color = fp1.getColorTo(fp2);
                 return color != null ? color.toString() : "";
         }
-
         return null;
     }
 
     @Override
     public String onPlaceholderRequest(Player player, String placeholder) {
-        if (player == null || placeholder == null)
+        if (player == null || placeholder == null) {
             return "";
+        }
 
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         Faction faction = fPlayer.getFaction();
@@ -94,7 +96,7 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
                 String humanized = DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - fPlayer.getLastLoginTime(), true, true) + TL.COMMAND_STATUS_AGOSUFFIX;
                 return fPlayer.isOnline() ? ChatColor.GREEN + TL.COMMAND_STATUS_ONLINE.toString() : (System.currentTimeMillis() - fPlayer.getLastLoginTime() < 432000000 ? ChatColor.YELLOW + humanized : ChatColor.RED + humanized);
             case "player_group":
-                return Util.getPrimaryGroup(Bukkit.getOfflinePlayer(UUID.fromString(fPlayer.getId())));
+                return FactionsPlugin.getInstance().getPrimaryGroup(Bukkit.getOfflinePlayer(UUID.fromString(fPlayer.getId())));
             case "player_balance":
                 return Econ.isSetup() ? Econ.getFriendlyBalance(fPlayer) : TL.ECON_OFF.format("balance");
             case "player_power":
@@ -144,6 +146,10 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
                 return FactionTag.TNT_MAX.replace(FactionTag.TNT_MAX.getTag(), faction);
             case "faction_points":
                 return fPlayer.hasFaction() ? String.valueOf(faction.getPoints()) : "0";
+            case "discord_acount":
+                return fPlayer.discordSetup() ? String.valueOf(fPlayer.discordUserID()) : "Not Linked";
+            case "faction_discord":
+                return fPlayer.hasFaction() ? String.valueOf(faction.getDiscord()) : "Not Linked";
             case "faction_powerboost":
                 double powerBoost = faction.getPowerBoost();
                 return (powerBoost == 0.0) ? "" : (powerBoost > 0.0 ? TL.COMMAND_SHOW_BONUS.toString() : TL.COMMAND_SHOW_PENALTY.toString()) + powerBoost + ")";
@@ -168,7 +174,7 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
             case "faction_land_refund":
                 return Econ.shouldBeUsed() ? Econ.moneyString(Econ.calculateTotalLandRefund(faction.getLandRounded())) : TL.ECON_OFF.format("refund");
             case "faction_bank_balance":
-                return Econ.shouldBeUsed() ? Econ.moneyString(Econ.getBalance(faction.getAccountId())) : TL.ECON_OFF.format("balance");
+                return Econ.shouldBeUsed() ? Econ.insertCommas(faction.getFactionBalance()) : TL.ECON_OFF.format("balance");
             case "faction_allies":
                 return String.valueOf(faction.getRelationCount(Relation.ALLY));
             case "faction_allies_players":
@@ -210,10 +216,11 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
             case "faction_relation_color":
                 return fPlayer.getColorTo(faction).toString();
             case "grace_time":
-                if (Util.getTimerManager().graceTimer.getRemaining() >= 0)
-                    return String.valueOf(TimerManager.getRemaining(Util.getTimerManager().graceTimer.getRemaining(), true));
-                else
+                if (FactionsPlugin.getInstance().getTimerManager().graceTimer.getRemaining() >= 0) {
+                    return String.valueOf(TimerManager.getRemaining(FactionsPlugin.getInstance().getTimerManager().graceTimer.getRemaining(), true));
+                } else {
                     return TL.GRACE_DISABLED_PLACEHOLDER.toString();
+                }
             case "faction_name_at_location":
                 Faction factionAtLocation = Board.getInstance().getFactionAt(new FLocation(player.getLocation()));
                 return factionAtLocation != null ? factionAtLocation.getTag() : Factions.getInstance().getWilderness().getTag();
@@ -226,14 +233,16 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
             targetFaction = true;
             target = faction;
             stripped = placeholder.replace("faction_", "");
-        } else
+        } else {
             stripped = placeholder.replace("player_", "");
+        }
         try {
             Object pulled;
-            if (targetFaction)
+            if (targetFaction) {
                 pulled = Faction.class.getDeclaredMethod(stripped).invoke(target);
-            else
+            } else {
                 pulled = FPlayer.class.getDeclaredMethod(stripped).invoke(target);
+            }
             return String.valueOf(pulled);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             logInvalid(stripped);
@@ -244,14 +253,17 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
 
     private int countOn(Faction f, Relation relation, Boolean status, FPlayer player) {
         int count = 0;
-        for (Faction faction : Factions.getInstance().getAllFactions())
-            if (faction.getRelationTo(f) == relation)
-                if (status == null)
+        for (Faction faction : Factions.getInstance().getAllFactions()) {
+            if (faction.getRelationTo(f) == relation) {
+                if (status == null) {
                     count += faction.getFPlayers().size();
-                else if (status)
+                } else if (status) {
                     count += faction.getFPlayersWhereOnline(true, player).size();
-                else
+                } else {
                     count += faction.getFPlayersWhereOnline(false, player).size();
+                }
+            }
+        }
         return count;
     }
 }

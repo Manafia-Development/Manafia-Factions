@@ -14,7 +14,7 @@ import java.util.Set;
  */
 public class CmdLookup extends FCommand {
 
-    private final DecimalFormat format = new DecimalFormat("#.#");
+    private DecimalFormat format = new DecimalFormat("#.#");
 
     public CmdLookup() {
         super();
@@ -34,14 +34,17 @@ public class CmdLookup extends FCommand {
             return;
         }
         if (faction.isNormal()) {
-            if (faction.getHome() != null)
+            if (faction.getHome() != null) {
                 context.msg(TL.COMMAND_LOOKUP_FACTION_HOME, this.format.format(faction.getHome().getX()), this.format.format(faction.getHome().getY()), this.format.format(faction.getHome().getZ()));
+            }
             Set<FLocation> locations = Board.getInstance().getAllClaims(faction);
             context.msg(TL.COMMAND_LOOKUP_CLAIM_COUNT, locations.size(), faction.getTag());
-            for (FLocation flocation : locations)
+            for (FLocation flocation : locations) {
                 context.msg(TL.COMMAND_LOOKUP_CLAIM_LIST, flocation.getWorldName(), flocation.getX() * 16L, flocation.getZ() * 16L);
-        } else
+            }
+        } else {
             context.msg(TL.COMMAND_LOOKUP_ONLY_NORMAL);
+        }
     }
 
     @Override

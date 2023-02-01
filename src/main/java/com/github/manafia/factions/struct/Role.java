@@ -55,9 +55,9 @@ public enum Role implements Permissable {
                 return COLEADER;
             case 4:
                 return LEADER;
-            default:
-                return null;
         }
+
+        return null;
     }
 
     public static Role fromString(String check) {
@@ -76,9 +76,8 @@ public enum Role implements Permissable {
             case "recruit":
             case "rec":
                 return RECRUIT;
-            default:
-                return null;
         }
+        return null;
     }
 
     public boolean isAtLeast(Role role) {
@@ -115,33 +114,36 @@ public enum Role implements Permissable {
                 return Conf.prefixNormal;
             case RECRUIT:
                 return Conf.prefixRecruit;
-            default:
-                return "";
         }
+
+        return "";
     }
 
     // Utility method to build items for F Perm GUI
     @Override
     public ItemStack buildItem() {
-        final ConfigurationSection RELATION_CONFIG = FactionsPlugin.getInstance().getConfig().getConfigurationSection("fperm-gui.relation");
+        final ConfigurationSection RELATION_CONFIG = FactionsPlugin.getInstance().getFileManager().getFperms().getConfig().getConfigurationSection("fperm-gui.relation");
 
         String displayName = replacePlaceholders(RELATION_CONFIG.getString("placeholder-item.name", ""));
         List<String> lore = new ArrayList<>();
 
         Material material = XMaterial.matchXMaterial(RELATION_CONFIG.getString("materials." + name().toLowerCase(), "STAINED_CLAY")).orElse(XMaterial.TERRACOTTA).parseMaterial();
-        if (material == null)
+        if (material == null) {
             return null;
+        }
 
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
 
-        for (String loreLine : RELATION_CONFIG.getStringList("placeholder-item.lore"))
+        for (String loreLine : RELATION_CONFIG.getStringList("placeholder-item.lore")) {
             lore.add(replacePlaceholders(loreLine));
+        }
 
         itemMeta.setDisplayName(displayName);
         itemMeta.setLore(lore);
-        if (FactionsPlugin.instance.version != 7)
+        if (FactionsPlugin.getInstance().version != 7) {
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        }
 
         item.setItemMeta(itemMeta);
 

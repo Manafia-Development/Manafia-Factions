@@ -10,6 +10,7 @@ import com.github.manafia.factions.event.LandUnclaimAllEvent;
 import com.github.manafia.factions.integration.Econ;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.util.CC;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ public class CmdUnclaimall extends FCommand {
      */
 
     //TODO: Add UnclaimAll Confirmation GUI
-    public CmdUnclaimall () {
+    public CmdUnclaimall() {
         this.aliases.addAll(Aliases.unclaim_all_unsafe);
 
         this.optionalArgs.put("faction", "yours");
@@ -34,7 +35,7 @@ public class CmdUnclaimall extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction target = context.faction;
         if (context.args.size() == 1) {
             target = context.argAsFaction(0);
@@ -51,33 +52,37 @@ public class CmdUnclaimall extends FCommand {
             Board.getInstance().unclaimAll(target.getId());
             context.faction.msg(TL.COMMAND_UNCLAIMALL_LOG, context.fPlayer.describeTo(target, true), target.getTag());
             if (Conf.logLandUnclaims)
-                FactionsPlugin.getInstance().log(TL.COMMAND_UNCLAIMALL_LOG.format(context.fPlayer.getName(), context.faction.getTag()));
+                Logger.print(TL.COMMAND_UNCLAIMALL_LOG.format(context.fPlayer.getName(), context.faction.getTag()), Logger.PrefixType.DEFAULT);
             return;
 
         }
         if (Econ.shouldBeUsed()) {
             double refund = Econ.calculateTotalLandRefund(target.getLandRounded());
-            if (!Econ.modifyMoney(target, refund, TL.COMMAND_UNCLAIMALL_TOUNCLAIM.toString(), TL.COMMAND_UNCLAIMALL_FORUNCLAIM.toString()))
+            if (!Econ.modifyMoney(target, refund, TL.COMMAND_UNCLAIMALL_TOUNCLAIM.toString(), TL.COMMAND_UNCLAIMALL_FORUNCLAIM.toString())) {
                 return;
+            }
         }
 
         LandUnclaimAllEvent unclaimAllEvent = new LandUnclaimAllEvent(target, context.fPlayer);
-        Bukkit.getScheduler().runTask(FactionsPlugin.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(unclaimAllEvent));
-        if (unclaimAllEvent.isCancelled())
+        Bukkit.getScheduler().runTaskLater(FactionsPlugin.getInstance(), () -> Bukkit.getServer().getPluginManager().callEvent(unclaimAllEvent), 1);
+        if (unclaimAllEvent.isCancelled()) {
             return;
+        }
         int unclaimed = target.getAllClaims().size();
-
-
         Board.getInstance().unclaimAll(target.getId());
-        context.faction.msg(TL.COMMAND_UNCLAIMALL_UNCLAIMED, context.fPlayer.describeTo(context.faction, true));
-        Util.logFactionEvent(context.faction, FLogType.CHUNK_CLAIMS, context.fPlayer.getName(), CC.RedB + "UNCLAIMED", String.valueOf(unclaimed), new FLocation(context.fPlayer.getPlayer().getLocation()).formatXAndZ(","));
+        FactionsPlugin.instance.logFactionEvent(context.faction, FLogType.CHUNK_CLAIMS, context.fPlayer.getName(), CC.RedB + "UNCLAIMED", String.valueOf(unclaimed), new FLocation(context.fPlayer.getPlayer().getLocation()).formatXAndZ(","));
+        FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.instance, () -> {
 
-        if (Conf.logLandUnclaims)
-            FactionsPlugin.getInstance().log(TL.COMMAND_UNCLAIMALL_LOG.format(context.fPlayer.getName(), context.faction.getTag()));
+            context.faction.msg(TL.COMMAND_UNCLAIMALL_UNCLAIMED, context.fPlayer.describeTo(context.faction, true));
+
+            if (Conf.logLandUnclaims) {
+                Logger.print(TL.COMMAND_UNCLAIMALL_LOG.format(context.fPlayer.getName(), context.faction.getTag()), Logger.PrefixType.DEFAULT);
+            }
+        });
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_UNCLAIMALL_DESCRIPTION;
     }
 
