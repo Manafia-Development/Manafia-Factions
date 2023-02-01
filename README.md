@@ -6,7 +6,7 @@
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-black-magic.svg)](https://forthebadge.com)
 
 <div align="center">
-    <a href="https://github.com/SaberLLC/SaberFactions"><img src="https://img.shields.io/badge/SaberFactions%20-Fork-e64c65"></a>
+    <a href="https://github.com/SaberLLC/Saber-Factions"><img src="https://img.shields.io/badge/SaberFactions%20-Fork-e64c65"></a>
     <a href=https://jitpack.io/#Manafia-Development/Manafia-Factions"><img src="https://jitpack.io/v/Manafia-Development/Manafia-Factions.svg"></a>
 </div>
 
