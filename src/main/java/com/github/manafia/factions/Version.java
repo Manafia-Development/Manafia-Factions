@@ -35,6 +35,12 @@ public class Version {
             case 17:
                 FactionsPlugin.instance.log("Minecraft Version 1.17 found.");
                 break;
+            case 18:
+                FactionsPlugin.instance.log("Minecraft Version 1.18 found.");
+                break;
+            case 19:
+                FactionsPlugin.instance.log("Minecraft Version 1.19 found.");
+                break;
         }
     }
 
