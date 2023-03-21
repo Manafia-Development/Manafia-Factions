@@ -1,10 +1,5 @@
 package com.github.manafia.factions;
 
-import com.github.manafia.factions.boosters.Booster;
-import com.github.manafia.factions.boosters.BoosterType;
-import com.github.manafia.factions.cloaks.Cloak;
-import com.github.manafia.factions.cloaks.CloakType;
-import com.github.manafia.factions.util.CloakChunk;
 import com.github.manafia.factions.event.FactionDisbandEvent.PlayerDisbandReason;
 import com.github.manafia.factions.iface.EconomyParticipator;
 import com.github.manafia.factions.iface.RelationParticipator;
@@ -24,47 +19,56 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public interface Faction extends EconomyParticipator {
 
+    double getFactionBalance();
 
-    boolean hasCloak(CloakType cloakType);
+    void setFactionBalance(double money);
 
-    void addCloak(Cloak cloak);
+    String getMemberRoleId();
 
-    void removeCloak(CloakType cloak);
+    void setMemberRoleId(String roleId);
 
-    Map<CloakType, Cloak> getActiveCloaks();
+    String getGuildId();
 
-    Set<CloakChunk> getCloakChunks();
+    void setGuildId(String id);
 
-    void setCloakChunks(Set<CloakChunk> cloakChunks);
+    String getWallNotifyChannelId();
 
-    void clearCloakChunks();
+    void setWallNotifyChannelId(String channelId);
 
-    int getCloakChunkCount();
+    String getBufferNotifyChannelId();
 
-    int getAllowedCloakChunks();
+    void setBufferNotifyChannelId(String channelId);
 
+    String getWeeWooChannelId();
 
-    void setAllowedCloakChunks(int chunks);
+    void setWeeWooChannelId(String channelId);
 
-    //double getFactionBalance();
+    String getNotifyFormat();
 
-    //void setFactionBalance(double money);
+    void setNotifyFormat(String format);
 
-    boolean hasBooster(BoosterType boosterType);
+    String getWeeWooFormat();
 
-    void addBooster(Booster booster);
+    void setWeeWooFormat(String format);
 
-    void removeBooster(BoosterType booster);
+    String getFactionChatChannelId();
 
-    Map<BoosterType, Booster> getActiveBoosters();
+    void setFactionChatChannelId(String channelId);
+
+    String getDiscord();
+
+    void setDiscord(String link);
 
     void checkPerms();
+
+    double getReinforcedArmor();
+
+    void setReinforcedArmor(double percent);
 
     int getWarpsLimit();
 
@@ -113,6 +117,10 @@ public interface Faction extends EconomyParticipator {
     boolean isProtected();
 
     void setProtected(boolean b);
+
+    void deinviteAlt(FPlayer alt);
+
+    void deinviteAllAlts();
 
     void altInvite(FPlayer fplayer);
 
@@ -220,6 +228,8 @@ public interface Faction extends EconomyParticipator {
 
     void setTnt(int amount);
 
+    String getRule(int index);
+
     boolean getOpen();
 
     void setOpen(boolean isOpen);
@@ -288,10 +298,10 @@ public interface Faction extends EconomyParticipator {
 
     boolean isSystemFaction();
 
-    boolean isWilderness();
-
     @Deprecated
     boolean isNone();
+
+    boolean isWilderness();
 
     boolean isSafeZone();
 
@@ -307,6 +317,8 @@ public interface Faction extends EconomyParticipator {
 
     int getDeaths();
 
+    Access getAccess(Permissable permissable, PermissableAction permissableAction);
+
     Access getAccess(FPlayer player, PermissableAction permissableAction);
 
     boolean setPermission(Permissable permissable, PermissableAction permissableAction, Access access);
@@ -314,6 +326,8 @@ public interface Faction extends EconomyParticipator {
     void resetPerms();
 
     void setDefaultPerms();
+
+    void disband(Player disbander);
 
     void disband(Player disbander, PlayerDisbandReason reason);
 
@@ -415,6 +429,8 @@ public interface Faction extends EconomyParticipator {
     // Ownership of specific claims
     // ----------------------------------------------//
 
+    void sendMessage(List<String> messages);
+
     Map<FLocation, Set<String>> getClaimOwnership();
 
     void clearAllClaimOwnership();
@@ -453,16 +469,4 @@ public interface Faction extends EconomyParticipator {
     // -------------------------------
     // Shields
     // -------------------------------
-
-    LocalTime getShieldStart();
-
-    void setShieldStart(LocalTime shieldStart);
-
-    LocalTime getShieldEnd();
-
-    void setShieldEnd(LocalTime shieldEnd);
-
-    boolean isShieldRunning();
-
-    boolean isShieldSelected();
 }

@@ -11,7 +11,7 @@ import org.bukkit.ChatColor;
 
 public class CmdSetTnt extends FCommand {
 
-    public CmdSetTnt () {
+    public CmdSetTnt() {
         this.aliases.addAll(Aliases.setTnt);
         this.requiredArgs.add("faction");
         this.requiredArgs.add("amount");
@@ -20,7 +20,7 @@ public class CmdSetTnt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction targetFac = context.argAsFaction(0);
         int value = context.argAsInt(1, -1);
 
@@ -51,7 +51,7 @@ public class CmdSetTnt extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SETTNT_DESCRIPTION;
     }
 }

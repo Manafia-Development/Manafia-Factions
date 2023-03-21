@@ -2,8 +2,8 @@ package com.github.manafia.factions.util;
 
 public class Placeholder {
 
-    private final String tag;
-    private final String replace;
+    private String tag;
+    private String replace;
 
     public Placeholder(String tag, String replace) {
         this.tag = tag;

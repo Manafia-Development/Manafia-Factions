@@ -7,7 +7,7 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.Faction;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.util.CC;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public class FDisbandFrame {
 
-    private final Gui gui;
+    private Gui gui;
 
     public FDisbandFrame(Faction faction) {
         this.gui = new Gui(FactionsPlugin.getInstance(), 1, ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(FactionsPlugin.getInstance().getConfig().getString("f-disband-gui.title"))));
@@ -55,8 +55,9 @@ public class FDisbandFrame {
         if (separatorMeta.getLore() != null) separatorMeta.getLore().clear();
         if (separatorLore != null) {
             List<String> lore = new ArrayList<>();
-            for (String loreEntry : config.getStringList("f-disband-gui.separation-item.Lore"))
+            for (String loreEntry : config.getStringList("f-disband-gui.separation-item.Lore")) {
                 lore.add(ChatColor.translateAlternateColorCodes('&', loreEntry));
+            }
             separatorMeta.setLore(lore);
         }
         GUIItems.set(4, new GuiItem(separatorItem, (e) -> e.setCancelled(true)));
@@ -81,10 +82,11 @@ public class FDisbandFrame {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             List<String> lore = new ArrayList<>();
-            for (String s : config.getStringList("Lore"))
-                lore.add(Util.color(s).replace("{faction}", faction.getTag()));
+            for (String s : config.getStringList("Lore")) {
+                lore.add(CC.translate(s).replace("{faction}", faction.getTag()));
+            }
             meta.setLore(lore);
-            meta.setDisplayName(Util.color(Objects.requireNonNull(config.getString("Name"))));
+            meta.setDisplayName(CC.translate(Objects.requireNonNull(config.getString("Name"))));
             item.setItemMeta(meta);
         }
         return item;
@@ -95,8 +97,8 @@ public class FDisbandFrame {
         ItemStack item = XMaterial.matchXMaterial(config.getString("Type")).get().parseItem();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.setLore(Util.colorList(config.getStringList("Lore")));
-            meta.setDisplayName(Util.color(config.getString("Name")));
+            meta.setLore(CC.translate(config.getStringList("Lore")));
+            meta.setDisplayName(CC.translate(config.getString("Name")));
             item.setItemMeta(meta);
         }
         return item;

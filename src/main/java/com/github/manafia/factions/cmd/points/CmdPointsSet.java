@@ -16,7 +16,7 @@ public class CmdPointsSet extends FCommand {
      * @author Driftay
      */
 
-    public CmdPointsSet () {
+    public CmdPointsSet() {
         super();
         this.aliases.addAll(Aliases.points_set);
 
@@ -30,12 +30,13 @@ public class CmdPointsSet extends FCommand {
 
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = Factions.getInstance().getByTag(context.args.get(0));
 
         FPlayer fPlayer = context.argAsFPlayer(0);
-        if (fPlayer != null)
+        if (fPlayer != null) {
             faction = fPlayer.getFaction();
+        }
 
         if (faction == null || faction.isWilderness()) {
             context.msg(TL.COMMAND_POINTS_FAILURE.toString().replace("{faction}", context.args.get(0)));
@@ -53,7 +54,7 @@ public class CmdPointsSet extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_SETPOINTS_DESCRIPTION;
     }
 

@@ -11,9 +11,9 @@ public class FPlayerEnteredFactionEvent extends FactionPlayerEvent {
      */
 
     private static final HandlerList handlers = new HandlerList();
-    private final FPlayer fPlayer;
-    private final Faction factionTo;
-    private final Faction factionFrom;
+    private FPlayer fPlayer;
+    private Faction factionTo;
+    private Faction factionFrom;
 
     public FPlayerEnteredFactionEvent(Faction factionTo, Faction factionFrom, FPlayer fPlayer) {
         super(fPlayer.getFaction(), fPlayer);

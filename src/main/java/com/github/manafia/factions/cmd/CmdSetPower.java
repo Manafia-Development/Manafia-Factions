@@ -1,6 +1,7 @@
 package com.github.manafia.factions.cmd;
 
 import com.github.manafia.factions.FPlayer;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.zcore.util.TL;
 import org.bukkit.ChatColor;
@@ -37,6 +38,11 @@ public class CmdSetPower extends FCommand {
 
         if (value > targetPlayer.getPowerMaxRounded()) {
             context.sender.sendMessage(ChatColor.RED + "Number must be less than the players max-power.");
+            return;
+        }
+
+        if (targetPlayer.isAlt() && !FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Have-Power")) {
+            context.sender.sendMessage(ChatColor.RED + "The target cannot be an alt account.");
             return;
         }
 

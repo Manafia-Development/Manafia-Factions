@@ -1,10 +1,16 @@
 package com.github.manafia.factions.zcore;
 
+import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FPlayers;
+import com.github.manafia.factions.Faction;
+import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.integration.Econ;
 import com.github.manafia.factions.zcore.util.TL;
 import com.github.manafia.factions.zcore.util.TextUtil;
 import mkremins.fanciful.FancyMessage;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,15 +18,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 
 public abstract class MCommand<T extends MPlugin> {
 
-    // FIELD: Help Short
-    // This field may be left blank and will in such case be loaded from the permissions node instead.
-    // Thus make sure the permissions node description is an action description like "eat hamburgers" or "do admin stuff".
-    private final String helpShort;
     public T p;
+
     // The sub-commands to this command
     public List<MCommand<?>> subCommands;
     // The different names this commands will react to
@@ -42,6 +46,10 @@ public abstract class MCommand<T extends MPlugin> {
     public boolean senderIsConsole;
     public List<String> args; // Will contain the arguments, or and empty list if there are none.
     public List<MCommand<?>> commandChain = new ArrayList<>(); // The command chain used to execute this command
+    // FIELD: Help Short
+    // This field may be left blank and will in such case be loaded from the permissions node instead.
+    // Thus make sure the permissions node description is an action description like "eat hamburgers" or "do admin stuff".
+    private String helpShort;
 
     public MCommand(T p) {
         this.p = p;
@@ -71,6 +79,10 @@ public abstract class MCommand<T extends MPlugin> {
         return this.helpShort != null ? this.helpShort : getUsageTranslation().toString();
     }
 
+    public void setHelpShort(String val) {
+        this.helpShort = val;
+    }
+
     public abstract TL getUsageTranslation();
 
     public void setCommandSender(CommandSender sender) {
@@ -92,16 +104,25 @@ public abstract class MCommand<T extends MPlugin> {
         this.commandChain = commandChain;
 
         // Is there a matching sub command?
-        if (args.size() > 0)
-            for (MCommand<?> subCommand : this.subCommands)
+        if (args.size() > 0) {
+            for (MCommand<?> subCommand : this.subCommands) {
                 if (subCommand.aliases.contains(args.get(0).toLowerCase())) {
                     args.remove(0);
                     commandChain.add(this);
                     subCommand.execute(sender, args, commandChain);
                     return;
                 }
-        if (!validCall(this.sender, this.args) || !this.isEnabled())
+            }
+        }
+
+        if (!validCall(this.sender, this.args)) {
             return;
+        }
+
+        if (!this.isEnabled()) {
+            return;
+        }
+
         perform();
     }
 
@@ -136,8 +157,11 @@ public abstract class MCommand<T extends MPlugin> {
 
     public boolean validSenderType(CommandSender sender, boolean informSenderIfNot) {
         if (this.senderMustBePlayer && !(sender instanceof Player)) {
-            if (informSenderIfNot) msg(TL.GENERIC_PLAYERONLY);
+            if (informSenderIfNot) {
+                msg(TL.GENERIC_PLAYERONLY);
+            }
             return false;
+
         }
         return !this.senderMustHaveFaction || !FPlayers.getInstance().getByPlayer((Player) sender).hasFaction();
     }
@@ -148,17 +172,20 @@ public abstract class MCommand<T extends MPlugin> {
 
     public boolean validArgs(List<String> args, CommandSender sender) {
         if (args.size() < this.requiredArgs.size()) {
-            if (sender == null) return false;
-            msg(TL.GENERIC_ARGS_TOOFEW);
-            sender.sendMessage(this.getUseageTemplate());
+            if (sender != null) {
+                msg(TL.GENERIC_ARGS_TOOFEW);
+                sender.sendMessage(this.getUseageTemplate());
+            }
             return false;
         }
 
         if (args.size() > this.requiredArgs.size() + this.optionalArgs.size() && this.errorOnToManyArgs) {
-            if (sender == null) return false;
-            List<String> theToMany = args.subList(this.requiredArgs.size() + this.optionalArgs.size(), args.size());
-            msg(TL.GENERIC_ARGS_TOOMANY, TextUtil.implode(theToMany, " "));
-            sender.sendMessage(this.getUseageTemplate());
+            if (sender != null) {
+                // Get the to many string slice
+                List<String> theToMany = args.subList(this.requiredArgs.size() + this.optionalArgs.size(), args.size());
+                msg(TL.GENERIC_ARGS_TOOMANY, TextUtil.implode(theToMany, " "));
+                sender.sendMessage(this.getUseageTemplate());
+            }
             return false;
         }
         return true;
@@ -183,15 +210,20 @@ public abstract class MCommand<T extends MPlugin> {
         }
 
         ret.append(TextUtil.implode(this.aliases, ","));
+
         List<String> args = new ArrayList<>();
 
-        for (String requiredArg : this.requiredArgs)
+        for (String requiredArg : this.requiredArgs) {
             args.add("<" + requiredArg + ">");
+        }
 
         for (Entry<String, String> optionalArg : this.optionalArgs.entrySet()) {
             String val = optionalArg.getValue();
-            if (val == null) val = "";
-            else val = "=" + val;
+            if (val == null) {
+                val = "";
+            } else {
+                val = "=" + val;
+            }
             args.add("[" + optionalArg.getKey() + val + "]");
         }
 
@@ -220,6 +252,10 @@ public abstract class MCommand<T extends MPlugin> {
     // Message Sending Helpers
     // -------------------------------------------- //
 
+    public void msg(String str, Object... args) {
+        sender.sendMessage(p.txt.parse(str, args));
+    }
+
     public void msg(TL translation, Object... args) {
         sender.sendMessage(p.txt.parse(translation.toString(), args));
     }
@@ -228,14 +264,98 @@ public abstract class MCommand<T extends MPlugin> {
         sender.sendMessage(msg);
     }
 
+    public void sendMessage(List<String> msgs) {
+        for (String msg : msgs) {
+            this.sendMessage(msg);
+        }
+    }
+
     public void sendFancyMessage(FancyMessage message) {
         message.send(sender);
     }
 
+    public void sendFancyMessage(List<FancyMessage> messages) {
+        for (FancyMessage m : messages) {
+            sendFancyMessage(m);
+        }
+    }
+
+    public List<String> getToolTips(FPlayer player) {
+        List<String> lines = new ArrayList<>();
+        for (String s : p.getConfig().getStringList("tooltips.show")) {
+            lines.add(ChatColor.translateAlternateColorCodes('&', replaceFPlayerTags(s, player)));
+        }
+        return lines;
+    }
+
+    public List<String> getToolTips(Faction faction) {
+        List<String> lines = new ArrayList<>();
+        for (String s : p.getConfig().getStringList("tooltips.list")) {
+            lines.add(ChatColor.translateAlternateColorCodes('&', replaceFactionTags(s, faction)));
+        }
+        return lines;
+    }
+
+    public String replaceFPlayerTags(String s, FPlayer player) {
+        if (s.contains("{balance}")) {
+            String balance = Econ.isSetup() ? Econ.getFriendlyBalance(player) : "no balance";
+            s = s.replace("{balance}", balance);
+        }
+        if (s.contains("{lastSeen}")) {
+            String humanized = DurationFormatUtils.formatDurationWords(System.currentTimeMillis() - player.getLastLoginTime(), true, true) + " ago";
+            String lastSeen = player.isOnline() ? ChatColor.GREEN + "Online" : (System.currentTimeMillis() - player.getLastLoginTime() < 432000000 ? ChatColor.YELLOW + humanized : ChatColor.RED + humanized);
+            s = s.replace("{lastSeen}", lastSeen);
+        }
+        if (s.contains("{power}")) {
+            String power = player.getPowerRounded() + "/" + player.getPowerMaxRounded();
+            s = s.replace("{power}", power);
+        }
+        if (s.contains("{group}")) {
+            String group = FactionsPlugin.getInstance().getPrimaryGroup(Bukkit.getOfflinePlayer(UUID.fromString(player.getId())));
+            s = s.replace("{group}", group);
+        }
+        return s;
+    }
+
+    public String replaceFactionTags(String s, Faction faction) {
+        if (s.contains("{power}")) {
+            s = s.replace("{power}", String.valueOf(faction.getPowerRounded()));
+        }
+        if (s.contains("{maxPower}")) {
+            s = s.replace("{maxPower}", String.valueOf(faction.getPowerMaxRounded()));
+        }
+        if (s.contains("{leader}")) {
+            FPlayer fLeader = faction.getFPlayerAdmin();
+            String leader = fLeader == null ? "Server" : fLeader.getName().substring(0, fLeader.getName().length() > 14 ? 13 : fLeader.getName().length());
+            s = s.replace("{leader}", leader);
+        }
+        if (s.contains("{chunks}")) {
+            s = s.replace("{chunks}", String.valueOf(faction.getLandRounded()));
+        }
+        if (s.contains("{members}")) {
+            s = s.replace("{members}", String.valueOf(faction.getSize()));
+
+        }
+        if (s.contains("{online}")) {
+            s = s.replace("{online}", String.valueOf(faction.getOnlinePlayers().size()));
+        }
+        return s;
+    }
+
+    // -------------------------------------------- //
+    // Argument Readers
+    // -------------------------------------------- //
+
+    // Is set? ======================
+    public boolean argIsSet(int idx) {
+        return this.args.size() >= idx + 1;
+    }
+
     // STRING ======================
     public String argAsString(int idx, String def) {
-        if (this.args.size() < idx + 1)
+        if (this.args.size() < idx + 1) {
             return def;
+        }
         return this.args.get(idx);
     }
 
@@ -245,7 +365,9 @@ public abstract class MCommand<T extends MPlugin> {
 
     // INT ======================
     public Integer strAsInt(String str, Integer def) {
-        if (str == null) return def;
+        if (str == null) {
+            return def;
+        }
         try {
             return Integer.parseInt(str);
         } catch (Exception e) {
@@ -257,9 +379,15 @@ public abstract class MCommand<T extends MPlugin> {
         return strAsInt(this.argAsString(idx), def);
     }
 
+    public Integer argAsInt(int idx) {
+        return this.argAsInt(idx, null);
+    }
+
     // Double ======================
     public Double strAsDouble(String str, Double def) {
-        if (str == null) return def;
+        if (str == null) {
+            return def;
+        }
         try {
             return Double.parseDouble(str);
         } catch (Exception e) {
@@ -271,6 +399,10 @@ public abstract class MCommand<T extends MPlugin> {
         return strAsDouble(this.argAsString(idx), def);
     }
 
+    public Double argAsDouble(int idx) {
+        return this.argAsDouble(idx, null);
+    }
+
     // TODO: Go through the str conversion for the other arg-readers as well.
     // Boolean ======================
     public Boolean strAsBool(String str) {
@@ -280,15 +412,32 @@ public abstract class MCommand<T extends MPlugin> {
 
     public Boolean argAsBool(int idx, boolean def) {
         String str = this.argAsString(idx);
-        if (str == null) return def;
+        if (str == null) {
+            return def;
+        }
+
         return strAsBool(str);
+    }
+
+    public Boolean argAsBool(int idx) {
+        return this.argAsBool(idx, false);
     }
 
     // PLAYER ======================
     public Player strAsPlayer(String name, Player def, boolean msg) {
         Player ret = def;
-        if (name != null) if (Bukkit.getServer().getPlayer(name) != null) ret = Bukkit.getServer().getPlayer(name);
-        if (msg && ret == null) this.msg(TL.GENERIC_NOPLAYERFOUND, name);
+
+        if (name != null) {
+            Player player = Bukkit.getServer().getPlayer(name);
+            if (player != null) {
+                ret = player;
+            }
+        }
+
+        if (msg && ret == null) {
+            this.msg(TL.GENERIC_NOPLAYERFOUND, name);
+        }
+
         return ret;
     }
 
@@ -300,20 +449,37 @@ public abstract class MCommand<T extends MPlugin> {
         return this.argAsPlayer(idx, def, true);
     }
 
+    public Player argAsPlayer(int idx) {
+        return this.argAsPlayer(idx, null);
+    }
+
     // BEST PLAYER MATCH ======================
     public Player strAsBestPlayerMatch(String name, Player def, boolean msg) {
         Player ret = def;
+
         if (name != null) {
             List<Player> players = Bukkit.getServer().matchPlayer(name);
-            if (players.size() > 0)
+            if (players.size() > 0) {
                 ret = players.get(0);
+            }
         }
-        if (msg && ret == null)
+
+        if (msg && ret == null) {
             this.msg(TL.GENERIC_NOPLAYERMATCH, name);
+        }
+
         return ret;
     }
 
     public Player argAsBestPlayerMatch(int idx, Player def, boolean msg) {
         return this.strAsBestPlayerMatch(this.argAsString(idx), def, msg);
+    }
+
+    public Player argAsBestPlayerMatch(int idx, Player def) {
+        return this.argAsBestPlayerMatch(idx, def, true);
+    }
+
+    public Player argAsBestPlayerMatch(int idx) {
+        return this.argAsPlayer(idx, null);
     }
 }

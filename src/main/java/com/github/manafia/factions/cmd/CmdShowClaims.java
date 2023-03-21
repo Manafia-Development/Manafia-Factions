@@ -28,8 +28,9 @@ public class CmdShowClaims extends FCommand {
         context.sendMessage(TL.COMMAND_SHOWCLAIMS_HEADER.toString().replace("{faction}", context.faction.describeTo(context.fPlayer)));
         ListMultimap<String, String> chunkMap = ArrayListMultimap.create();
         String format = TL.COMMAND_SHOWCLAIMS_CHUNKSFORMAT.toString();
-        for (FLocation fLocation : context.faction.getAllClaims())
+        for (FLocation fLocation : context.faction.getAllClaims()) {
             chunkMap.put(fLocation.getWorldName(), format.replace("{x}", fLocation.getX() + "").replace("{z}", fLocation.getZ() + ""));
+        }
         for (String world : chunkMap.keySet()) {
             String message = TL.COMMAND_SHOWCLAIMS_FORMAT.toString().replace("{world}", world);
             // made {chunks} blank as I removed the placeholder and people wont update their config :shrug:

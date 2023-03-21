@@ -18,7 +18,7 @@ public class CmdFWarp extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdFWarp () {
+    public CmdFWarp() {
         super();
         this.aliases.addAll(Aliases.warp);
         this.optionalArgs.put("warpname", "warpname");
@@ -32,13 +32,13 @@ public class CmdFWarp extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
 
-        if (context.args.size() == 0)
+        if (context.args.size() == 0) {
             new FactionWarpsFrame(context.faction).buildGUI(context.fPlayer);
-        else if (context.args.size() > 2)
+        } else if (context.args.size() > 2) {
             context.msg(TL.COMMAND_FWARP_COMMANDFORMAT);
-        else {
+        } else {
             final String warpName = context.argAsString(0);
             final String passwordAttempt = context.argAsString(1);
 
@@ -62,17 +62,18 @@ public class CmdFWarp extends FCommand {
                         fPlayer.msg(TL.COMMAND_FWARP_WARPED, warpName);
                     }
                 }, FactionsPlugin.getInstance().getConfig().getLong("warmups.f-warp", 10));
-            } else
+            } else {
                 context.msg(TL.COMMAND_FWARP_INVALID_WARP, warpName);
+            }
         }
     }
 
-    private boolean transact (FPlayer player, CommandContext context) {
+    private boolean transact(FPlayer player, CommandContext context) {
         return !FactionsPlugin.getInstance().getConfig().getBoolean("warp-cost.enabled", false) || player.isAdminBypassing() || context.payForCommand(FactionsPlugin.getInstance().getConfig().getDouble("warp-cost.warp", 5), TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString());
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_FWARP_DESCRIPTION;
     }
 }

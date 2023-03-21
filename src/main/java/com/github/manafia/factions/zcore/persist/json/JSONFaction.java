@@ -15,18 +15,4 @@ public class JSONFaction extends MemoryFaction {
         super(id);
     }
 
-    @Override
-    public int getCloakChunkCount() {
-        return 0;
-    }
-
-    @Override
-    public int getAllowedCloakChunks() {
-        return 0;
-    }
-
-    @Override
-    public void setAllowedCloakChunks(int chunks) {
-
-    }
 }

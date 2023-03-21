@@ -1,203 +1,251 @@
 package com.github.manafia.factions.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.manafia.factions.Conf;
+
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-/*
- * Made by Sothatsit for Spigot
- *
- * Thread: https://www.spigotmc.org/threads/194248/
- */
 public class TimeUtil {
 
-    private static final long TICK_MS = 50;
-    private static final long SECOND_MS = 1000;
-    private static final long MINUTE_MS = SECOND_MS * 60;
-    private static final long HOUR_MS = MINUTE_MS * 60;
-    private static final long DAY_MS = HOUR_MS * 24;
-    private static final long YEAR_MS = DAY_MS * 365;
+    public static Calendar calender = getCalenderTimeZone();
 
-    private static final Map<String, Long> unitMultipliers = new HashMap<>();
 
-    static {
-        addTimeMultiplier(1, "ms", "milli", "millis", "millisecond", "milliseconds");
-        addTimeMultiplier(TICK_MS, "t", "tick", "ticks");
-        addTimeMultiplier(SECOND_MS, "s", "sec", "secs", "second", "seconds");
-        addTimeMultiplier(MINUTE_MS, "m", "min", "mins", "minute", "minutes");
-        addTimeMultiplier(HOUR_MS, "h", "hour", "hours");
-        addTimeMultiplier(DAY_MS, "d", "day", "days");
-        addTimeMultiplier(YEAR_MS, "y", "year", "years");
+    public static String formatSeconds(int timeInSeconds) {
+        int hours = timeInSeconds / 3600;
+        int secondsLeft = timeInSeconds - hours * 3600;
+        int minutes = secondsLeft / 60;
+        int seconds = secondsLeft - minutes * 60;
+        String formattedTime = "";
+        if (hours < 10)
+            formattedTime = formattedTime + "0";
+        formattedTime = formattedTime + hours + ":";
+        if (minutes < 10)
+            formattedTime = formattedTime + "0";
+        formattedTime = formattedTime + minutes + ":";
+        if (seconds < 10)
+            formattedTime = formattedTime + "0";
+        formattedTime = formattedTime + seconds;
+        return formattedTime;
     }
 
-    private final long milliseconds;
-
-    public TimeUtil(long time, TimeUnit timeUnit) {
-        this(TimeUnit.MILLISECONDS.convert(time, timeUnit));
+    public static String formatDifference(long time) {
+        if (time == 0L) {
+            return "Never";
+        }
+        long day = TimeUnit.SECONDS.toDays(time);
+        long hours = TimeUnit.SECONDS.toHours(time) - day * 24L;
+        long minutes = TimeUnit.SECONDS.toMinutes(time) - TimeUnit.SECONDS.toHours(time) * 60L;
+        long seconds = TimeUnit.SECONDS.toSeconds(time) - TimeUnit.SECONDS.toMinutes(time) * 60L;
+        StringBuilder sb = new StringBuilder();
+        if (day > 0L) {
+            sb.append(day).append((day == 1L) ? "day" : "days").append(" ");
+        }
+        if (hours > 0L) {
+            sb.append(hours).append("h").append(" ");
+        }
+        if (minutes > 0L) {
+            sb.append(minutes).append("m").append(" ");
+        }
+        if (seconds > 0L) {
+            sb.append(seconds).append("s");
+        }
+        String diff = sb.toString().trim();
+        return diff.isEmpty() ? "Now" : diff;
     }
 
-    private TimeUtil(long milliseconds) {
-        if (milliseconds < 0) {
-            throw new IllegalArgumentException("Number of milliseconds cannot be less than 0");
-        }
-
-        this.milliseconds = milliseconds;
+    private static Calendar getCalenderTimeZone() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone(Conf.serverTimeZone));
+        return calendar;
     }
 
-    private static void addTimeMultiplier(long multiplier, String... keys) {
-        for (String key : keys) {
-            unitMultipliers.put(key, multiplier);
+    public static int getYear() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.YEAR);
+    }
+
+    public static int getMonth() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.MONTH) + 1;
+    }
+
+    public static int getDay() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static Calendar addDay(int days) {
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.DAY_OF_MONTH, days);
+        return calendar2;
+    }
+
+    public static int getDay(boolean incrementBy1) {
+        if (!incrementBy1) {
+            return getDay();
+        }
+        calender = Calendar.getInstance(calender.getTimeZone());
+
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.add(Calendar.DAY_OF_MONTH, 1);
+
+        return calendar2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static int getTimeHours() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public static int getTimeMinutes() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.MINUTE);
+    }
+
+    public static int getTimeSeconds() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.SECOND);
+    }
+
+    public static int getTimeMilliseconds() {
+        calender = Calendar.getInstance(calender.getTimeZone());
+        return calender.get(Calendar.MILLISECOND);
+    }
+
+    public static String getTimeString() {
+        int time = getTimeHours();
+        int minutes = getTimeMinutes();
+        return time > 12 ? time - 12 + ":" + (minutes < 10 ? "0" + minutes : minutes) + "PM" : time + ":" + (minutes < 10 ? "0" + minutes : minutes) + "AM";
+    }
+
+    public static String getTimeStringSeconds() {
+        int time = getTimeHours();
+        int minutes = getTimeMinutes();
+        int seconds = getTimeSeconds();
+        return time > 12 ? time - 12 + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds) + "PM" : time + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds) + "AM";
+    }
+
+    public static String formatSecondsAsTime(int seconds) {
+        int minutes = seconds / 60;
+        if (minutes < 1)
+            return seconds + "s";
+        else {
+            int secs = seconds - minutes * 60;
+            return minutes + "m " + secs + "s";
         }
     }
 
-    public static TimeUtil parseString(String timeString) throws TimeParseException {
-        if (timeString == null) {
-            throw new IllegalArgumentException("timeString cannot be null");
-        }
+    public static String formatTimeFormat(long timePeriod) {
+        long millis = timePeriod;
 
-        if (timeString.isEmpty()) {
-            throw new TimeParseException("Empty time string");
-        }
+        String output = "";
 
-        long totalMilliseconds = 0;
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
 
-        boolean readingNumber = true;
+        if (days > 1) output += days + " d ";
+        else if (days == 1) output += days + " d ";
 
-        StringBuilder number = new StringBuilder();
-        StringBuilder unit = new StringBuilder();
+        if (hours > 1) output += hours + " h ";
+        else if (hours == 1) output += hours + " h ";
 
-        for (char c : timeString.toCharArray()) {
-            if (c == ' ' || c == ',') {
-                readingNumber = false;
-                continue;
-            }
+        if (minutes > 1) output += minutes + " m ";
+        else if (minutes == 1) output += minutes + " m ";
 
-            if (c == '.' || (c >= '0' && c <= '9')) {
-                if (!readingNumber) {
-                    totalMilliseconds += parseTimeComponent(number.toString(), unit.toString());
+        if (output.isEmpty()) return "None";
 
-                    number.setLength(0);
-                    unit.setLength(0);
-
-                    readingNumber = true;
-                }
-
-                number.append(c);
-            } else {
-                readingNumber = false;
-                unit.append(c);
-            }
-        }
-
-        if (readingNumber) {
-            throw new TimeParseException("Number \"" + number + "\" not matched with unit at end of string");
-        } else {
-            totalMilliseconds += parseTimeComponent(number.toString(), unit.toString());
-        }
-
-        return new TimeUtil(totalMilliseconds);
+        return output.trim();
     }
 
-    private static double parseTimeComponent(String magnitudeString, String unit) throws TimeParseException {
-        if (magnitudeString.isEmpty()) {
-            throw new TimeParseException("Missing number for unit \"" + unit + "\"");
+    public static String formatPlayTime(long playTime) {
+        long millis = playTime;
+
+        String output = "";
+
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+        if (days > 1) output += days + " days ";
+        else if (days == 1) output += days + " day ";
+
+        if (hours > 1) output += hours + " hours ";
+        else if (hours == 1) output += hours + " hour ";
+
+        if (minutes > 1) output += minutes + " minutes ";
+        else if (minutes == 1) output += minutes + " minute ";
+
+        if (seconds > 1) output += seconds + " seconds ";
+        else if (seconds == 1) output += seconds + " second ";
+
+        if (output.isEmpty()) return "0 seconds ";
+
+        return output;
+    }
+
+    public static String formatTime(long timePeriod) {
+        long millis = timePeriod;
+
+        String output = "";
+
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+        if (days > 1) output += days + " days ";
+        else if (days == 1) output += days + " day ";
+
+        if (hours > 1) output += hours + " hours ";
+        else if (hours == 1) output += hours + " hour ";
+
+        if (minutes > 1) output += minutes + " minutes ";
+        else if (minutes == 1) output += minutes + " minute ";
+
+        if (seconds > 1) output += seconds + " seconds ";
+        else if (seconds == 1) output += seconds + " second ";
+
+        if (output.isEmpty()) return "just now ";
+
+        return output;
+    }
+
+    public static String formatTime(int seconds) {
+        int days = seconds / 86400;
+        int hours = seconds % 86400 / 3600;
+        int minutes = seconds % 86400 % 3600 / 60;
+
+        StringBuilder sb = new StringBuilder();
+
+        if (days != 0) {
+            if (days > 1) sb.append(days).append(" days ");
+            else if (days == 1) sb.append("1 day ");
         }
 
-        long magnitude;
-
-        try {
-            magnitude = Long.valueOf(magnitudeString);
-        } catch (NumberFormatException e) {
-            throw new TimeParseException("Unable to parse number \"" + magnitudeString + "\"", e);
+        if (hours != 0) {
+            if (hours > 1) sb.append(hours).append(" hours ");
+            else if (hours == 1) sb.append("1 hour ");
         }
 
-        unit = unit.toLowerCase();
-
-        if (unit.length() > 3 && unit.endsWith("and")) {
-            unit = unit.substring(0, unit.length() - 3);
+        if (minutes != 0) {
+            if (minutes > 1) sb.append(minutes).append(" minutes ");
+            else if (minutes == 1) sb.append("1 minute ");
         }
 
-        Long unitMultiplier = unitMultipliers.get(unit);
+        if (sb.toString().isEmpty()) return "just now ";
 
-        if (unitMultiplier == null) {
-            throw new TimeParseException("Unknown time unit \"" + unit + "\"");
-        }
-
-        return magnitude * unitMultiplier;
-    }
-
-    public long toMilliseconds() {
-        return this.milliseconds;
-    }
-
-    public double toTicks() {
-        return this.milliseconds / (double) TICK_MS;
-    }
-
-    public double toSeconds() {
-        return this.milliseconds / (double) SECOND_MS;
-    }
-
-    public double toMinutes() {
-        return this.milliseconds / (double) MINUTE_MS;
-    }
-
-    public double toHours() {
-        return this.milliseconds / (double) HOUR_MS;
-    }
-
-    public double toDays() {
-        return this.milliseconds / (double) DAY_MS;
-    }
-
-    public double toYears() {
-        return this.milliseconds / (double) YEAR_MS;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder timeString = new StringBuilder();
-
-        long time = this.milliseconds;
-
-        time = this.appendTime(time, YEAR_MS, "years", timeString);
-        time = this.appendTime(time, DAY_MS, "days", timeString);
-        time = this.appendTime(time, HOUR_MS, "hours", timeString);
-        time = this.appendTime(time, MINUTE_MS, "minutes", timeString);
-        time = this.appendTime(time, SECOND_MS, "seconds", timeString);
-
-        if (time != 0) {
-            timeString.append(", ").append(time).append(" ms");
-        }
-
-        if (timeString.length() == 0) {
-            return "0 seconds";
-        }
-
-        return timeString.substring(2);
-    }
-
-    private long appendTime(long time, long unitInMS, String name, StringBuilder builder) {
-        long timeInUnits = (time - (time % unitInMS)) / unitInMS;
-
-        if (timeInUnits > 0) {
-            builder.append(", ").append(timeInUnits).append(' ').append(name);
-        }
-
-        return time - timeInUnits * unitInMS;
-    }
-
-    @SuppressWarnings("serial")
-    public static class TimeParseException extends RuntimeException {
-
-        public TimeParseException(String reason) {
-            super(reason);
-        }
-
-        public TimeParseException(String reason, Throwable cause) {
-            super(reason, cause);
-        }
-
+        return sb.toString();
     }
 
 }

@@ -23,16 +23,17 @@ public class CmdConvert extends FCommand {
 
     @Override
     public void perform(CommandContext context) {
-        if (!(context.sender instanceof ConsoleCommandSender))
+        if (!(context.sender instanceof ConsoleCommandSender)) {
             context.sender.sendMessage(TL.GENERIC_CONSOLEONLY.toString());
+        }
         Backend nb = Backend.valueOf(context.argAsString(0).toUpperCase());
         if (nb == Conf.backEnd) {
             context.sender.sendMessage(TL.COMMAND_CONVERT_BACKEND_RUNNING.toString());
             return;
         }
-        if (nb == Backend.JSON)
+        if (nb == Backend.JSON) {
             FactionsJSON.convertTo();
-        else {
+        } else {
             context.sender.sendMessage(TL.COMMAND_CONVERT_BACKEND_INVALID.toString());
             return;
         }

@@ -3,8 +3,6 @@ package com.github.manafia.factions.zcore.fperms;
 import com.cryptomorin.xseries.XMaterial;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.PlaceholderUtil;
-import com.github.manafia.factions.Util;
 import com.github.manafia.factions.util.CC;
 import com.github.manafia.factions.util.Placeholder;
 import org.bukkit.configuration.ConfigurationSection;
@@ -51,7 +49,7 @@ public enum PermissableAction {
     CHECK("check"),
     SPAWNER("spawner");
 
-    private final String name;
+    private String name;
 
     PermissableAction(String name) {
         this.name = name;
@@ -64,31 +62,35 @@ public enum PermissableAction {
      * @return - action
      */
     public static PermissableAction fromString(String check) {
-        for (PermissableAction permissableAction : values())
-            if (permissableAction.name().equalsIgnoreCase(check))
+        for (PermissableAction permissableAction : values()) {
+            if (permissableAction.name().equalsIgnoreCase(check)) {
                 return permissableAction;
+            }
+        }
         return null;
     }
 
     public static Map<PermissableAction, Access> fromDefaults(DefaultPermissions defaultPermissions) {
         Map<PermissableAction, Access> defaultMap = new HashMap<>();
-        for (PermissableAction permissableAction : PermissableAction.values())
+        for (PermissableAction permissableAction : PermissableAction.values()) {
             defaultMap.put(permissableAction, defaultPermissions.getbyName(permissableAction.name) ? Access.ALLOW : Access.DENY);
+        }
         return defaultMap;
     }
 
     public static PermissableAction fromSlot(int slot) {
-        for (PermissableAction action : PermissableAction.values())
+        for (PermissableAction action : PermissableAction.values()) {
             if (action.getSlot() == slot) return action;
+        }
         return null;
     }
 
     public String getDescription() {
-        return CC.translate(FactionsPlugin.getInstance().getConfig().getString("fperm-gui.action.Descriptions." + this.name.toLowerCase()));
+        return CC.translate(FactionsPlugin.getInstance().getFileManager().getFperms().getConfig().getString("fperm-gui.action.Descriptions." + this.name.toLowerCase()));
     }
 
     public int getSlot() {
-        return FactionsPlugin.getInstance().getConfig().getInt("fperm-gui.action.slots." + this.name.toLowerCase());
+        return FactionsPlugin.getInstance().getFileManager().getFperms().getConfig().getInt("fperm-gui.action.slots." + this.name.toLowerCase());
     }
 
     /**
@@ -106,19 +108,19 @@ public enum PermissableAction {
     }
 
     public ItemStack buildAsset(FPlayer fme, Permissable perm) {
-        ConfigurationSection section = FactionsPlugin.getInstance().getConfig().getConfigurationSection("fperm-gui.action");
+        ConfigurationSection section = FactionsPlugin.getInstance().getFileManager().getFperms().getConfig().getConfigurationSection("fperm-gui.action");
         ItemStack item = XMaterial.matchXMaterial(section.getString("Materials." + this.name)).get().parseItem();
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(Util.color(section.getString("placeholder-item.name").replace("{action}", this.name)));
+        meta.setDisplayName(CC.translate(section.getString("placeholder-item.name").replace("{action}", this.name)));
         List<String> lore = section.getStringList("placeholder-item.lore");
 
-        lore = PlaceholderUtil.replacePlaceholders(lore,
+        lore = FactionsPlugin.getInstance().replacePlaceholders(lore,
                 new Placeholder("{description}", this.getDescription()),
                 new Placeholder("{action-access-color}", fme.getFaction().getPermissions().get(perm).get(this).getColor()),
                 new Placeholder("{action-access}", fme.getFaction().getPermissions().get(perm).get(this).getName()));
 
-        meta.setLore(Util.colorList(lore));
+        meta.setLore(CC.translate(lore));
         item.setItemMeta(meta);
         return item;
     }

@@ -2,13 +2,13 @@ package com.github.manafia.factions.missions;
 
 public class Mission {
 
-    private final String name;
-    private final String type;
     /**
      * @author Driftay
      */
 
     private long progress;
+    private String name;
+    private String type;
 
     public Mission(String name, String type) {
         this.name = name;

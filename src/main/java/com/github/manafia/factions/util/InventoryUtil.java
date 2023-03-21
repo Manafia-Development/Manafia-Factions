@@ -1,6 +1,5 @@
 package com.github.manafia.factions.util;
 
-import com.github.manafia.factions.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,8 +19,9 @@ public class InventoryUtil {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
             dataOutput.writeInt(items.length);
-            for (ItemStack item : items)
+            for (ItemStack item : items) {
                 dataOutput.writeObject(item);
+            }
             dataOutput.close();
             return Base64Coder.encodeLines(outputStream.toByteArray());
         } catch (Exception e) {
@@ -34,8 +34,9 @@ public class InventoryUtil {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             ItemStack[] items = new ItemStack[dataInput.readInt()];
-            for (int i = 0; i < items.length; i++)
+            for (int i = 0; i < items.length; i++) {
                 items[i] = (ItemStack) dataInput.readObject();
+            }
             dataInput.close();
             return items;
         } catch (ClassNotFoundException e) {
@@ -52,8 +53,9 @@ public class InventoryUtil {
             dataOutput.writeInt(inventory.getSize());
 
             // Save every element in the list
-            for (int i = 0; i < inventory.getSize(); i++)
+            for (int i = 0; i < inventory.getSize(); i++) {
                 dataOutput.writeObject(inventory.getItem(i));
+            }
 
             // Serialize that array
             dataOutput.close();
@@ -73,11 +75,12 @@ public class InventoryUtil {
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt(), Util.color(invName));
+            Inventory inventory = Bukkit.getServer().createInventory(null, dataInput.readInt(), CC.translate(invName));
 
             // Read the serialized inventory
-            for (int i = 0; i < inventory.getSize(); i++)
+            for (int i = 0; i < inventory.getSize(); i++) {
                 inventory.setItem(i, (ItemStack) dataInput.readObject());
+            }
             dataInput.close();
             return inventory;
         } catch (Exception e) {

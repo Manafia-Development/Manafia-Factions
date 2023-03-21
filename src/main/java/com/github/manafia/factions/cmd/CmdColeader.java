@@ -3,7 +3,7 @@ package com.github.manafia.factions.cmd;
 import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.Faction;
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.cmd.audit.FLogType;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Role;
@@ -21,7 +21,7 @@ public class CmdColeader extends FCommand {
         super();
         this.aliases.addAll(Aliases.coleader);
 
-        this.optionalArgs.put("player name", "name");
+        this.requiredArgs.add("name");
 
         this.requirements = new CommandRequirements.Builder(Permission.COLEADER)
                 .memberOnly()
@@ -55,8 +55,9 @@ public class CmdColeader extends FCommand {
             return;
         }
 
-        if (you.isAlt())
+        if (you.isAlt()) {
             return;
+        }
 
         if (context.fPlayer != null && context.fPlayer.getRole() != Role.LEADER && !permAny) {
             context.msg(TL.COMMAND_COLEADER_NOTADMIN);
@@ -83,8 +84,9 @@ public class CmdColeader extends FCommand {
             you.setRole(Role.COLEADER);
             targetFaction.msg(TL.COMMAND_COLEADER_PROMOTED, you.describeTo(targetFaction, true));
             context.msg(TL.COMMAND_COLEADER_PROMOTES, you.describeTo(context.fPlayer, true));
-            Util.getFlogManager().log(targetFaction, FLogType.RANK_EDIT, context.fPlayer.getName(), you.getName(), ChatColor.RED + "Co-Leader");
+            FactionsPlugin.instance.getFlogManager().log(targetFaction, FLogType.RANK_EDIT, context.fPlayer.getName(), you.getName(), ChatColor.RED + "Co-Leader");
         }
+
     }
 
     @Override

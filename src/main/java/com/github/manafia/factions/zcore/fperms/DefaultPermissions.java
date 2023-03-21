@@ -1,5 +1,7 @@
 package com.github.manafia.factions.zcore.fperms;
 
+import java.util.Objects;
+
 public class DefaultPermissions {
 
     /**
@@ -133,67 +135,35 @@ public class DefaultPermissions {
 
     @Deprecated
     public boolean getbyName(String name) {
-        switch (name) {
-            case "ban":
-                return this.ban;
-            case "build":
-                return this.build;
-            case "destroy":
-                return this.destroy;
-            case "frostwalk":
-                return this.frostwalk;
-            case "painbuild":
-                return this.painbuild;
-            case "door":
-                return this.door;
-            case "button":
-                return this.button;
-            case "lever":
-                return this.lever;
-            case "home":
-                return this.home;
-            case "container":
-                return this.container;
-            case "invite":
-                return this.invite;
-            case "kick":
-                return this.kick;
-            case "items":
-                return this.items;
-            case "sethome":
-                return this.sethome;
-            case "territory":
-                return this.territory;
-            case "disband":
-                return this.disband;
-            case "promote":
-                return this.promote;
-            case "setwarp":
-                return this.setwarp;
-            case "warp":
-                return this.warp;
-            case "fly":
-                return this.fly;
-            case "vault":
-                return this.vault;
-            case "tntbank":
-                return this.tntbank;
-            case "tntfill":
-                return this.tntfill;
-            case "withdraw":
-                return this.withdraw;
-            case "chest":
-                return this.chest;
-            case "audit":
-                return this.audit;
-            case "check":
-                return this.check;
-            case "drain":
-                return this.drain;
-            case "spawner":
-                return this.spawner;
-            default:
-                return false;
-        }
+        if (Objects.equals(name, "ban")) return this.ban;
+        else if (Objects.equals(name, "build")) return this.build;
+        else if (Objects.equals(name, "destroy")) return this.destroy;
+        else if (Objects.equals(name, "frostwalk")) return this.frostwalk;
+        else if (Objects.equals(name, "painbuild")) return this.painbuild;
+        else if (Objects.equals(name, "door")) return this.door;
+        else if (Objects.equals(name, "button")) return this.button;
+        else if (Objects.equals(name, "lever")) return this.lever;
+        else if (Objects.equals(name, "home")) return this.home;
+        else if (Objects.equals(name, "container")) return this.container;
+        else if (Objects.equals(name, "invite")) return this.invite;
+        else if (Objects.equals(name, "kick")) return this.kick;
+        else if (Objects.equals(name, "items")) return this.items;
+        else if (Objects.equals(name, "sethome")) return this.sethome;
+        else if (Objects.equals(name, "territory")) return this.territory;
+        else if (Objects.equals(name, "disband")) return this.disband;
+        else if (Objects.equals(name, "promote")) return this.promote;
+        else if (Objects.equals(name, "setwarp")) return this.setwarp;
+        else if (Objects.equals(name, "warp")) return this.warp;
+        else if (Objects.equals(name, "fly")) return this.fly;
+        else if (Objects.equals(name, "vault")) return this.vault;
+        else if (Objects.equals(name, "tntbank")) return this.tntbank;
+        else if (Objects.equals(name, "tntfill")) return this.tntfill;
+        else if (Objects.equals(name, "withdraw")) return this.withdraw;
+        else if (Objects.equals(name, "chest")) return this.chest;
+        else if (Objects.equals(name, "audit")) return this.audit;
+        else if (Objects.equals(name, "check")) return this.check;
+        else if (Objects.equals(name, "drain")) return this.drain;
+        else if (Objects.equals(name, "spawner")) return this.spawner;
+        else return false;
     }
 }

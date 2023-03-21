@@ -15,7 +15,7 @@ public class CmdOpen extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdOpen () {
+    public CmdOpen() {
         super();
         this.aliases.addAll(Aliases.open);
         this.optionalArgs.put("yes/no", "flip");
@@ -28,40 +28,41 @@ public class CmdOpen extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
-        FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.getInstance(), () -> {
-            // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-            if (!context.payForCommand(Conf.econCostOpen, TL.COMMAND_OPEN_TOOPEN, TL.COMMAND_OPEN_FOROPEN))
-                return;
+    public void perform(CommandContext context) {
+        // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
+        if (!context.payForCommand(Conf.econCostOpen, TL.COMMAND_OPEN_TOOPEN, TL.COMMAND_OPEN_FOROPEN)) {
+            return;
+        }
 
-            context.faction.setOpen(context.argAsBool(0, !context.faction.getOpen()));
+        if (Cooldown.isOnCooldown(context.fPlayer.getPlayer(), "openCooldown") && !context.fPlayer.isAdminBypassing()) {
+            context.msg(TL.COMMAND_COOLDOWN);
+            return;
+        }
 
-            String open = context.faction.getOpen() ? TL.COMMAND_OPEN_OPEN.toString() : TL.COMMAND_OPEN_CLOSED.toString();
+        context.faction.setOpen(!context.faction.getOpen());
 
-            if (Cooldown.isOnCooldown(context.fPlayer.getPlayer(), "openCooldown") && !context.fPlayer.isAdminBypassing()) {
-                context.msg(TL.COMMAND_COOLDOWN);
-                return;
+        String open = context.faction.getOpen() ? TL.COMMAND_OPEN_OPEN.toString() : TL.COMMAND_OPEN_CLOSED.toString();
+
+        // Inform
+        for (FPlayer fplayer : FPlayers.getInstance().getOnlinePlayers()) {
+            if (fplayer.getFactionId().equals(context.faction.getId())) {
+                fplayer.msg(TL.COMMAND_OPEN_CHANGES, context.fPlayer.getName(), open);
+                Cooldown.setCooldown(fplayer.getPlayer(), "openCooldown", FactionsPlugin.getInstance().getConfig().getInt("fcooldowns.f-open"));
+                continue;
             }
-
-            // Inform
-            for (FPlayer fplayer : FPlayers.getInstance().getOnlinePlayers()) {
-                if (fplayer.getFactionId().equals(context.faction.getId())) {
-                    fplayer.msg(TL.COMMAND_OPEN_CHANGES, context.fPlayer.getName(), open);
-                    Cooldown.setCooldown(fplayer.getPlayer(), "openCooldown", FactionsPlugin.getInstance().getConfig().getInt("fcooldowns.f-open"));
-                    continue;
-                }
-                if (!FactionsPlugin.getInstance().getConfig().getBoolean("faction-open-broadcast")) return;
-                fplayer.msg(TL.COMMAND_OPEN_CHANGED, context.faction.getTag(fplayer.getFaction()), open);
+            if (!FactionsPlugin.getInstance().getConfig().getBoolean("faction-open-broadcast")) return;
+            fplayer.msg(TL.COMMAND_OPEN_CHANGED, context.faction.getTag(fplayer.getFaction()), open);
+        }
+        if (!FactionsPlugin.getInstance().getConfig().getBoolean("faction-open-broadcast")) {
+            for (FPlayer fPlayer : context.faction.getFPlayersWhereOnline(true)) {
+                fPlayer.msg(TL.COMMAND_OPEN_CHANGED, context.faction.getTag(fPlayer.getFaction()), open);
             }
-            if (!FactionsPlugin.getInstance().getConfig().getBoolean("faction-open-broadcast"))
-                for (FPlayer fPlayer : context.faction.getFPlayersWhereOnline(true))
-                    fPlayer.msg(TL.COMMAND_OPEN_CHANGED, context.faction.getTag(fPlayer.getFaction()), open);
+        }
 
-        });
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_OPEN_DESCRIPTION;
     }
 

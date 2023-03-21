@@ -17,9 +17,9 @@ public class WarmUpUtil {
      */
     public static void process(final FPlayer player, Warmup warmup, TL translationKey, String action, final Runnable runnable, long delay) {
         if (delay > 0) {
-            if (player.isWarmingUp())
+            if (player.isWarmingUp()) {
                 player.msg(TL.WARMUPS_ALREADY);
-            else {
+            } else {
                 player.msg(translationKey.format(action, delay));
                 int id = FactionsPlugin.getInstance().getServer().getScheduler().runTaskLater(FactionsPlugin.getInstance(), () -> {
                     player.stopWarmup();
@@ -27,8 +27,9 @@ public class WarmUpUtil {
                 }, delay * 20).getTaskId();
                 player.addWarmup(warmup, id);
             }
-        } else
+        } else {
             runnable.run();
+        }
     }
 
     public enum Warmup {

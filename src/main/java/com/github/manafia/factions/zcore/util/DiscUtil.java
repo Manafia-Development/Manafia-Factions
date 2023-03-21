@@ -13,18 +13,25 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class DiscUtil {
 
     // -------------------------------------------- //
+    // CONSTANTS
+    // -------------------------------------------- //
+
+    private final static String UTF8 = "UTF-8";
+
+    // -------------------------------------------- //
     // BYTE
     // -------------------------------------------- //
-    private static final HashMap<String, Lock> locks = new HashMap<>();
+    private static HashMap<String, Lock> locks = new HashMap<>();
 
     public static byte[] readBytes(File file) throws IOException {
         int length = (int) file.length();
         byte[] output = new byte[length];
-        InputStream in = new FileInputStream(file);
-        int offset = 0;
-        while (offset < length)
-            offset += in.read(output, offset, (length - offset));
-        in.close();
+        try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
+            int offset = 0;
+            while (offset < length) {
+                offset += in.read(output, offset, (length - offset));
+            }
+        }
         return output;
     }
 
@@ -33,9 +40,13 @@ public class DiscUtil {
     // -------------------------------------------- //
 
     public static void writeBytes(File file, byte[] bytes) throws IOException {
-        FileOutputStream out = new FileOutputStream(file);
-        out.write(bytes);
-        out.close();
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
+            out.write(bytes);
+        }
     }
 
     public static void write(File file, String content) throws IOException {
@@ -55,9 +66,9 @@ public class DiscUtil {
         final Lock lock;
 
         // Create lock for each file if there isn't already one.
-        if (locks.containsKey(name))
+        if (locks.containsKey(name)) {
             lock = locks.get(name);
-        else {
+        } else {
             ReadWriteLock rwl = new ReentrantReadWriteLock();
             lock = rwl.writeLock();
             locks.put(name, lock);

@@ -4,10 +4,7 @@ import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,57 +33,62 @@ public class TextUtil {
         while (matcher.find()) {
             String tag = matcher.group(1);
             String repl = tags.get(tag);
-            if (repl == null)
+            if (repl == null) {
                 matcher.appendReplacement(ret, "<" + tag + ">");
-            else
+            } else {
                 matcher.appendReplacement(ret, repl);
+            }
         }
         matcher.appendTail(ret);
         return ret.toString();
     }
 
     public static FancyMessage toFancy(String first) {
-        String text = "";
-        FancyMessage message = new FancyMessage(text);
+        StringBuilder text = new StringBuilder();
+        FancyMessage message = new FancyMessage(text.toString());
         ChatColor color = null;
         ChatColor style = null;
         char[] chars = first.toCharArray();
 
         for (int i = 0; i < chars.length; i++) {
+            // changed this so javadocs wont throw an error
             String compareChar = chars[i] + "";
             if (compareChar.equals("§")) {
                 if (color != null || style != null) {
-                    message.then(text);
+                    message.then(text.toString());
                     if (color != null)
                         message.color(color);
                     if (style != null) {
                         message.style(style);
                         style = null;
                     }
-                    text = "";
+                    text = new StringBuilder();
                 }
                 ChatColor tempColor = ChatColor.getByChar(chars[i + 1]);
                 if (tempColor != null) {
-                    if (tempColor == ChatColor.RESET)
+                    if (tempColor == ChatColor.RESET) {
                         color = ChatColor.WHITE;
-                    else if (tempColor.isColor())
+                    } else if (tempColor.isColor()) {
                         color = tempColor;
-                    else
-                        style = tempColor; // would've done with a switch but switch is good for 5+ else/ifs
+                    } else {
+                        style = tempColor;
+                    }
                 }
                 i++; // skip color char
-            } else
-                text += chars[i];
+            } else {
+                text.append(chars[i]);
+            }
         }
         if (text.length() > 0) {
             if (color != null || style != null) {
-                message.then(text);
+                message.then(text.toString());
                 if (color != null)
                     message.color(color);
                 if (style != null)
                     message.style(style);
-            } else
-                message.text(text);
+            } else {
+                message.text(text.toString());
+            }
         }
         return message;
     }
@@ -149,6 +151,33 @@ public class TextUtil {
     // Material name tools
     // -------------------------------------------- //
 
+    public static String getBestStartWithCI(Collection<String> candidates, String start) {
+        String ret = null;
+        int best = 0;
+
+        start = start.toLowerCase();
+        int minlength = start.length();
+        for (String candidate : candidates) {
+            if (candidate.length() < minlength) {
+                continue;
+            }
+            if (!candidate.toLowerCase().startsWith(start)) {
+                continue;
+            }
+
+            // The closer to zero the better
+            int lendiff = candidate.length() - minlength;
+            if (lendiff == 0) {
+                return candidate;
+            }
+            if (lendiff < best || best == 0) {
+                best = lendiff;
+                ret = candidate;
+            }
+        }
+        return ret;
+    }
+
     public String parse(String str, Object... args) {
         return String.format(this.parse(str), args);
     }
@@ -176,10 +205,11 @@ public class TextUtil {
         int eatLeft = (centerlen / 2) - titleizeBalance;
         int eatRight = (centerlen - eatLeft) + titleizeBalance;
 
-        if (eatLeft < pivot)
+        if (eatLeft < pivot) {
             return parseTags("<a>") + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + titleizeLine.substring(0, pivot - eatLeft) + center + ChatColor.DARK_GRAY + ChatColor.STRIKETHROUGH + titleizeLine.substring(pivot + eatRight);
-        else
+        } else {
             return parseTags("<a>") + center;
+        }
     }
 
     public ArrayList<String> getPage(List<String> lines, int pageHumanBased, String title) {
@@ -200,8 +230,9 @@ public class TextUtil {
 
         int from = pageZeroBased * pageheight;
         int to = from + pageheight;
-        if (to > lines.size())
+        if (to > lines.size()) {
             to = lines.size();
+        }
 
         ret.addAll(lines.subList(from, to));
 

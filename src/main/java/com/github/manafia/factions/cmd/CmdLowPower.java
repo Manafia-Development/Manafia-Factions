@@ -27,9 +27,11 @@ public class CmdLowPower extends FCommand {
         double maxPower = Conf.powerPlayerMax;
         String format = TL.COMMAND_LOWPOWER_FORMAT.toString();
         context.msg(TL.COMMAND_LOWPOWER_HEADER.toString().replace("{maxpower}", (int) maxPower + ""));
-        for (FPlayer fPlayer : context.faction.getFPlayers())
-            if (fPlayer.getPower() < maxPower)
+        for (FPlayer fPlayer : context.faction.getFPlayers()) {
+            if (fPlayer.getPower() < maxPower) {
                 context.sendMessage(format.replace("{player}", fPlayer.getName()).replace("{player_power}", (int) fPlayer.getPower() + "").replace("{maxpower}", (int) maxPower + ""));
+            }
+        }
     }
 
     @Override

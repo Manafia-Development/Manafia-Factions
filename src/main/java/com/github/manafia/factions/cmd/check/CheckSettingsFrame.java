@@ -21,35 +21,36 @@ public class CheckSettingsFrame implements InventoryHolder, FactionGUI {
      * @author Driftay
      */
 
-    private final FactionsPlugin plugin;
-    private final FPlayer fPlayer;
-    private final Inventory inventory;
+    private FactionsPlugin plugin;
+    private FPlayer fPlayer;
+    private Inventory inventory;
 
-    public CheckSettingsFrame (FactionsPlugin plugin, FPlayer fPlayer) {
+    public CheckSettingsFrame(FactionsPlugin plugin, FPlayer fPlayer) {
         this.plugin = plugin;
         this.fPlayer = fPlayer;
         this.inventory = plugin.getServer().createInventory(this, plugin.getConfig().getInt("f-check.gui-rows") * 9, TL.CHECK_SETTINGS_GUI_TITLE.toString());
     }
 
-    public void onClick (int slot, ClickType action) {
+    public void onClick(int slot, ClickType action) {
         Faction faction = this.fPlayer.getFaction();
-        if (slot == FactionsPlugin.getInstance().getConfig().getInt("f-check.wall-check.slot"))
+        if (slot == FactionsPlugin.getInstance().getConfig().getInt("f-check.wall-check.slot")) {
             faction.setWallCheckMinutes(getNext(faction.getWallCheckMinutes()));
-        else {
+        } else {
             if (slot == FactionsPlugin.getInstance().getConfig().getInt("f-check.history.slot")) {
                 CheckHistoryFrame checkHistoryFrame = new CheckHistoryFrame(plugin, fPlayer.getFaction());
                 checkHistoryFrame.build();
                 fPlayer.getPlayer().openInventory(checkHistoryFrame.getInventory());
                 return;
             }
-            if (slot == FactionsPlugin.getInstance().getConfig().getInt("f-check.buffer-check.slot"))
+            if (slot == FactionsPlugin.getInstance().getConfig().getInt("f-check.buffer-check.slot")) {
                 faction.setBufferCheckMinutes(getNext(faction.getBufferCheckMinutes()));
+            }
         }
         build();
         fPlayer.getPlayer().openInventory(inventory);
     }
 
-    public void build () {
+    public void build() {
         Faction faction = fPlayer.getFaction();
         ItemStack wallsStack = XMaterial.matchXMaterial(FactionsPlugin.getInstance().getConfig().getString("f-check.wall-check.Type")).get().parseItem();
         ItemMeta wallsMeta = wallsStack.getItemMeta();
@@ -70,11 +71,11 @@ public class CheckSettingsFrame implements InventoryHolder, FactionGUI {
         inventory.setItem(FactionsPlugin.getInstance().getConfig().getInt("f-check.history.slot"), historyStack);
     }
 
-    public Inventory getInventory () {
+    public Inventory getInventory() {
         return this.inventory;
     }
 
-    private int getNext (int current) {
+    private int getNext(int current) {
         switch (current) {
             case 0: {
                 return 3;
@@ -97,13 +98,14 @@ public class CheckSettingsFrame implements InventoryHolder, FactionGUI {
         }
     }
 
-    private String getFormatted (int minutes) {
-        if (minutes == 0)
+    private String getFormatted(int minutes) {
+        if (minutes == 0) {
             return "Offline";
+        }
         return minutes + " Minutes";
     }
 
-    public String color (String message) {
+    public String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 }

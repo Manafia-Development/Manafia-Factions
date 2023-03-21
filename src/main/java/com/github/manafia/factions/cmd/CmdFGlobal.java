@@ -29,10 +29,11 @@ public class CmdFGlobal extends FCommand {
     public void perform(CommandContext context) {
         // /f global
 
-        if (toggled.contains(context.player.getUniqueId()))
+        if (toggled.contains(context.player.getUniqueId())) {
             toggled.remove(context.player.getUniqueId());
-        else
+        } else {
             toggled.add(context.player.getUniqueId());
+        }
 
         context.msg(TL.COMMAND_F_GLOBAL_TOGGLE, toggled.contains(context.player.getUniqueId()) ? "disabled" : "enabled");
     }

@@ -24,13 +24,12 @@ public class CmdSaveAll extends FCommand {
         Factions.getInstance().forceSave(false);
         Board.getInstance().forceSave(false);
         Conf.save();
-        Util.getTimerManager().saveTimerData();
+        FactionsPlugin.getInstance().getTimerManager().saveTimerData();
         try {
-            Util.getFlogManager().saveLogs();
+            FactionsPlugin.instance.getFlogManager().saveLogs();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FactionsPlugin.getInstance().getFileManager().getShop().saveFile();
         context.msg(TL.COMMAND_SAVEALL_SUCCESS);
     }
 

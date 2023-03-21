@@ -21,7 +21,7 @@ public class CmdCorner extends FCommand {
      * @author Driftay
      */
 
-    public CmdCorner () {
+    public CmdCorner() {
         this.aliases.addAll(Aliases.claim_corner);
 
 
@@ -33,40 +33,44 @@ public class CmdCorner extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (FactionsPlugin.getInstance().version == 7) {
             context.msg(TL.GENERIC_DISABLED, "Faction Corners");
             return;
         }
         FLocation to = new FLocation(context.player.getLocation());
-        if (Util.getFactionsPlayerListener().getCorners().contains(to)) {
+        if (FactionsPlugin.getInstance().getFactionsPlayerListener().getCorners().contains(to)) {
             Faction cornerAt = Board.getInstance().getFactionAt(to);
             if (cornerAt != null && cornerAt.isNormal() && !cornerAt.equals(context.fPlayer.getFaction())) {
                 context.msg(TL.COMMAND_CORNER_CANT_CLAIM);
             } else {
                 context.msg(TL.COMMAND_CORNER_ATTEMPTING_CLAIM);
                 List<FLocation> surrounding = new ArrayList<>(400);
-                for (int x = 0; x < Conf.factionBufferSize; ++x)
+                for (int x = 0; x < Conf.factionBufferSize; ++x) {
                     for (int z = 0; z < Conf.factionBufferSize; ++z) {
                         int newX = (int) ((to.getX() > 0L) ? (to.getX() - x) : (to.getX() + x));
                         int newZ = (int) ((to.getZ() > 0L) ? (to.getZ() - z) : (to.getZ() + z));
                         FLocation location = new FLocation(context.player.getWorld().getName(), newX, newZ);
                         Faction at = Board.getInstance().getFactionAt(location);
-                        if (at == null || !at.isNormal())
+                        if (at == null || !at.isNormal()) {
                             surrounding.add(location);
+                        }
                     }
+                }
                 surrounding.sort(Comparator.comparingInt(fLocation -> (int) fLocation.getDistanceTo(to)));
-                if (surrounding.isEmpty())
+                if (surrounding.isEmpty()) {
                     context.msg(TL.COMMAND_CORNER_CANT_CLAIM);
-                else
+                } else {
                     new CornerTask(context.fPlayer, surrounding).runTaskTimer(FactionsPlugin.getInstance(), 1L, 1L);
+                }
             }
-        } else
+        } else {
             context.msg(TL.COMMAND_CORNER_NOT_CORNER);
+        }
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CORNER_DESCRIPTION;
     }
 }

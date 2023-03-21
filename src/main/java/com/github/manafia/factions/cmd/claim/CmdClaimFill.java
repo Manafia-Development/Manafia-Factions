@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class CmdClaimFill extends FCommand {
 
-    public CmdClaimFill () {
+    public CmdClaimFill() {
 
         // Aliases
         this.aliases.addAll(Aliases.claim_claimFill);
@@ -40,7 +40,7 @@ public class CmdClaimFill extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // Args
         final int limit = context.argAsInt(0, Conf.maxFillClaimCount);
 
@@ -106,8 +106,9 @@ public class CmdClaimFill extends FCommand {
         final int limFail = Conf.radiusClaimFailureLimit;
         int fails = 0;
         for (FLocation currentLocation : toClaim) {
-            if (!context.fPlayer.attemptClaim(forFaction, currentLocation, true))
+            if (!context.fPlayer.attemptClaim(forFaction, currentLocation, true)) {
                 fails++;
+            }
             if (fails >= limFail) {
                 context.msg(TL.COMMAND_CLAIMFILL_TOOMUCHFAIL, fails);
                 return;
@@ -115,7 +116,7 @@ public class CmdClaimFill extends FCommand {
         }
     }
 
-    private void addIf (Set<FLocation> toClaim, Queue<FLocation> queue, FLocation examine) {
+    private void addIf(Set<FLocation> toClaim, Queue<FLocation> queue, FLocation examine) {
         if (Board.getInstance().getFactionAt(examine).isWilderness() && !toClaim.contains(examine)) {
             toClaim.add(examine);
             queue.add(examine);
@@ -123,7 +124,7 @@ public class CmdClaimFill extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CLAIMFILL_DESCRIPTION;
     }
 }

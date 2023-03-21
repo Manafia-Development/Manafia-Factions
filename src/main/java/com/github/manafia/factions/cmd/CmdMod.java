@@ -3,7 +3,7 @@ package com.github.manafia.factions.cmd;
 import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.Faction;
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.cmd.audit.FLogType;
 import com.github.manafia.factions.struct.Permission;
 import com.github.manafia.factions.struct.Role;
@@ -17,7 +17,7 @@ public class CmdMod extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdMod () {
+    public CmdMod() {
         super();
         this.aliases.addAll(Aliases.mod);
 
@@ -30,7 +30,7 @@ public class CmdMod extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer you = context.argAsBestFPlayerMatch(0);
         if (you == null) {
             FancyMessage msg = new FancyMessage(TL.COMMAND_MOD_CANDIDATES.toString()).color(ChatColor.GOLD);
@@ -38,6 +38,7 @@ public class CmdMod extends FCommand {
                 String s = player.getName();
                 msg.then(s + " ").color(ChatColor.WHITE).tooltip(TL.COMMAND_MOD_CLICKTOPROMOTE + s).command("/" + Conf.baseCommandAliases.get(0) + " mod " + s);
             }
+
             context.sendFancyMessage(msg);
             return;
         }
@@ -49,8 +50,9 @@ public class CmdMod extends FCommand {
             return;
         }
 
-        if (you.isAlt())
+        if (you.isAlt()) {
             return;
+        }
 
         if (context.fPlayer != null && !context.fPlayer.getRole().isAtLeast(Role.COLEADER) && !permAny) {
             context.msg(TL.COMMAND_MOD_NOTADMIN);
@@ -69,20 +71,25 @@ public class CmdMod extends FCommand {
 
         if (you.getRole() == Role.MODERATOR) {
             // Revoke
-            you.setRole(Role.NORMAL);
+            setRole(you, Role.NORMAL);
             targetFaction.msg(TL.COMMAND_MOD_REVOKED, you.describeTo(targetFaction, true));
             context.msg(TL.COMMAND_MOD_REVOKES, you.describeTo(context.fPlayer, true));
         } else {
             // Give
-            you.setRole(Role.MODERATOR);
+            setRole(you, Role.MODERATOR);
             targetFaction.msg(TL.COMMAND_MOD_PROMOTED, you.describeTo(targetFaction, true));
             context.msg(TL.COMMAND_MOD_PROMOTES, you.describeTo(context.fPlayer, true));
-            Util.getFlogManager().log(targetFaction, FLogType.RANK_EDIT, context.fPlayer.getName(), you.getName(), ChatColor.LIGHT_PURPLE + "Mod");
+            FactionsPlugin.instance.getFlogManager().log(targetFaction, FLogType.RANK_EDIT, context.fPlayer.getName(), you.getName(), ChatColor.LIGHT_PURPLE + "Mod");
+
         }
     }
 
+    private void setRole(FPlayer fp, Role r) {
+        FactionsPlugin.getInstance().getServer().getScheduler().runTask(FactionsPlugin.instance, () -> fp.setRole(r));
+    }
+
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MOD_DESCRIPTION;
     }
 

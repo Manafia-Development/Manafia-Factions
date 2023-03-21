@@ -15,10 +15,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class MiscUtil {
-
 
     /// TODO create tag whitelist!!
     public static HashSet<String> substanceChars =
@@ -50,8 +48,9 @@ public class MiscUtil {
     }
 
     public static EntityType creatureTypeFromEntity(Entity entity) {
-        if (!(entity instanceof Creature))
+        if (!(entity instanceof Creature)) {
             return null;
+        }
 
         String name = entity.getClass().getSimpleName();
         name = name.substring(5); // Remove "Craft"
@@ -62,13 +61,17 @@ public class MiscUtil {
     // Inclusive range
     public static long[] range(long start, long end) {
         long[] values = new long[(int) Math.abs(end - start) + 1];
+
         if (end < start) {
             long oldstart = start;
             start = end;
             end = oldstart;
         }
-        for (long i = start; i <= end; i++)
+
+        for (long i = start; i <= end; i++) {
             values[(int) (i - start)] = i;
+        }
+
         return values;
     }
 
@@ -78,32 +81,38 @@ public class MiscUtil {
         str = ChatColor.stripColor(str);
         str = str.toLowerCase();
 
-        for (char c : str.toCharArray())
-            if (substanceChars.contains(String.valueOf(c)))
+        for (char c : str.toCharArray()) {
+            if (substanceChars.contains(String.valueOf(c))) {
                 ret.append(c);
+            }
+        }
         return ret.toString().toLowerCase();
     }
 
     public static ArrayList<String> validateTag(String str) {
         ArrayList<String> errors = new ArrayList<>();
 
-        for (String blacklistItem : Conf.blacklistedFactionNames)
+        for (String blacklistItem : Conf.blacklistedFactionNames) {
             if (str.toLowerCase().contains(blacklistItem.toLowerCase())) {
                 errors.add(FactionsPlugin.instance.txt.parse(TL.GENERIC_FACTIONTAG_BLACKLIST.toString()));
                 break;
             }
+        }
 
-        if (getComparisonString(str).length() < Conf.factionTagLengthMin)
+        if (getComparisonString(str).length() < Conf.factionTagLengthMin) {
             errors.add(FactionsPlugin.getInstance().txt.parse(TL.GENERIC_FACTIONTAG_TOOSHORT.toString(), Conf.factionTagLengthMin));
+        }
 
-        if (str.length() > Conf.factionTagLengthMax)
+        if (str.length() > Conf.factionTagLengthMax) {
             errors.add(FactionsPlugin.getInstance().txt.parse(TL.GENERIC_FACTIONTAG_TOOLONG.toString(), Conf.factionTagLengthMax));
+        }
 
-        for (char c : str.toCharArray())
+        for (char c : str.toCharArray()) {
             if (!substanceChars.contains(String.valueOf(c))) {
                 errors.add(FactionsPlugin.getInstance().txt.parse(TL.GENERIC_FACTIONTAG_ALPHANUMERIC.toString(), c));
                 break;
             }
+        }
 
         return errors;
     }
@@ -120,7 +129,7 @@ public class MiscUtil {
             // Fix for some data being broken when we added the recruit rank.
             if (player.getRole() == null) {
                 player.setRole(Role.NORMAL);
-                FactionsPlugin.getInstance().log(Level.WARNING, String.format("Player %s had null role. Setting them to normal. This isn't good D:", player.getName()));
+                Logger.print( String.format("Player %s had null role. Setting them to normal. This isn't good D:", player.getName()), Logger.PrefixType.WARNING);
             }
 
             switch (player.getRole()) {
@@ -128,7 +137,7 @@ public class MiscUtil {
                     admins.add(player);
                     break;
                 case COLEADER:
-                    admins.add(player);
+                    coleaders.add(player);
                     break;
                 case MODERATOR:
                     moderators.add(player);

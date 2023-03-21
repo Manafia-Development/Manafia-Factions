@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Aliases {
-    private static final transient Aliases i = new Aliases();
     /**
      * @author DroppingAnvil
      */
@@ -21,8 +20,6 @@ public class Aliases {
     public static ArrayList<String> audit = new ArrayList<>(Arrays.asList("audit", "log", "logs"));
     public static ArrayList<String> check = new ArrayList<>(Arrays.asList("check"));
     public static ArrayList<String> weewoo = new ArrayList<>(Collections.singletonList("weewoo"));
-    public static ArrayList<String> shield = new ArrayList<>(Arrays.asList("shield", "forcefield"));
-    public static ArrayList<String> forceshield = new ArrayList<>(Arrays.asList("forceforcefield", "forceshield"));
     public static ArrayList<String> chest = new ArrayList<>(Arrays.asList("chest", "pv"));
     public static ArrayList<String> claim_auto = new ArrayList<>(Collections.singletonList("autoclaim"));
     public static ArrayList<String> claim_claim = new ArrayList<>(Collections.singletonList("claim"));
@@ -30,6 +27,7 @@ public class Aliases {
     public static ArrayList<String> claim_claimFill = new ArrayList<>(Arrays.asList("claimfill", "cf"));
     public static ArrayList<String> claim_line = new ArrayList<>(Arrays.asList("claimline", "cl"));
     public static ArrayList<String> claim_corner = new ArrayList<>(Arrays.asList("corner"));
+    public static ArrayList<String> corner_list = new ArrayList<>(Arrays.asList("clist", "cornerlist"));
     public static ArrayList<String> delfHome = new ArrayList<>(Arrays.asList("delhome", "deletehome"));
     public static ArrayList<String> unclaim_all_safe = new ArrayList<>(Arrays.asList("safeunclaimall", "safedeclaimall"));
     public static ArrayList<String> unclaim_unclaim = new ArrayList<>(Arrays.asList("unclaim", "declaim"));
@@ -57,6 +55,10 @@ public class Aliases {
     public static ArrayList<String> roles_demote = new ArrayList<>(Collections.singletonList("demote"));
     public static ArrayList<String> roles_promote = new ArrayList<>(Collections.singletonList("promote"));
     public static ArrayList<String> tnt_tnt = new ArrayList<>(Collections.singletonList("tnt"));
+
+    public static ArrayList<String> boosters = new ArrayList<>(Collections.singletonList("boosters"));
+    public static ArrayList<String> giveBooster = new ArrayList<>(Collections.singletonList("givebooster"));
+
     public static ArrayList<String> tnt_tntfill = new ArrayList<>(Collections.singletonList("tntfill"));
     public static ArrayList<String> wild = new ArrayList<>(Collections.singletonList("wild"));
     public static ArrayList<String> admin = new ArrayList<>(Arrays.asList("admin", "setadmin", "leader", "setleader"));
@@ -67,16 +69,10 @@ public class Aliases {
     public static ArrayList<String> ban_banlist = new ArrayList<>(Arrays.asList("banlist", "bans", "banl"));
     public static ArrayList<String> banner = new ArrayList<>(Collections.singletonList("banner"));
     public static ArrayList<String> boom = new ArrayList<>(Arrays.asList("noboom", "explosions", "toggleexplosions"));
-    public static ArrayList<String> boostersAdd = new ArrayList<>(Arrays.asList("boosteradd", "addbooster"));
-    public static ArrayList<String> boostersRemove = new ArrayList<>(Arrays.asList("boosterremove", "removebooster"));
-    public static ArrayList<String> boostersGUI = new ArrayList<>(Arrays.asList("booster", "boosters"));
     public static ArrayList<String> bypass = new ArrayList<>(Collections.singletonList("bypass"));
     public static ArrayList<String> chat = new ArrayList<>(Arrays.asList("chat", "c"));
     public static ArrayList<String> chatspy = new ArrayList<>(Collections.singletonList("chatspy"));
     public static ArrayList<String> checkpoint = new ArrayList<>(Arrays.asList("checkp", "checkpoint", "cpoint"));
-    public static ArrayList<String> CloakAdd = new ArrayList<>(Arrays.asList("cloakadd", "addcloak"));
-    public static ArrayList<String> CloakRemove = new ArrayList<>(Arrays.asList("cloakremove", "removecloak"));
-    public static ArrayList<String> CloakGUI = new ArrayList<>(Arrays.asList("cloak", "cloaks"));
     public static ArrayList<String> coleader = new ArrayList<>(Arrays.asList("coleader", "setcoleader", "co", "setco"));
     public static ArrayList<String> config = new ArrayList<>(Collections.singletonList("config"));
     public static ArrayList<String> convert = new ArrayList<>(Collections.singletonList("convert"));
@@ -88,6 +84,7 @@ public class Aliases {
     public static ArrayList<String> description = new ArrayList<>(Arrays.asList("desc", "description"));
     public static ArrayList<String> disband = new ArrayList<>(Collections.singletonList("disband"));
     public static ArrayList<String> roster = new ArrayList<>(Collections.singletonList("roster"));
+    public static ArrayList<String> discord_discord = new ArrayList<>(Collections.singletonList("discord"));
     public static ArrayList<String> drain = new ArrayList<>(Collections.singletonList("drain"));
     public static ArrayList<String> global = new ArrayList<>(Arrays.asList("gchat", "global", "globalchat"));
     public static ArrayList<String> fly = new ArrayList<>(Collections.singletonList("fly"));
@@ -124,8 +121,6 @@ public class Aliases {
     public static ArrayList<String> titles = new ArrayList<>(Collections.singletonList("titles"));
     public static ArrayList<String> power_power = new ArrayList<>(Arrays.asList("pow", "power"));
     public static ArrayList<String> power_boost = new ArrayList<>(Collections.singletonList("powerboost"));
-    public static ArrayList<String> raid = new ArrayList<>(Collections.singletonList("raid"));
-    public static ArrayList<String> raid_start = new ArrayList<>(Collections.singletonList("raidstart"));
     public static ArrayList<String> reload = new ArrayList<>(Collections.singletonList("reload"));
     public static ArrayList<String> rules = new ArrayList<>(Arrays.asList("r", "rule", "rules"));
     public static ArrayList<String> saveAll = new ArrayList<>(Arrays.asList("save", "saveall"));
@@ -134,6 +129,8 @@ public class Aliases {
     public static ArrayList<String> setTnt = new ArrayList<>(Arrays.asList("settnt", "st"));
     public static ArrayList<String> spawnerChunks = new ArrayList<>(Collections.singletonList("spawnerchunk"));
     public static ArrayList<String> seeChunk = new ArrayList<>(Arrays.asList("sc", "seechunk"));
+    public static ArrayList<String> discord_see = new ArrayList<>(Collections.singletonList("seediscord"));
+    public static ArrayList<String> discord_set = new ArrayList<>(Collections.singletonList("setdiscord"));
     public static ArrayList<String> setBanner = new ArrayList<>(Collections.singletonList("setbanner"));
     public static ArrayList<String> setDefaultRole = new ArrayList<>(Arrays.asList("defaultrole", "def", "default", "defaultrank"));
     public static ArrayList<String> setWarp = new ArrayList<>(Arrays.asList("sw", "setwarp"));
@@ -160,9 +157,9 @@ public class Aliases {
     public static ArrayList<String> upgrades = new ArrayList<>(Arrays.asList("upgrades", "upgrade"));
     public static ArrayList<String> vault = new ArrayList<>(Collections.singletonList("vault"));
     public static ArrayList<String> viewChest = new ArrayList<>(Arrays.asList("viewchest", "viewpv"));
+    private static transient Aliases i = new Aliases();
 
-
-    public static void load () {
-        FactionsPlugin.getInstance().persist.loadOrSaveDefault(i, Aliases.class, "data/aliases");
+    public static void load() {
+        FactionsPlugin.getInstance().persist.loadOrSaveDefault(i, Aliases.class, "aliases");
     }
 }

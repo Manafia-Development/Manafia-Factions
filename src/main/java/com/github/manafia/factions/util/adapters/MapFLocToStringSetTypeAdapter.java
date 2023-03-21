@@ -2,7 +2,7 @@ package com.github.manafia.factions.util.adapters;
 
 import com.google.gson.*;
 import com.github.manafia.factions.FLocation;
-import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.util.Logger;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 
 public class MapFLocToStringSetTypeAdapter implements JsonDeserializer<Map<FLocation, Set<String>>>, JsonSerializer<Map<FLocation, Set<String>>> {
@@ -20,8 +19,9 @@ public class MapFLocToStringSetTypeAdapter implements JsonDeserializer<Map<FLoca
     public Map<FLocation, Set<String>> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         try {
             JsonObject obj = json.getAsJsonObject();
-            if (obj == null)
+            if (obj == null) {
                 return null;
+            }
 
             Map<FLocation, Set<String>> locationMap = new ConcurrentHashMap<>();
             Set<String> nameSet;
@@ -49,7 +49,7 @@ public class MapFLocToStringSetTypeAdapter implements JsonDeserializer<Map<FLoca
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            FactionsPlugin.getInstance().log(Level.WARNING, "Error encountered while deserializing a Map of FLocations to String Sets.");
+            Logger.print( "Error encountered while deserializing a Map of FLocations to String Sets.", Logger.PrefixType.WARNING);
             return null;
         }
     }
@@ -72,8 +72,9 @@ public class MapFLocToStringSetTypeAdapter implements JsonDeserializer<Map<FLoca
                     locWorld = loc.getWorldName();
                     nameSet = entry.getValue();
 
-                    if (nameSet == null || nameSet.isEmpty())
+                    if (nameSet == null || nameSet.isEmpty()) {
                         continue;
+                    }
 
                     nameArray = new JsonArray();
                     iter = nameSet.iterator();
@@ -82,8 +83,9 @@ public class MapFLocToStringSetTypeAdapter implements JsonDeserializer<Map<FLoca
                         nameArray.add(nameElement);
                     }
 
-                    if (!obj.has(locWorld))
+                    if (!obj.has(locWorld)) {
                         obj.add(locWorld, new JsonObject());
+                    }
 
                     obj.get(locWorld).getAsJsonObject().add(loc.getCoordString(), nameArray);
                 }
@@ -92,7 +94,7 @@ public class MapFLocToStringSetTypeAdapter implements JsonDeserializer<Map<FLoca
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            FactionsPlugin.getInstance().log(Level.WARNING, "Error encountered while serializing a Map of FLocations to String Sets.");
+            Logger.print( "Error encountered while serializing a Map of FLocations to String Sets.", Logger.PrefixType.WARNING);
             return obj;
         }
     }

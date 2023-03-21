@@ -1,7 +1,7 @@
 package com.github.manafia.factions.cmd;
 
-import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Permission;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.util.TL;
 
 public class CmdBypass extends FCommand {
@@ -29,10 +29,10 @@ public class CmdBypass extends FCommand {
         // TODO: Move this to a transient field in the model??
         if (context.fPlayer.isAdminBypassing()) {
             context.fPlayer.msg(TL.COMMAND_BYPASS_ENABLE.toString());
-            FactionsPlugin.getInstance().log(context.fPlayer.getName() + TL.COMMAND_BYPASS_ENABLELOG);
+            Logger.print(context.fPlayer.getName() + TL.COMMAND_BYPASS_ENABLELOG, Logger.PrefixType.DEFAULT);
         } else {
             context.fPlayer.msg(TL.COMMAND_BYPASS_DISABLE.toString());
-            FactionsPlugin.getInstance().log(context.fPlayer.getName() + TL.COMMAND_BYPASS_DISABLELOG);
+            Logger.print(context.fPlayer.getName() + TL.COMMAND_BYPASS_DISABLELOG, Logger.PrefixType.DEFAULT);
         }
     }
 

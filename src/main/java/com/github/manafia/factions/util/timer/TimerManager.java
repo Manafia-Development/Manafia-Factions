@@ -2,15 +2,19 @@ package com.github.manafia.factions.util.timer;
 
 import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.util.Config;
 import com.github.manafia.factions.util.timer.type.GraceTimer;
+import com.github.manafia.factions.zcore.file.CustomFile;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.event.Listener;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-
+/**
+ * Factions - Developed by Driftay.
+ * All rights reserved 2020.
+ * Creation Date: 4/7/2020
+ */
 public class TimerManager implements Listener, Runnable {
     private static final long MINUTE = TimeUnit.MINUTES.toMillis(1L);
     private static final long HOUR = TimeUnit.HOURS.toMillis(1L);
@@ -19,14 +23,15 @@ public class TimerManager implements Listener, Runnable {
     private final FactionsPlugin plugin;
     private final List<TimerRunnable> timerRunnableList = new ArrayList<>();
     public GraceTimer graceTimer;
-    private Config config;
+    private CustomFile config;
 
     public TimerManager(FactionsPlugin plugin) {
         this.timers = new HashSet<>();
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        if (Conf.useGraceSystem)
+        if (Conf.useGraceSystem) {
             this.registerTimer(this.graceTimer = new GraceTimer());
+        }
         plugin.getServer().getScheduler().runTaskTimer(plugin, this, 4, 4);
     }
 
@@ -35,8 +40,9 @@ public class TimerManager implements Listener, Runnable {
     }
 
     public static String getRemaining(long duration, boolean milliseconds, boolean trail) {
-        if ((milliseconds) && (duration < MINUTE))
+        if ((milliseconds) && (duration < MINUTE)) {
             return ((trail ? DateTimeFormats.REMAINING_SECONDS_TRAILING : DateTimeFormats.REMAINING_SECONDS).get()).format(duration * 0.001D) + 's';
+        }
         return DurationFormatUtils.formatDuration(duration, (duration >= HOUR ? (duration >= MULTI_HOUR ? "d" : "") + "d:" : "") + "HH:mm:ss");
     }
 
@@ -46,8 +52,9 @@ public class TimerManager implements Listener, Runnable {
 
     public void registerTimer(Timer timer) {
         this.timers.add(timer);
-        if (timer instanceof Listener)
+        if (timer instanceof Listener) {
             this.plugin.getServer().getPluginManager().registerEvents((Listener) timer, this.plugin);
+        }
     }
 
     public void unregisterTimer(Timer timer) {
@@ -55,15 +62,17 @@ public class TimerManager implements Listener, Runnable {
     }
 
     public void reloadTimerData() {
-        this.config = new Config(this.plugin, "timers");
-        for (Timer timer : this.timers)
+        this.config = FactionsPlugin.getInstance().getFileManager().getTimers();
+        for (Timer timer : this.timers) {
             timer.load(this.config);
+        }
     }
 
     public void saveTimerData() {
-        for (Timer timer : this.timers)
+        for (Timer timer : this.timers) {
             timer.save(this.config);
-        this.config.save();
+        }
+        this.config.saveFile();
     }
 
     public void run() {

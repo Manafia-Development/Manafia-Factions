@@ -3,38 +3,30 @@ package com.github.manafia.factions.util;
 import com.github.manafia.factions.FLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.World;
 
 import java.util.Objects;
 
 public class FastChunk {
 
-    private String worldName;
+    private String world;
     private int x, z;
-    private long timeClaimed;
 
-    public FastChunk(String worldName, int x, int z) {
-        this.worldName = worldName;
+    public FastChunk(String world, int x, int z) {
+        this.world = world;
         this.x = x;
         this.z = z;
     }
 
-    public FastChunk(String worldName, FLocation floc) {
-        this.worldName = worldName;
+    public FastChunk(String world, FLocation floc) {
+        this.world = world;
         this.x = floc.getChunk().getX();
         this.z = floc.getChunk().getZ();
     }
 
     public FastChunk(FLocation floc) {
-        this.worldName = floc.getWorldName();
+        this.world = floc.getWorld().getName();
         this.x = floc.getChunk().getX();
         this.z = floc.getChunk().getZ();
-    }
-
-
-    public FastChunk(FLocation fLoc, Long timeClaimed) {
-        this.worldName = fLoc.getWorldName();
-        this.timeClaimed = timeClaimed;
     }
 
     @Override
@@ -44,20 +36,16 @@ public class FastChunk {
         FastChunk fastChunk = (FastChunk) o;
         return x == fastChunk.x &&
                 z == fastChunk.z &&
-                worldName.equals(fastChunk.worldName);
+                world.equals(fastChunk.world);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(worldName, x, z);
+        return Objects.hash(world, x, z);
     }
 
-    public String getWorldName() {
-        return worldName;
-    }
-
-    public void setWorldName(String worldName) {
-        this.worldName = worldName;
+    public String getWorld() {
+        return world;
     }
 
     public int getX() {
@@ -68,16 +56,7 @@ public class FastChunk {
         return z;
     }
 
-    public long getTimeClaimed() {
-        return timeClaimed;
-    }
-
-
     public Chunk getChunk() {
-        return Bukkit.getWorld(worldName).getChunkAt(x, z);
-    }
-
-    public World getWorld() {
-        return Bukkit.getWorld(worldName);
+        return Bukkit.getWorld(world).getChunkAt(x, z);
     }
 }

@@ -25,7 +25,7 @@ public class CmdDelHome extends FCommand {
 
     @Override
     public void perform(CommandContext context) {
-        FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.getInstance(), () -> {
+        FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.instance, () -> {
             //Check if homes are enabled
             if (!Conf.homesEnabled) {
                 context.msg(TL.COMMAND_SETHOME_DISABLED);

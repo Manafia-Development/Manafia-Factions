@@ -7,6 +7,7 @@ import com.github.manafia.factions.FLocation;
 import com.github.manafia.factions.Faction;
 import com.github.manafia.factions.Factions;
 import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.persist.MemoryFaction;
 import com.github.manafia.factions.zcore.persist.MemoryFactions;
 import com.github.manafia.factions.zcore.util.DiscUtil;
@@ -63,7 +64,7 @@ public class JSONFactions extends MemoryFactions {
         if (factions == null) return;
         this.factions.putAll(factions);
         super.load();
-        FactionsPlugin.getInstance().log("Loaded " + factions.size() + " Factions");
+        Logger.print("Loaded " + factions.size() + " Factions", Logger.PrefixType.DEFAULT);
     }
 
     private Map<String, JSONFaction> loadCore() {

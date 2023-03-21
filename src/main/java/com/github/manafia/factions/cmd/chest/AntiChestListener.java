@@ -19,7 +19,7 @@ public class AntiChestListener implements Listener {
      */
 
     @EventHandler
-    public void onInventoryClick (InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         if (!fPlayer.isInFactionsChest()) return;
@@ -29,7 +29,7 @@ public class AntiChestListener implements Listener {
         Inventory clicked = e.getClickedInventory();
         Inventory clicker = e.getWhoClicked().getInventory();
 
-        if (e.getClick().isShiftClick())
+        if (e.getClick().isShiftClick()) {
             if (clicked == clicker) {
                 ItemStack clickedOn = e.getCurrentItem();
                 if (clickedOn != null && FactionsPlugin.getInstance().itemList.contains(clickedOn.getType().toString())) {
@@ -37,6 +37,7 @@ public class AntiChestListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+        }
 
         if (clicked != clicker) {
             ItemStack onCursor = e.getCursor();
@@ -54,7 +55,7 @@ public class AntiChestListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryDrag (InventoryDragEvent e) {
+    public void onInventoryDrag(InventoryDragEvent e) {
         Player p = (Player) e.getWhoClicked();
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(p);
 
@@ -64,12 +65,13 @@ public class AntiChestListener implements Listener {
         ItemStack dragged = e.getOldCursor();
         if (FactionsPlugin.getInstance().itemList.contains(dragged.getType().toString())) {
             int inventorySize = e.getInventory().getSize();
-            for (int i : e.getRawSlots())
+            for (int i : e.getRawSlots()) {
                 if (i < inventorySize) {
                     fPlayer.msg(TL.CHEST_ITEM_DENIED_TRANSFER, dragged.getType().toString());
                     e.setCancelled(true);
                     break;
                 }
+            }
         }
     }
 }

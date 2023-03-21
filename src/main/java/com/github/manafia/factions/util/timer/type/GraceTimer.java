@@ -3,8 +3,8 @@ package com.github.manafia.factions.util.timer.type;
 import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FPlayers;
-import com.github.manafia.factions.util.Config;
 import com.github.manafia.factions.util.timer.GlobalTimer;
+import com.github.manafia.factions.zcore.file.CustomFile;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,22 +33,25 @@ public class GraceTimer extends GlobalTimer implements Listener {
     @EventHandler
     public void onTNTPlace(BlockPlaceEvent event) {
         FPlayer fp = FPlayers.getInstance().getByPlayer(event.getPlayer());
-        if (getRemaining() > 0)
-            if (!fp.isAdminBypassing())
-                if (event.getBlock().getType().equals(Material.TNT))
+        if (getRemaining() > 0) {
+            if (!fp.isAdminBypassing()) {
+                if (event.getBlock().getType().equals(Material.TNT)) {
                     event.setCancelled(true);
+                }
+            }
+        }
     }
 
     @Override
-    public void load(Config config) {
-        setPaused(config.getBoolean(this.name + ".paused"));
-        setRemaining(config.getLong(this.name + ".time"), false);
+    public void load(CustomFile config) {
+        setPaused(config.getConfig().getBoolean(this.name + ".paused"));
+        setRemaining(config.getConfig().getLong(this.name + ".time"), false);
     }
 
     @Override
-    public void save(Config config) {
-        config.set(this.name + ".paused", isPaused());
-        config.set(this.name + ".time", getRemaining());
+    public void save(CustomFile config) {
+        config.getConfig().set(this.name + ".paused", isPaused());
+        config.getConfig().set(this.name + ".time", getRemaining());
     }
 
 }

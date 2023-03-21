@@ -15,17 +15,19 @@ public class RelationUtil {
         String ret = "";
 
         Faction thatFaction = getFaction(that);
-        if (thatFaction == null)
+        if (thatFaction == null) {
             return "ERROR"; // ERROR
+        }
 
         Faction myFaction = getFaction(me);
 //		if (myFaction == null) return that.describeTo(null); // no relation, but can show basic name or tag
 
         if (that instanceof Faction) {
-            if (me instanceof FPlayer && myFaction == thatFaction)
+            if (me instanceof FPlayer && myFaction == thatFaction) {
                 ret = TL.GENERIC_YOURFACTION.toString();
-            else
+            } else {
                 ret = thatFaction.getTag();
+            }
         } else if (that instanceof FPlayer) {
             FPlayer fplayerthat = (FPlayer) that;
             if (that == me) {
@@ -36,8 +38,11 @@ public class RelationUtil {
                 ret = fplayerthat.getNameAndTag();
             }
         }
-        if (ucfirst)
+
+        if (ucfirst) {
             ret = TextUtil.upperCaseFirst(ret);
+        }
+
         return "" + getColorOfThatToMe(that, me) + ret;
     }
 
@@ -53,30 +58,37 @@ public class RelationUtil {
         Faction fthat = getFaction(that);
         Faction fme = getFaction(me);
 
-        if (fthat == null || fme == null)
+        if (fthat == null || fme == null) {
             return Relation.NEUTRAL; // ERROR
+        }
 
-        if (!fthat.isNormal() || !fme.isNormal())
+        if (!fthat.isNormal() || !fme.isNormal()) {
             return Relation.NEUTRAL;
+        }
 
-        if (fthat.equals(fme))
+        if (fthat.equals(fme)) {
             return Relation.MEMBER;
+        }
 
-        if (!ignorePeaceful && (fme.isPeaceful() || fthat.isPeaceful()))
+        if (!ignorePeaceful && (fme.isPeaceful() || fthat.isPeaceful())) {
             return Relation.NEUTRAL;
+        }
 
-        if (fme.getRelationWish(fthat).value >= fthat.getRelationWish(fme).value)
+        if (fme.getRelationWish(fthat).value >= fthat.getRelationWish(fme).value) {
             return fthat.getRelationWish(fme);
+        }
 
         return fme.getRelationWish(fthat);
     }
 
     public static Faction getFaction(RelationParticipator rp) {
-        if (rp instanceof Faction)
+        if (rp instanceof Faction) {
             return (Faction) rp;
+        }
 
-        if (rp instanceof FPlayer)
+        if (rp instanceof FPlayer) {
             return ((FPlayer) rp).getFaction();
+        }
 
         // ERROR
         return null;
@@ -93,8 +105,7 @@ public class RelationUtil {
             else if (thatFaction.isWarZone())
                 return Conf.colorWar;
         }
-        // 3 elifs dont really require a switch statement
-        // using lookup table is overkill
+
         return getRelationTo(that, me).getColor();
     }
 }

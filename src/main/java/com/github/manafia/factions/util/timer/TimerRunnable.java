@@ -1,9 +1,14 @@
 package com.github.manafia.factions.util.timer;
 
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.FactionsPlugin;
 
 import java.util.UUID;
 
+/**
+ * Factions - Developed by Driftay.
+ * All rights reserved 2020.
+ * Creation Date: 4/7/2020
+ */
 
 public class TimerRunnable {
     private final Timer timer;
@@ -15,14 +20,16 @@ public class TimerRunnable {
     public TimerRunnable(Timer timer, long duration) {
         this.timer = timer;
         setRemaining(duration);
-        Util.getTimerManager().getTimerRunnableList().add(this);
+        FactionsPlugin plugin = FactionsPlugin.getInstance();
+        plugin.getTimerManager().getTimerRunnableList().add(this);
     }
 
 
     public TimerRunnable(UUID playerUUID, Timer timer, long duration) {
         this.timer = timer;
         setRemaining(duration);
-        Util.getTimerManager().getTimerRunnableList().add(this);
+        FactionsPlugin plugin = FactionsPlugin.getInstance();
+        plugin.getTimerManager().getTimerRunnableList().add(this);
     }
 
     public boolean isCancelled() {

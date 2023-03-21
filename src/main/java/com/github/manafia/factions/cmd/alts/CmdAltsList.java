@@ -18,7 +18,7 @@ public class CmdAltsList extends FCommand {
      * @author Driftay
      */
 
-    public CmdAltsList () {
+    public CmdAltsList() {
         super();
         this.aliases.addAll(Aliases.alts_list);
         this.optionalArgs.put("faction", "yours");
@@ -32,15 +32,17 @@ public class CmdAltsList extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         Faction faction = context.faction;
-        if (context.argIsSet(0))
+        if (context.argIsSet(0)) {
             faction = context.argAsFaction(0);
+        }
         if (faction == null)
             return;
 
-        if (faction != context.faction && !context.fPlayer.isAdminBypassing())
+        if (faction != context.faction && !context.fPlayer.isAdminBypassing()) {
             return;
+        }
 
         if (faction.getAltPlayers().size() == 0) {
             context.msg(TL.COMMAND_ALTS_LIST_NOALTS, faction.getTag());
@@ -53,7 +55,7 @@ public class CmdAltsList extends FCommand {
 
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ALTS_LIST_DESCRIPTION;
     }
 }

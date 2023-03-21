@@ -1,6 +1,8 @@
 package com.github.manafia.factions;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.google.common.collect.ImmutableMap;
+import com.github.manafia.factions.integration.dynmap.DynmapStyle;
 import com.github.manafia.factions.zcore.fperms.DefaultPermissions;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
 import org.bukkit.ChatColor;
@@ -11,10 +13,18 @@ import java.util.*;
 
 public class Conf {
 
-    private static final transient Conf i = new Conf();
+    // Region Style
+    public static final transient String DYNMAP_STYLE_LINE_COLOR = "#00FF00";
+    public static final transient double DYNMAP_STYLE_LINE_OPACITY = 0.8D;
+    public static final transient int DYNMAP_STYLE_LINE_WEIGHT = 3;
+    public static final transient String DYNMAP_STYLE_FILL_COLOR = "#00FF00";
+    public static final transient double DYNMAP_STYLE_FILL_OPACITY = 0.35D;
+    public static final transient String DYNMAP_STYLE_HOME_MARKER = "greenflag";
+    public static final transient boolean DYNMAP_STYLE_BOOST = false;
     public static List<String> baseCommandAliases = new ArrayList<>();
     public static String serverTimeZone = "EST";
     public static boolean allowNoSlashCommand = true;
+
     // Colors
     public static ChatColor colorMember = ChatColor.GREEN;
     public static ChatColor colorAlly = ChatColor.LIGHT_PURPLE;
@@ -84,7 +94,7 @@ public class Conf {
     public static boolean broadcastDescriptionChanges = false;
     public static boolean broadcastTagChanges = false;
     public static double saveToFileEveryXMinutes = 30.0;
-    public static boolean useAutoLeaveAndDisbandSystem = true; //whether we enable or disable the AutoLeaveTask
+    public static boolean useAutoLeaveAndDisbandSystem = false; //whether we enable or disable the AutoLeaveTask
     public static double autoLeaveAfterDaysOfInactivity = 10.0;
     public static double autoLeaveRoutineRunsEveryXMinutes = 5.0;
     public static int autoLeaveRoutineMaxMillisecondsPerTick = 5;  // 1 server tick is roughly 50ms, so default max 10% of a tick
@@ -93,35 +103,49 @@ public class Conf {
     public static boolean autoLeaveDeleteFPlayerData = true; // Let them just remove player from Faction.
     public static boolean worldGuardChecking = false;
     public static boolean worldGuardBuildPriority = false;
+
     //RADIUS CLAIMING
     public static boolean useRadiusClaimSystem = true;
+
     //FRIENDLY FIRE
     public static boolean friendlyFireFPlayersCommand = false;
+
     //Claim Fill
     public static int maxFillClaimCount = 25;
     public static int maxFillClaimDistance = 5;
+
+    //Drain
     public static boolean factionsDrainEnabled = false;
+    public static int factionDrainCooldown = 60;
     //RESERVE
     public static boolean useReserveSystem = true;
     //AUDIT
     public static boolean useAuditSystem = true;
+
     //INSPECT
     public static boolean useInspectSystem = true;
+
     //GUI's
     public static boolean useDisbandGUI = true;
+
     //SEALTH
     public static boolean useStealthSystem = true;
+
     //STRIKES
     public static boolean useStrikeSystem = true;
 
-    //SPAWNERCHUNKS
-    public static boolean userSpawnerChunkSystem = true;
+    //Denies User Join BEFORE Faction Data is Fully Loaded!
+    public static boolean usePreStartupKickSystem = true;
+
+    //SpawnerChunks
+    public static boolean userSpawnerChunkSystem = false;
     public static int allowedSpawnerChunks = 2;
     public static boolean allowSpawnerChunksUpgrade = true;
     public static boolean allowSpawnersPlacedInWilderness = false;
     public static boolean allowUnclaimSpawnerChunksWithSpawnersInChunk = true;
     public static ChatColor spawnerChunkColor = ChatColor.BLUE;
     public static String spawnerChunkString = "Spawner Chunk";
+
     // server logging options
     public static boolean logFactionCreate = true;
     public static boolean logFactionDisband = true;
@@ -133,7 +157,7 @@ public class Conf {
     public static boolean logMoneyTransactions = true;
     public static boolean logPlayerCommands = true;
     // prevent some potential exploits
-    public static boolean denyFlightIfInNoClaimingWorld = false;
+
     public static boolean handleExploitObsidianGenerators = true;
     public static boolean handleExploitEnderPearlClipping = true;
     public static boolean handleExploitInteractionSpam = true;
@@ -156,6 +180,7 @@ public class Conf {
     public static boolean disablePVPForFactionlessPlayers = false;
     public static boolean enablePVPAgainstFactionlessInAttackersLand = false;
     public static int noPVPDamageToOthersForXSecondsAfterLogin = 3;
+    public static boolean allFactionsPeaceful = false;
     public static boolean peacefulTerritoryDisablePVP = true;
     public static boolean peacefulTerritoryDisableMonsters = false;
     public static boolean peacefulTerritoryDisableBoom = false;
@@ -166,6 +191,7 @@ public class Conf {
     public static int claimsRequireMinFactionMembers = 1;
     public static int claimedLandsMax = 0;
     public static int lineClaimLimit = 5;
+    public static int claimRadiusLimit = 30;
     // if someone is doing a radius claim and the process fails to claim land this many times in a row, it will exit
     public static int radiusClaimFailureLimit = 9;
     public static double considerFactionsReallyOfflineAfterXMinutes = 0.0;
@@ -178,6 +204,7 @@ public class Conf {
     public static Set<String> territoryAllyDenyCommands = new LinkedHashSet<>();
     public static Set<String> warzoneDenyCommands = new LinkedHashSet<>();
     public static Set<String> wildernessDenyCommands = new LinkedHashSet<>();
+    public static boolean protectAnimalsInFactionTerritory = false; //This is a boolean to allow people to damage other animals in territory.
     public static boolean territoryDenyBuild = true;
     public static boolean territoryDenyBuildWhenOffline = true;
     public static boolean territoryPainBuild = false;
@@ -237,7 +264,6 @@ public class Conf {
     public static boolean ownedMessageInsideTerritory = true;
     public static boolean ownedMessageByChunk = false;
     public static boolean pistonProtectionThroughDenyBuild = true;
-    public static Set<Material> loggableMaterials = EnumSet.noneOf(Material.class);
     public static Set<Material> territoryProtectedMaterials = EnumSet.noneOf(Material.class);
     public static Set<Material> territoryDenyUsageMaterials = EnumSet.noneOf(Material.class);
     public static Set<Material> territoryProtectedMaterialsWhenOffline = EnumSet.noneOf(Material.class);
@@ -248,10 +274,13 @@ public class Conf {
     /// Useful for HCF features.
     /// </summary>
     public static Set<Material> territoryBypassProtectedMaterials = EnumSet.noneOf(Material.class);
+
     public static boolean enableClickToClaim = true;
-    public static Set<Material> territoryCancelAndAllowItemUseMaterial = new HashSet<>();
-    public static Set<Material> territoryDenySwitchMaterials = new HashSet<>();
+
+    //public static Set<Material> territoryCancelAndAllowItemUseMaterial = new HashSet<>();
+    //public static Set<Material> territoryDenySwitchMaterials = new HashSet<>();
     public static boolean allowCreeperEggingChests = true;
+
     // Economy settings
     public static boolean econEnabled = false;
     public static String econUniverseAccount = "";
@@ -279,6 +308,8 @@ public class Conf {
     public static double econFactionStartingBalance = 0.0;
     public static double econDenyWithdrawWhenMinutesAgeLessThan = 2880; // 2 days
     public static String dateFormat = "HH:mm dd/MM/yyyy";
+
+
     // -------------------------------------------- //
     // INTEGRATION: DYNMAP
     // -------------------------------------------- //
@@ -289,27 +320,92 @@ public class Conf {
     public static double econCostEnemy = 0.0;
     public static double econCostNeutral = 0.0;
     public static double econCostNoBoom = 0.0;
+    // Should the dynmap intagration be used?
+    public static boolean dynmapUse = false;
+    // Name of the Factions layer
+    public static String dynmapLayerName = "Factions";
+    // Should the layer be visible per default
+    public static boolean dynmapLayerVisible = true;
+    // Ordering priority in layer menu (low goes before high - default is 0)
+    public static int dynmapLayerPriority = 2;
+    // (optional) set minimum zoom level before layer is visible (0 = default, always visible)
+    public static int dynmapLayerMinimumZoom = 0;
+    // Format for popup - substitute values for macros
+    public static String dynmapDescription =
+            "<div class=\"infowindow\">\n"
+                    + "<span style=\"font-weight: bold; font-size: 150%;\">%name%</span><br>\n"
+                    + "<span style=\"font-style: italic; font-size: 110%;\">%description%</span><br>"
+                    + "<br>\n"
+                    + "<span style=\"font-weight: bold;\">Leader:</span> %players.leader%<br>\n"
+                    + "<span style=\"font-weight: bold;\">Admins:</span> %players.admins.count%<br>\n"
+                    + "<span style=\"font-weight: bold;\">Moderators:</span> %players.moderators.count%<br>\n"
+                    + "<span style=\"font-weight: bold;\">Members:</span> %players.normals.count%<br>\n"
+                    + "<span style=\"font-weight: bold;\">TOTAL:</span> %players.count%<br>\n"
+                    + "</br>\n"
+                    + "<span style=\"font-weight: bold;\">Bank:</span> %money%<br>\n"
+                    + "<br>\n"
+                    + "</div>";
+    // Enable the %money% macro. Only do this if you know your economy manager is thread-safe.
+    public static boolean dynmapDescriptionMoney = false;
+    // Allow players in faction to see one another on Dynmap (only relevant if Dynmap has 'player-info-protected' enabled)
+    public static boolean dynmapVisibilityByFaction = true;
+    // Optional setting to limit which regions to show.
+    // If empty all regions are shown.
+    // Specify Faction either by name or UUID.
+    // To show all regions on a given world, add 'world:<worldname>' to the list.
+    public static Set<String> dynmapVisibleFactions = new HashSet<>();
+    // Optional setting to hide specific Factions.
+    // Specify Faction either by name or UUID.
+    // To hide all regions on a given world, add 'world:<worldname>' to the list.
+    public static Set<String> dynmapHiddenFactions = new HashSet<>();
+    public static DynmapStyle dynmapDefaultStyle = new DynmapStyle()
+            .setStrokeColor(DYNMAP_STYLE_LINE_COLOR)
+            .setLineOpacity(DYNMAP_STYLE_LINE_OPACITY)
+            .setLineWeight(DYNMAP_STYLE_LINE_WEIGHT)
+            .setFillColor(DYNMAP_STYLE_FILL_COLOR)
+            .setFillOpacity(DYNMAP_STYLE_FILL_OPACITY)
+            .setHomeMarker(DYNMAP_STYLE_HOME_MARKER)
+            .setBoost(DYNMAP_STYLE_BOOST);
+
+    // Optional per Faction style overrides. Any defined replace those in dynmapDefaultStyle.
+    // Specify Faction either by name or UUID.
+    public static Map<String, DynmapStyle> dynmapFactionStyles = ImmutableMap.of(
+            "SafeZone", new DynmapStyle().setStrokeColor("#FF00FF").setFillColor("#FF00FF").setBoost(false),
+            "WarZone", new DynmapStyle().setStrokeColor("#FF0000").setFillColor("#FF0000").setBoost(false)
+    );
+
+
     //Faction banks, to pay for land claiming and other costs instead of individuals paying for them
     public static boolean bankEnabled = true;
     public static boolean bankMembersCanWithdraw = false; //Have to be at least moderator to withdraw or pay money to another faction
     public static boolean bankFactionPaysCosts = true; //The faction pays for faction command costs, such as sethome
     public static boolean bankFactionPaysLandCosts = true; //The faction pays for land claiming costs.
+
     // mainly for other plugins/mods that use a fake player to take actions, which shouldn't be subject to our protections
     public static Set<String> playersWhoBypassAllProtection = new LinkedHashSet<>();
+
     public static boolean useWorldConfigurationsAsWhitelist = false;
     public static Set<String> worldsNoClaiming = new LinkedHashSet<>();
+    public static Set<String> worldsNoFactionsPlugin = new LinkedHashSet<>();
+
     public static Set<String> worldsNoPowerLoss = new LinkedHashSet<>();
     public static Set<String> worldsIgnorePvP = new LinkedHashSet<>();
     public static Set<String> worldsNoWildernessProtection = new LinkedHashSet<>();
+
     // faction-<factionId>
     public static int defaultMaxVaults = 0;
     public static boolean disableFlightOnFactionClaimChange = true;
-    public static boolean sendFactionChangeMessage = true;
+
     public static Backend backEnd = Backend.JSON;
+
     // Taller and wider for "bigger f map"
     public static int mapHeight = 17;
     public static int mapWidth = 49;
     public static transient char[] mapKeyChrs = "\\/#$%=&^ABCDEFGHJKLMNOPQRSTUVWXYZ1234567890abcdeghjmnopqrsuvwxyz?".toCharArray();
+
+
+    //Cooldown for /f logout in seconds
+    public static long logoutCooldown = 30;
 
     // Custom Ranks - Oof I forgot I was doing this _SvenjaReissaus_
     //public static boolean enableCustomRanks = false; // We will disable it by default to avoid any migration error
@@ -317,15 +413,16 @@ public class Conf {
     // -------------------------------------------- //
     // Persistance
     // ----------------------------------------- //
-    //Cooldown for /f logout in seconds
-    public static long logoutCooldown = 30;
+
+
     // Default Faction Permission Settings.
     public static boolean useLockedPermissions = false;
     public static boolean useCustomDefaultPermissions = true;
     public static boolean usePermissionHints = false;
     public static HashMap<String, DefaultPermissions> defaultFactionPermissions = new HashMap<>();
     public static HashSet<PermissableAction> lockedPermissions = new HashSet<>();
-    public static boolean wildLoadChunkBeforeTeleport = true;
+
+    private static transient Conf i = new Conf();
 
     static {
         lockedPermissions.add(PermissableAction.CHEST);
@@ -335,6 +432,8 @@ public class Conf {
         baseCommandAliases.add("f");
 
         blacklistedFactionNames.add("somenamehere");
+
+        worldsNoFactionsPlugin.add("someworldnamehere");
 
         territoryEnemyDenyCommands.add("home");
         territoryEnemyDenyCommands.add("ehome");
@@ -357,98 +456,99 @@ public class Conf {
         territoryEnemyDenyCommands.add("etpa");
         territoryEnemyDenyCommands.add("etpask");
 
-        territoryDenySwitchMaterials.add(XMaterial.ACACIA_FENCE_GATE.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BIRCH_FENCE_GATE.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_FENCE_GATE.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.JUNGLE_FENCE_GATE.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.OAK_FENCE_GATE.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.SPRUCE_FENCE_GATE.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.ACACIA_DOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BIRCH_DOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_DOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.JUNGLE_DOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.OAK_DOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.SPRUCE_DOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DISPENSER.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.CHEST.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.TRAPPED_CHEST.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.ACACIA_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BIRCH_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.JUNGLE_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.OAK_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.SPRUCE_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DROPPER.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.HOPPER.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.ITEM_FRAME.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.ACACIA_TRAPDOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BIRCH_TRAPDOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_TRAPDOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.JUNGLE_TRAPDOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.OAK_TRAPDOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.SPRUCE_TRAPDOOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.LEVER.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.COMPARATOR.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.REPEATER.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.ACACIA_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BIRCH_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.JUNGLE_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.OAK_BUTTON.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.SPRUCE_BUTTON.parseMaterial());
 
-        territoryDenySwitchMaterials.add(XMaterial.PURPLE_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.WHITE_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.MAGENTA_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.LIGHT_BLUE_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.CYAN_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BLUE_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BROWN_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.ORANGE_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.GREEN_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.RED_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.BLACK_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.GRAY_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.LIME_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.LIGHT_GRAY_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.PINK_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.YELLOW_SHULKER_BOX.parseMaterial());
-        territoryDenySwitchMaterials.add(XMaterial.SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ACACIA_FENCE_GATE.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BIRCH_FENCE_GATE.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_FENCE_GATE.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.JUNGLE_FENCE_GATE.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.OAK_FENCE_GATE.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.SPRUCE_FENCE_GATE.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ACACIA_DOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BIRCH_DOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_DOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.JUNGLE_DOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.OAK_DOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.SPRUCE_DOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DISPENSER.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.CHEST.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.TRAPPED_CHEST.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ACACIA_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BIRCH_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.JUNGLE_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.OAK_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.SPRUCE_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DROPPER.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.HOPPER.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ITEM_FRAME.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ACACIA_TRAPDOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BIRCH_TRAPDOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_TRAPDOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.JUNGLE_TRAPDOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.OAK_TRAPDOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.SPRUCE_TRAPDOOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.LEVER.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.COMPARATOR.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.REPEATER.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ACACIA_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BIRCH_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.DARK_OAK_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.JUNGLE_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.OAK_BUTTON.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.SPRUCE_BUTTON.parseMaterial());
+//
+        //territoryDenySwitchMaterials.add(XMaterial.PURPLE_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.WHITE_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.MAGENTA_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.LIGHT_BLUE_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.CYAN_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BLUE_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BROWN_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.ORANGE_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.GREEN_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.RED_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BLACK_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.GRAY_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.LIME_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.LIGHT_GRAY_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.PINK_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.YELLOW_SHULKER_BOX.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.SHULKER_BOX.parseMaterial());
 
         // 1.14 Barrel is a container.
-        territoryDenySwitchMaterials.add(XMaterial.BARREL.parseMaterial());
+        //territoryDenySwitchMaterials.add(XMaterial.BARREL.parseMaterial());
 
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.GOLDEN_APPLE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.APPLE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.ENCHANTED_GOLDEN_APPLE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_BEEF.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_MUTTON.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_CHICKEN.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_COD.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_PORKCHOP.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_RABBIT.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_SALMON.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.ENDER_PEARL.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.POTION.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.SPLASH_POTION.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.CREEPER_SPAWN_EGG.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.BOW.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_HELMET.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_CHESTPLATE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_LEGGINGS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_BOOTS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_HELMET.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_CHESTPLATE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_LEGGINGS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_BOOTS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_HELMET.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_CHESTPLATE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_LEGGINGS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_BOOTS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_HELMET.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_LEGGINGS.parseMaterial());
-        territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_BOOTS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.GOLDEN_APPLE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.APPLE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.ENCHANTED_GOLDEN_APPLE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_BEEF.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_MUTTON.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_CHICKEN.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_COD.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_PORKCHOP.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_RABBIT.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.COOKED_SALMON.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.ENDER_PEARL.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.POTION.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.SPLASH_POTION.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.CREEPER_SPAWN_EGG.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.BOW.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_HELMET.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_CHESTPLATE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_LEGGINGS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.DIAMOND_BOOTS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_HELMET.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_CHESTPLATE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_LEGGINGS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.IRON_BOOTS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_HELMET.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_CHESTPLATE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_LEGGINGS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.LEATHER_BOOTS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_HELMET.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_LEGGINGS.parseMaterial());
+        //territoryCancelAndAllowItemUseMaterial.add(XMaterial.CHAINMAIL_BOOTS.parseMaterial());
 
 
         /// TODO: Consider removing this in a future release, as permissions works just fine now
@@ -460,14 +560,6 @@ public class Conf {
         territoryBypassProtectedMaterials.add(Material.TRAPPED_CHEST);
 
 
-        territoryDenyUsageMaterials.add(XMaterial.FIRE_CHARGE.parseMaterial());
-        territoryDenyUsageMaterials.add(Material.FLINT_AND_STEEL);
-        territoryDenyUsageMaterials.add(Material.BUCKET);
-        territoryDenyUsageMaterials.add(Material.WATER_BUCKET);
-        territoryDenyUsageMaterials.add(Material.LAVA_BUCKET);
-        if (FactionsPlugin.getInstance().version != 7)
-            territoryDenyUsageMaterials.add(Material.ARMOR_STAND);
-
         territoryProtectedMaterialsWhenOffline.add(Material.BEACON);
 
         territoryDenyUsageMaterialsWhenOffline.add(XMaterial.FIRE_CHARGE.parseMaterial());
@@ -475,8 +567,9 @@ public class Conf {
         territoryDenyUsageMaterialsWhenOffline.add(Material.BUCKET);
         territoryDenyUsageMaterialsWhenOffline.add(Material.WATER_BUCKET);
         territoryDenyUsageMaterialsWhenOffline.add(Material.LAVA_BUCKET);
-        if (FactionsPlugin.getInstance().version != 7)
+        if (FactionsPlugin.getInstance().version != 7) {
             territoryDenyUsageMaterialsWhenOffline.add(Material.ARMOR_STAND);
+        }
         safeZoneNerfedCreatureTypes.add(EntityType.BLAZE);
         safeZoneNerfedCreatureTypes.add(EntityType.CAVE_SPIDER);
         safeZoneNerfedCreatureTypes.add(EntityType.CREEPER);
@@ -484,15 +577,17 @@ public class Conf {
         safeZoneNerfedCreatureTypes.add(EntityType.ENDERMAN);
         safeZoneNerfedCreatureTypes.add(EntityType.GHAST);
         safeZoneNerfedCreatureTypes.add(EntityType.MAGMA_CUBE);
-        //safeZoneNerfedCreatureTypes.add(FactionsPlugin.getInstance().version != 16 ? EntityType.valueOf("PIG_ZOMBIE") : EntityType.ZOMBIFIED_PIGLIN);
-
-        if (FactionsPlugin.getInstance().version == 17) {
-            safeZoneNerfedCreatureTypes.add(EntityType.GLOW_SQUID);
-            safeZoneNerfedCreatureTypes.add(EntityType.AXOLOTL);
-            safeZoneNerfedCreatureTypes.add(EntityType.ZOMBIFIED_PIGLIN);
-        }
-
-
+        //try {
+        //    safeZoneNerfedCreatureTypes.add(EntityType.valueOf("PIG_ZOMBIE"));
+        //} catch (IllegalArgumentException ex) {
+        //    if (FactionsPlugin.getInstance().mc117) {
+        //        safeZoneNerfedCreatureTypes.add(EntityType.GLOW_SQUID);
+        //        safeZoneNerfedCreatureTypes.add(EntityType.AXOLOTL);
+        //        safeZoneNerfedCreatureTypes.add(EntityType.ZOMBIFIED_PIGLIN);
+        //    } else {
+        //        safeZoneNerfedCreatureTypes.add(EntityType.ZOMBIFIED_PIGLIN);
+        //    }
+        //}
         safeZoneNerfedCreatureTypes.add(EntityType.SILVERFISH);
         safeZoneNerfedCreatureTypes.add(EntityType.SKELETON);
         safeZoneNerfedCreatureTypes.add(EntityType.SPIDER);
@@ -516,7 +611,6 @@ public class Conf {
         FactionsPlugin.getInstance().persist.loadOrSaveDefault(i, Conf.class, "conf");
     }
 
-
     public static void save() {
         FactionsPlugin.getInstance().persist.save(i);
     }
@@ -528,5 +622,7 @@ public class Conf {
     public enum Backend {
         JSON,
         //MYSQL,  TODO add MySQL storage
+        ;
     }
 }
+

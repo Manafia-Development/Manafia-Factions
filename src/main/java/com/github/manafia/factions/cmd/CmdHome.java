@@ -24,7 +24,7 @@ public class CmdHome extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdHome () {
+    public CmdHome() {
         super();
         this.aliases.addAll(Aliases.home);
         this.optionalArgs.put("faction", "yours");
@@ -37,7 +37,7 @@ public class CmdHome extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // TODO: Hide this command on help also.
         if (!Conf.homesEnabled) {
             context.msg(TL.COMMAND_HOME_DISABLED);
@@ -100,12 +100,14 @@ public class CmdHome extends FCommand {
             double z = loc.getZ();
 
             for (Player p : context.player.getServer().getOnlinePlayers()) {
-                if (p == null || !p.isOnline() || p.isDead() || p == context.player || p.getWorld() != w)
+                if (p == null || !p.isOnline() || p.isDead() || p == context.player || p.getWorld() != w) {
                     continue;
+                }
 
                 FPlayer fp = FPlayers.getInstance().getByPlayer(p);
-                if (context.fPlayer.getRelationTo(fp) != Relation.ENEMY || fp.isVanished())
+                if (context.fPlayer.getRelationTo(fp) != Relation.ENEMY || fp.isVanished()) {
                     continue;
+                }
 
                 Location l = p.getLocation();
                 double dx = Math.abs(x - l.getX());
@@ -114,8 +116,9 @@ public class CmdHome extends FCommand {
                 double max = Conf.homesTeleportAllowedEnemyDistance;
 
                 // box-shaped distance check
-                if (dx > max || dy > max || dz > max)
+                if (dx > max || dy > max || dz > max) {
                     continue;
+                }
 
                 context.msg(TL.COMMAND_HOME_ENEMYNEAR, String.valueOf(Conf.homesTeleportAllowedEnemyDistance));
                 return;
@@ -123,12 +126,14 @@ public class CmdHome extends FCommand {
         }
 
         // if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-        if (!context.payForCommand(Conf.econCostHome, TL.COMMAND_HOME_TOTELEPORT.toString(), TL.COMMAND_HOME_FORTELEPORT.toString()))
+        if (!context.payForCommand(Conf.econCostHome, TL.COMMAND_HOME_TOTELEPORT.toString(), TL.COMMAND_HOME_FORTELEPORT.toString())) {
             return;
+        }
 
         // if Essentials teleport handling is enabled and available, pass the teleport off to it (for delay and cooldown)
-        if (Essentials.handleTeleport(context.player, context.faction.getHome()))
+        if (Essentials.handleTeleport(context.player, context.faction.getHome())) {
             return;
+        }
 
         context.doWarmUp(WarmUpUtil.Warmup.HOME, TL.WARMUPS_NOTIFY_TELEPORT, "Home", () -> {
             // Create a smoke effect
@@ -145,7 +150,7 @@ public class CmdHome extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_HOME_DESCRIPTION;
     }
 

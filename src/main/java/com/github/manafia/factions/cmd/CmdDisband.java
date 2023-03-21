@@ -22,7 +22,7 @@ public class CmdDisband extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    private static final HashMap<String, String> disbandMap = new HashMap<>();
+    private static HashMap<String, String> disbandMap = new HashMap<>();
 
 
     public CmdDisband() {
@@ -42,8 +42,11 @@ public class CmdDisband extends FCommand {
 
         boolean isMyFaction = context.fPlayer != null && faction == context.faction;
 
-        if (!isMyFaction)
+        if (!isMyFaction) {
             if (!Permission.DISBAND_ANY.has(context.sender, true)) return;
+        }
+
+
         if (context.fPlayer != null && !context.fPlayer.isAdminBypassing()) {
             Access access = faction.getAccess(context.fPlayer, PermissableAction.DISBAND);
             if (context.fPlayer.getRole() != Role.LEADER && faction.getFPlayerLeader() != context.fPlayer && access != Access.ALLOW) {
@@ -75,12 +78,14 @@ public class CmdDisband extends FCommand {
 
         boolean access = context.fPlayer.getPlayer().hasMetadata("disband_confirm") && (time = context.fPlayer.getPlayer().getMetadata("disband_confirm").get(0).asLong()) != 0L && System.currentTimeMillis() - time <= TimeUnit.SECONDS.toMillis(3L);
 
-        if (!access)
-            if (Conf.useDisbandGUI && (!context.fPlayer.isAdminBypassing() || !context.player.isOp()))
+        if (!access) {
+            if (Conf.useDisbandGUI && (!context.fPlayer.isAdminBypassing() || !context.player.isOp())) {
                 if (!disbandMap.containsKey(context.player.getUniqueId().toString())) {
                     new FDisbandFrame(context.faction).buildGUI(context.fPlayer);
                     return;
                 }
+            }
+        }
 
         // check for tnt before disbanding.
         if (!disbandMap.containsKey(context.player.getUniqueId().toString()) && faction.getTnt() > 0) {
@@ -88,16 +93,24 @@ public class CmdDisband extends FCommand {
             disbandMap.put(context.player.getUniqueId().toString(), faction.getId());
             Bukkit.getScheduler().scheduleSyncDelayedTask(FactionsPlugin.getInstance(), () -> disbandMap.remove(context.player.getUniqueId().toString()), 200L);
         } else if (faction.getId().equals(disbandMap.get(context.player.getUniqueId().toString())) || faction.getTnt() == 0) {
-            if (FactionsPlugin.getInstance().getConfig().getBoolean("faction-disband-broadcast", true))
+            if (FactionsPlugin.getInstance().getConfig().getBoolean("faction-disband-broadcast", true)) {
+
+                String yours_message = TL.COMMAND_DISBAND_BROADCAST_YOURS.toString()
+                        .replace("{claims}",faction.getAllClaims().size()+"");
+                String notyours_message = TL.COMMAND_DISBAND_BROADCAST_NOTYOURS.toString()
+                        .replace("{claims}",faction.getAllClaims().size()+"");
+
                 for (FPlayer follower : FPlayers.getInstance().getOnlinePlayers()) {
                     String amountString = context.sender instanceof ConsoleCommandSender ? TL.GENERIC_SERVERADMIN.toString() : context.fPlayer.describeTo(follower);
                     if (follower.getFaction() == faction) {
-                        follower.msg(TL.COMMAND_DISBAND_BROADCAST_YOURS, amountString);
-                    } else
-                        follower.msg(TL.COMMAND_DISBAND_BROADCAST_NOTYOURS, amountString, faction.getTag(follower));
+                        follower.msg(yours_message, amountString);
+                    } else {
+                        follower.msg(notyours_message, amountString, faction.getTag(follower));
+                    }
                 }
-            else
+            } else {
                 context.player.sendMessage(String.valueOf(TL.COMMAND_DISBAND_PLAYER));
+            }
             faction.disband(context.player, PlayerDisbandReason.COMMAND);
             Cooldown.setCooldown(context.fPlayer.getPlayer(), "disbandCooldown", FactionsPlugin.getInstance().getConfig().getInt("fcooldowns.f-disband"));
         }

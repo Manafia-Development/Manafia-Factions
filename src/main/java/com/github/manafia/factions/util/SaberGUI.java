@@ -18,12 +18,12 @@ public abstract class SaberGUI {
 
     public static Set<String> allGUINames = new HashSet<>();
     public static Map<UUID, SaberGUI> activeGUIs = new ConcurrentHashMap<>();
-    private final Map<Integer, InventoryItem> inventoryItems;
     public SaberGUI parentGUI;
     protected String title;
     protected int size;
     protected Player player;
     protected Inventory inventory;
+    private Map<Integer, InventoryItem> inventoryItems;
     private String owningPluginName;
     private Runnable closeRunnable;
 
@@ -149,3 +149,4 @@ public abstract class SaberGUI {
         return this.closeRunnable;
     }
 }
+

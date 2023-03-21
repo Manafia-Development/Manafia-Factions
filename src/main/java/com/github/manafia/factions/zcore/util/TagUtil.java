@@ -1,7 +1,10 @@
 package com.github.manafia.factions.zcore.util;
 
 
-import com.github.manafia.factions.*;
+import com.github.manafia.factions.FPlayer;
+import com.github.manafia.factions.Faction;
+import com.github.manafia.factions.Factions;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.struct.Relation;
 import com.github.manafia.factions.util.MiscUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -26,9 +29,11 @@ public class TagUtil {
      * @return clean line
      */
     public static String parsePlain(Faction faction, String line) {
-        for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.FACTION))
-            if (tagReplacer.contains(line))
+        for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.FACTION)) {
+            if (tagReplacer.contains(line)) {
                 line = tagReplacer.replace(line, tagReplacer.getValue(faction, null));
+            }
+        }
         return line;
     }
 
@@ -43,8 +48,9 @@ public class TagUtil {
         for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.PLAYER)) {
             if (tagReplacer.contains(line)) {
                 String rep = tagReplacer.getValue(fplayer.getFaction(), fplayer);
-                if (rep == null)
-                    rep = "";
+                if (rep == null) {
+                    rep = ""; // this should work, but it's not a good way to handle whatever is going wrong
+                }
                 line = tagReplacer.replace(line, rep);
             }
         }
@@ -63,10 +69,11 @@ public class TagUtil {
         for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.PLAYER)) {
             if (tagReplacer.contains(line)) {
                 String value = tagReplacer.getValue(faction, fplayer);
-                if (value != null)
+                if (value != null) {
                     line = tagReplacer.replace(line, value);
-                else
-                    return null;
+                } else {
+                    return null; // minimal show, entire line to be ignored
+                }
             }
         }
         return line;
@@ -81,20 +88,23 @@ public class TagUtil {
      * @return list of fancy msgs
      */
     public static List<FancyMessage> parseFancy(Faction faction, FPlayer fme, String line) {
-        for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.FANCY))
+        for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.FANCY)) {
             if (tagReplacer.contains(line)) {
                 String clean = line.replace(tagReplacer.getTag(), ""); // remove tag
                 return getFancy(faction, fme, tagReplacer, clean);
             }
+        }
         return null;
     }
 
     public static String parsePlaceholders(Player player, String line) {
-        if (PlaceholderUtil.isClipPlaceholderAPIHooked() && player.isOnline())
+        if (FactionsPlugin.getInstance().isClipPlaceholderAPIHooked() && player.isOnline()) {
             line = PlaceholderAPI.setPlaceholders(player, line);
+        }
 
-        if (PlaceholderUtil.isMVdWPlaceholderAPIHooked() && player.isOnline())
+        if (FactionsPlugin.getInstance().isMVdWPlaceholderAPIHooked() && player.isOnline()) {
             line = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, line);
+        }
         return line;
     }
 
@@ -105,9 +115,11 @@ public class TagUtil {
      * @return if the line has fancy variables
      */
     public static boolean hasFancy(String line) {
-        for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.FANCY))
-            if (tagReplacer.contains(line)) // Player OfflinePlayer
+        for (TagReplacer tagReplacer : TagReplacer.getByType(TagType.FANCY)) {
+            if (tagReplacer.contains(line)) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -128,8 +140,9 @@ public class TagUtil {
                 FancyMessage currentAllies = FactionsPlugin.getInstance().txt.parseFancy(prefix);
                 boolean firstAlly = true;
                 for (Faction otherFaction : Factions.getInstance().getAllFactions()) {
-                    if (otherFaction == target)
+                    if (otherFaction == target) {
                         continue;
+                    }
                     String s = otherFaction.getTag(fme);
                     if (otherFaction.getRelationTo(target).isAlly()) {
                         currentAllies.then(firstAlly ? s : ", " + s);
@@ -147,8 +160,9 @@ public class TagUtil {
                 FancyMessage currentEnemies = FactionsPlugin.getInstance().txt.parseFancy(prefix);
                 boolean firstEnemy = true;
                 for (Faction otherFaction : Factions.getInstance().getAllFactions()) {
-                    if (otherFaction == target)
+                    if (otherFaction == target) {
                         continue;
+                    }
                     String s = otherFaction.getTag(fme);
                     if (otherFaction.getRelationTo(target).isEnemy()) {
                         currentEnemies.then(firstEnemy ? s : ", " + s);
@@ -166,8 +180,9 @@ public class TagUtil {
                 FancyMessage currentTruces = FactionsPlugin.getInstance().txt.parseFancy(prefix);
                 boolean firstTruce = true;
                 for (Faction otherFaction : Factions.getInstance().getAllFactions()) {
-                    if (otherFaction == target)
+                    if (otherFaction == target) {
                         continue;
+                    }
                     String s = otherFaction.getTag(fme);
                     if (otherFaction.getRelationTo(target).isTruce()) {
                         currentTruces.then(firstTruce ? s : ", " + s);
@@ -185,8 +200,9 @@ public class TagUtil {
                 FancyMessage currentOnline = FactionsPlugin.getInstance().txt.parseFancy(prefix);
                 boolean firstOnline = true;
                 for (FPlayer p : MiscUtil.rankOrder(target.getFPlayersWhereOnline(true, fme))) {
-                    if (fme != null && fme.getPlayer() != null && !fme.getPlayer().canSee(p.getPlayer()))
+                    if (fme != null && fme.getPlayer() != null && !fme.getPlayer().canSee(p.getPlayer())) {
                         continue; // skip
+                    }
                     String name = p.getNameAndTitle();
                     currentOnline.then(firstOnline ? name : ", " + name);
                     currentOnline.tooltip(tipPlayer(p)).color(fme != null ? fme.getColorTo(p) : Relation.NEUTRAL.getColor());
@@ -223,19 +239,18 @@ public class TagUtil {
                     String name = p.getName();
                     ChatColor color;
 
-                    if (p.isOnline())
+                    if (p.isOnline()) {
                         color = ChatColor.GREEN;
-                    else
+                    } else {
                         color = ChatColor.RED;
+                    }
 
                     alts.then(firstAlt ? name : ", " + name);
                     alts.tooltip(tipPlayer(p)).color(color);
                     firstAlt = false;
                     if (alts.toJSONString().length() > ARBITRARY_LIMIT) {
                         fancyMessages.add(alts);
-                        currentOffline = new FancyMessage("");
                     }
-
                 }
                 fancyMessages.add(alts);
                 return firstAlt && minimal ? null : fancyMessages;

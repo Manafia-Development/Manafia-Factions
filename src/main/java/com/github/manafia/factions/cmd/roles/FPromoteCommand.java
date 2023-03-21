@@ -1,7 +1,7 @@
 package com.github.manafia.factions.cmd.roles;
 
 import com.github.manafia.factions.FPlayer;
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.FactionsPlugin;
 import com.github.manafia.factions.cmd.CommandContext;
 import com.github.manafia.factions.cmd.CommandRequirements;
 import com.github.manafia.factions.cmd.FCommand;
@@ -19,7 +19,7 @@ public class FPromoteCommand extends FCommand {
 
     public int relative = 0;
 
-    public FPromoteCommand () {
+    public FPromoteCommand() {
         super();
         this.requiredArgs.add("player");
 
@@ -31,7 +31,7 @@ public class FPromoteCommand extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         FPlayer target = context.argAsBestFPlayerMatch(0);
         if (target == null) {
             context.msg(TL.GENERIC_NOPLAYERFOUND, context.argAsString(0));
@@ -74,8 +74,9 @@ public class FPromoteCommand extends FCommand {
             }
         }
 
-        if (target.isAlt())
+        if (target.isAlt()) {
             return;
+        }
 
         // Don't allow people to demote people who already have the lowest rank.
         if (current.value == 0 && relative <= 0) {
@@ -97,16 +98,17 @@ public class FPromoteCommand extends FCommand {
 
         // Success!
         target.setRole(promotion);
-        if (target.isOnline())
+        if (target.isOnline()) {
             target.msg(TL.COMMAND_PROMOTE_TARGET, action, promotion.nicename);
+        }
 
         context.msg(TL.COMMAND_PROMOTE_SUCCESS, action, target.getName(), promotion.nicename);
-        Util.getFlogManager().log(context.faction, FLogType.ROLE_PERM_EDIT, context.fPlayer.getName(), action, target.getName(), promotion.nicename);
+        FactionsPlugin.instance.getFlogManager().log(context.faction, FLogType.ROLE_PERM_EDIT, context.fPlayer.getName(), action, target.getName(), promotion.nicename);
 
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_PROMOTE_DESCRIPTION;
     }
 

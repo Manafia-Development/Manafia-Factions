@@ -1,13 +1,12 @@
 package com.github.manafia.factions.cmd.tnt.tntprovider;
 
-
 public interface TNTProvider {
-    int getTnt ();
+    int getTnt();
 
-    void sendMessage (String message);
+    void sendMessage(String message);
 
-    void takeTnt (int amount);
+    void takeTnt(int amount);
 
-    boolean isAvailable ();
+    boolean isAvailable();
 }
 

@@ -6,14 +6,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
-import java.util.logging.Level;
 
 public class AutoLeaveProcessTask extends BukkitRunnable {
 
-    private final transient ListIterator<FPlayer> iterator;
-    private final transient double toleranceMillis;
     private transient boolean readyToGo;
     private transient boolean finished;
+    private transient ListIterator<FPlayer> iterator;
+    private transient double toleranceMillis;
 
     public AutoLeaveProcessTask() {
         ArrayList<FPlayer> fplayers = (ArrayList<FPlayer>) FPlayers.getInstance().getAllFPlayers();
@@ -29,8 +28,9 @@ public class AutoLeaveProcessTask extends BukkitRunnable {
             return;
         }
 
-        if (!readyToGo)
+        if (!readyToGo) {
             return;
+        }
         // this is set so it only does one iteration at a time, no matter how frequently the timer fires
         readyToGo = false;
         // and this is tracked to keep one iteration from dragging on too long and possibly choking the system if there are a very large number of players to go through
@@ -46,27 +46,30 @@ public class AutoLeaveProcessTask extends BukkitRunnable {
             }
 
             FPlayer fplayer = iterator.next();
+
+            // Check if they should be exempt from this.
             if (!fplayer.willAutoLeave()) {
-                Util.debug(Level.INFO, fplayer.getName() + " was going to be auto-removed but was set not to.");
+                FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.instance, () -> Logger.print(fplayer.getName() + " was going to be auto-removed but was set not to.", Logger.PrefixType.DEFAULT));
                 continue;
             }
-
-
             if (fplayer.hasFaction() && fplayer.isOffline() && now - fplayer.getLastLoginTime() > toleranceMillis) {
-                if (Conf.logFactionLeave || Conf.logFactionKick)
-                    FactionsPlugin.getInstance().log("Player " + fplayer.getName() + " was auto-removed due to inactivity.");
+                if (Conf.logFactionLeave || Conf.logFactionKick) {
+                    FactionsPlugin.getInstance().getServer().getScheduler().runTaskAsynchronously(FactionsPlugin.instance, () -> Logger.print("Player " + fplayer.getName() + " was auto-removed due to inactivity.", Logger.PrefixType.DEFAULT));
+                }
 
                 // if player is faction admin, sort out the faction since he's going away
                 if (fplayer.getRole() == Role.LEADER) {
                     Faction faction = fplayer.getFaction();
-                    if (faction != null)
+                    if (faction != null) {
                         fplayer.getFaction().promoteNewLeader(true);
+                    }
                 }
 
                 fplayer.leave(false);
                 iterator.remove();  // go ahead and remove this list's link to the FPlayer object
-                if (Conf.autoLeaveDeleteFPlayerData)
+                if (Conf.autoLeaveDeleteFPlayerData) {
                     fplayer.remove();
+                }
             }
         }
 

@@ -1,6 +1,6 @@
 package com.github.manafia.factions.util;
 
-import com.github.manafia.factions.Util;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemBuilder {
-    private final ItemMeta meta;
-    private final ItemStack item;
+    private ItemMeta meta;
+    private ItemStack item;
 
     public ItemBuilder(ItemStack item) {
         this.item = item;
@@ -30,8 +30,9 @@ public class ItemBuilder {
 
     public static List<String> color(List<String> string) {
         List<String> colored = new ArrayList<>();
-        for (String line : string)
-            colored.add(Util.color(line));
+        for (String line : string) {
+            colored.add(CC.translate(line));
+        }
         return colored;
     }
 
@@ -43,8 +44,9 @@ public class ItemBuilder {
     public ItemBuilder lore(String... lore) {
         if (lore != null) {
             ArrayList<String> arrayList = new ArrayList<>();
-            for (String line : lore)
-                arrayList.add(Util.color(line));
+            for (String line : lore) {
+                arrayList.add(CC.translate(line));
+            }
             this.meta.setLore(arrayList);
         }
         return this;
@@ -83,7 +85,7 @@ public class ItemBuilder {
 
     public ItemBuilder addLineToLore(String line) {
         List<String> lore = this.meta.getLore();
-        lore.add(Util.color(line));
+        lore.add(CC.translate(line));
         this.meta.setLore(lore);
         return this;
     }

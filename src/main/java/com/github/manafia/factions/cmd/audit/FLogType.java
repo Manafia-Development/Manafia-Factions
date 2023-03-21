@@ -24,36 +24,36 @@ public enum FLogType {
     RANK_EDIT("&e%s&7 set &e%s&7 to %s", 3),
     F_TNT("&e%s&7 %s &e%s", 3);
 
-    private final String msg;
-    private final int requiredArgs;
+    private String msg;
+    private int requiredArgs;
 
-    FLogType (String msg, int requiredArgs) {
+    FLogType(String msg, int requiredArgs) {
         this.msg = msg;
         this.requiredArgs = requiredArgs;
     }
 
-    public String getDisplayName () {
+    public String getDisplayName() {
         return CC.translate(FactionsPlugin.getInstance().getConfig().getString("faudit-gui.names." + name().toLowerCase()));
     }
 
     @Override
-    public String toString () {
+    public String toString() {
         return name();
     }
 
-    public int getSlot () {
+    public int getSlot() {
         return FactionsPlugin.getInstance().getConfig().getInt("faudit-gui.slots." + name().toLowerCase());
     }
 
-    public Material getMaterial () {
+    public Material getMaterial() {
         return XMaterial.matchXMaterial(FactionsPlugin.getInstance().getConfig().getString("faudit-gui.materials." + name().toLowerCase())).get().parseMaterial();
     }
 
-    public String getMsg () {
+    public String getMsg() {
         return this.msg;
     }
 
-    public int getRequiredArgs () {
+    public int getRequiredArgs() {
         return this.requiredArgs;
     }
 }

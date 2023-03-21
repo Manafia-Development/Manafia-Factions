@@ -27,6 +27,7 @@ public class CmdSetFWarp extends FCommand {
             context.msg(TL.COMMAND_SETFWARP_NOTCLAIMED);
             return;
         }
+
         String warp = context.argAsString(0);
         boolean warpExists = context.faction.isWarp(warp);
         int maxWarps = context.faction.getWarpsLimit();
@@ -35,13 +36,15 @@ public class CmdSetFWarp extends FCommand {
             context.msg(TL.COMMAND_SETFWARP_LIMIT, maxWarps);
             return;
         }
-        if (!this.transact(context.fPlayer, context))
+        if (!this.transact(context.fPlayer, context)) {
             return;
+        }
         String password = context.argAsString(1);
         LazyLocation loc = new LazyLocation(context.player.getLocation());
         context.faction.setWarp(warp, loc);
-        if (password != null)
+        if (password != null) {
             context.faction.setWarpPassword(warp, password);
+        }
         context.msg(TL.COMMAND_SETFWARP_SET, warp, (password != null) ? password : "");
     }
 

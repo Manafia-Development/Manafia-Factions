@@ -19,7 +19,7 @@ public class CmdAlts extends FCommand {
     public CmdKickAlt cmdKickAlt = new CmdKickAlt();
 
 
-    public CmdAlts () {
+    public CmdAlts() {
         super();
         this.aliases.addAll(Aliases.alts_alts);
         this.addSubCommand(this.cmdInviteAlt);
@@ -33,7 +33,7 @@ public class CmdAlts extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Enabled", false)) {
             context.msg(TL.GENERIC_DISABLED, "Faction Alts");
             return;
@@ -44,7 +44,7 @@ public class CmdAlts extends FCommand {
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ALTS_DESCRIPTION;
     }
 

@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 public class MPluginSecretPlayerListener implements Listener {
 
-    private final MPlugin p;
+    private MPlugin p;
 
     public MPluginSecretPlayerListener(MPlugin p) {
         this.p = p;
@@ -21,8 +21,9 @@ public class MPluginSecretPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         if (FactionsPlayerListener.preventCommand(event.getMessage(), event.getPlayer())) {
-            if (p.logPlayerCommands())
+            if (p.logPlayerCommands()) {
                 Bukkit.getLogger().info("[PLAYER_COMMAND] " + event.getPlayer().getName() + ": " + event.getMessage());
+            }
             event.setCancelled(true);
         }
     }
@@ -30,10 +31,18 @@ public class MPluginSecretPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (p.handleCommand(event.getPlayer(), event.getMessage(), false, true)) {
-            if (p.logPlayerCommands())
+            if (p.logPlayerCommands()) {
                 Bukkit.getLogger().info("[PLAYER_COMMAND] " + event.getPlayer().getName() + ": " + event.getMessage());
+            }
             event.setCancelled(true);
         }
+
+        /* Should be handled by stuff in FactionsChatListener
+        Player speaker = event.getPlayer();
+        String format = event.getFormat();
+        format = format.replace(Conf.chatTagReplaceString, FactionsPlugin.getInstance().getPlayerFactionTag(speaker)).replace("[FACTION_TITLE]", FactionsPlugin.getInstance().getPlayerTitle(speaker));
+        event.setFormat(format);
+        */
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

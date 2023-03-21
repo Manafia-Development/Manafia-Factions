@@ -14,9 +14,13 @@ public abstract class FPlayers {
     }
 
     private static FPlayers getFPlayersImpl() {
-        if (Conf.backEnd == Conf.Backend.JSON) return new JSONFPlayers();
+        if (Conf.backEnd == Conf.Backend.JSON) {
+            return new JSONFPlayers();
+        }
         return null;
     }
+
+    public abstract void clean();
 
     public abstract Collection<FPlayer> getOnlinePlayers();
 

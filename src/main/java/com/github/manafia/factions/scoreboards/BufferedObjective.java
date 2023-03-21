@@ -34,10 +34,11 @@ public class BufferedObjective {
 
         addEntryMethod = addEntryMethodLookup;
 
-        if (addEntryMethod != null)
+        if (addEntryMethod != null) {
             MAX_LINE_LENGTH = 48;
-        else
+        } else {
             MAX_LINE_LENGTH = 16;
+        }
     }
 
     private final Scoreboard scoreboard;
@@ -61,9 +62,10 @@ public class BufferedObjective {
     private String createBaseName() {
         Random random = new Random();
         StringBuilder builder = new StringBuilder();
-        while (builder.length() < 14)
+        while (builder.length() < 14) {
             builder.append(Integer.toHexString(random.nextInt()));
-        return builder.substring(0, 14);
+        }
+        return builder.toString().substring(0, 14);
     }
 
     public void setTitle(String title) {
@@ -79,15 +81,18 @@ public class BufferedObjective {
     }
 
     public void setAllLines(List<String> lines) {
-        if (lines.size() != contents.size())
+        if (lines.size() != contents.size()) {
             contents.clear();
-        for (int i = 0; i < lines.size(); i++)
+        }
+        for (int i = 0; i < lines.size(); i++) {
             setLine(lines.size() - i, lines.get(i));
+        }
     }
 
     public void setLine(int lineNumber, String content) {
-        if (content.length() > MAX_LINE_LENGTH)
+        if (content.length() > MAX_LINE_LENGTH) {
             content = content.substring(0, MAX_LINE_LENGTH);
+        }
         content = ChatColor.translateAlternateColorCodes('&', content);
 
         if (contents.get(lineNumber) == null || !contents.get(lineNumber).equals(content)) {
@@ -98,13 +103,15 @@ public class BufferedObjective {
 
     // Hides the objective from the display slot until flip() is called
     public void hide() {
-        if (displaySlot != null)
+        if (displaySlot != null) {
             scoreboard.clearSlot(displaySlot);
+        }
     }
 
     public void flip() {
-        if (!requiresUpdate)
+        if (!requiresUpdate) {
             return;
+        }
         requiresUpdate = false;
 
         Objective buffer = scoreboard.registerNewObjective(getNextObjectiveName(), "dummy");
@@ -132,34 +139,40 @@ public class BufferedObjective {
                         boolean hoist = false;
                         if (tharSheBlows.length() == 1) {
                             builderrr.append(tharSheBlows);
-                            if (builderrr.length() == 16)
+                            if (builderrr.length() == 16) {
                                 hoist = true;
+                            }
                         } else {
                             char c = tharSheBlows.charAt(1);
                             if (c >= 'k' && c <= 'r') { // format!
                                 currrentFormat = c;
-                                if (c == 'r')
+                                if (c == 'r') {
                                     currrentColorrr = 'r';
+                                }
                             } else {
                                 currrentColorrr = c;
                                 currrentFormat = 'r';
                             }
                             if (builderrr.length() < 14) {
                                 builderrr.append(tharSheBlows);
-                            } else
+                            } else {
                                 hoist = true;
+                            }
                         }
                         if (hoist) {
                             arrImAPirate[sCURvy++] = builderrr.toString();
                             builderrr = new StringBuilder();
-                            if (currrentColorrr != 'r')
+                            if (currrentColorrr != 'r') {
                                 builderrr.append('\u00A7').append(currrentColorrr);
-                            if (currrentFormat != 'r')
+                            }
+                            if (currrentFormat != 'r') {
                                 builderrr.append('\u00A7').append(currrentFormat);
+                            }
                         }
                     }
-                    if (sCURvy < 3 && builderrr.length() > 0)
+                    if (sCURvy < 3 && builderrr.length() > 0) {
                         arrImAPirate[sCURvy] = builderrr.toString();
+                    }
                     if (arrImAPirate[2] == null) {
                         name = arrImAPirate[0];
                         suffix = arrImAPirate[1];
@@ -168,13 +181,16 @@ public class BufferedObjective {
                         name = arrImAPirate[1];
                         suffix = arrImAPirate[2];
                     }
-                } else
+                } else {
                     name = value;
+                }
 
-                if (prefix != null)
+                if (prefix != null) {
                     team.setPrefix(prefix);
-                if (suffix != null)
+                }
+                if (suffix != null) {
                     team.setSuffix(suffix);
+                }
 
 
                 try {
@@ -182,12 +198,14 @@ public class BufferedObjective {
                 } catch (ReflectiveOperationException ignored) {
                 }
                 buffer.getScore(name).setScore(entry.getKey());
-            } else
+            } else {
                 buffer.getScore(entry.getValue()).setScore(entry.getKey());
+            }
         }
 
-        if (displaySlot != null)
+        if (displaySlot != null) {
             buffer.setDisplaySlot(displaySlot);
+        }
 
         // Unregister _ALL_ the old things
         current.unregister();

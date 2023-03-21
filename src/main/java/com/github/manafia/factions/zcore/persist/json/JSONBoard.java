@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.github.manafia.factions.Board;
 import com.github.manafia.factions.FLocation;
 import com.github.manafia.factions.FactionsPlugin;
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.persist.MemoryBoard;
 import com.github.manafia.factions.zcore.util.DiscUtil;
 
@@ -16,7 +17,7 @@ import java.util.TreeMap;
 
 
 public class JSONBoard extends MemoryBoard {
-    private static final transient File file = new File(FactionsPlugin.getInstance().getDataFolder() + File.separator + "data" + File.separator, "board.json");
+    private static transient File file = new File(FactionsPlugin.getInstance().getDataFolder(), "board.json");
 
     // -------------------------------------------- //
     // Persistance
@@ -32,10 +33,13 @@ public class JSONBoard extends MemoryBoard {
             worldName = entry.getKey().getWorldName();
             coords = entry.getKey().getCoordString();
             id = entry.getValue();
-            if (!worldCoordIds.containsKey(worldName))
+            if (!worldCoordIds.containsKey(worldName)) {
                 worldCoordIds.put(worldName, new TreeMap<>());
+            }
+
             worldCoordIds.get(worldName).put(coords, id);
         }
+
         return worldCoordIds;
     }
 
@@ -68,11 +72,10 @@ public class JSONBoard extends MemoryBoard {
     }
 
     public boolean load() {
-        FactionsPlugin.getInstance().log("Attempting to load board modules from disk.");
+        Logger.print("Loading board from disk", Logger.PrefixType.DEFAULT);
 
         if (!file.exists()) {
-            FactionsPlugin.getInstance().log("There was no board found that I could load. Generating new file.");
-            FactionsPlugin.getInstance().log("ALERT: This process might take a while.");
+            Logger.print("No board to load from disk. Creating new file.", Logger.PrefixType.DEFAULT);
             forceSave();
             return true;
         }
@@ -82,10 +85,10 @@ public class JSONBoard extends MemoryBoard {
             }.getType();
             Map<String, Map<String, String>> worldCoordIds = FactionsPlugin.getInstance().gson.fromJson(DiscUtil.read(file), type);
             loadFromSaveFormat(worldCoordIds);
-            FactionsPlugin.getInstance().log("Initiated " + flocationIds.size() + " board locations from our disk.");
+            Logger.print("Loaded " + flocationIds.size() + " board locations", Logger.PrefixType.DEFAULT);
         } catch (Exception e) {
             e.printStackTrace();
-            FactionsPlugin.getInstance().log("(WARNING/FATAL) Failed to load the Faction Board. Please report this stacktracke to thmihnea!");
+            Logger.print("Failed to load the board from disk.", Logger.PrefixType.FAILED);
             return false;
         }
 

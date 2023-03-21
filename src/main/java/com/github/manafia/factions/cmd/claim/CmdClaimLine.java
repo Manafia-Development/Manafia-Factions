@@ -22,7 +22,7 @@ public class CmdClaimLine extends FCommand {
 
     public static final BlockFace[] axis = {BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH, BlockFace.EAST};
 
-    public CmdClaimLine () {
+    public CmdClaimLine() {
 
         // Aliases
         this.aliases.addAll(Aliases.claim_line);
@@ -40,7 +40,7 @@ public class CmdClaimLine extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         // Args
         Integer amount = context.argAsInt(0, 1); // Default to 1
 
@@ -50,37 +50,34 @@ public class CmdClaimLine extends FCommand {
         }
 
         String direction = context.argAsString(1);
-        BlockFace blockFace = null;
+        BlockFace blockFace;
 
-        if (direction == null)
+        if (direction == null) {
             blockFace = axis[Math.round(context.player.getLocation().getYaw() / 90f) & 0x3];
-
-        switch (direction) {
-            case "north":
-                blockFace = BlockFace.NORTH;
-                break;
-            case "east":
-                blockFace = BlockFace.EAST;
-                break;
-            case "south":
-                blockFace = BlockFace.SOUTH;
-                break;
-            case "west":
-                blockFace = BlockFace.WEST;
-                break;
-            default:
-                context.msg(TL.COMMAND_CLAIMLINE_NOTVALID, direction);
-                break;
+        } else if (direction.equalsIgnoreCase("north")) {
+            blockFace = BlockFace.NORTH;
+        } else if (direction.equalsIgnoreCase("east")) {
+            blockFace = BlockFace.EAST;
+        } else if (direction.equalsIgnoreCase("south")) {
+            blockFace = BlockFace.SOUTH;
+        } else if (direction.equalsIgnoreCase("west")) {
+            blockFace = BlockFace.WEST;
+        } else {
+            context.msg(TL.COMMAND_CLAIMLINE_NOTVALID, direction);
+            return;
         }
 
         final Faction forFaction = context.argAsFaction(2, context.faction);
+        Faction at = Board.getInstance().getFactionAt(new FLocation(context.fPlayer.getPlayer().getLocation()));
 
-        if (forFaction != context.fPlayer.getFaction())
-            if (!context.fPlayer.isAdminBypassing())
+        if (forFaction != context.fPlayer.getFaction()) {
+            if (!context.fPlayer.isAdminBypassing()) {
                 if (forFaction.getAccess(context.fPlayer, PermissableAction.TERRITORY) != Access.ALLOW) {
                     context.msg(TL.COMMAND_CLAIM_DENIED);
                     return;
                 }
+            }
+        }
 
         Location location = context.player.getLocation();
 
@@ -88,18 +85,19 @@ public class CmdClaimLine extends FCommand {
         int claims = 0;
 
         for (int i = 0; i < amount; i++) {
-            if (!FactionsPlugin.cachedRadiusClaim || !context.fPlayer.attemptClaim(forFaction, context.player.getLocation(), false))
+            if (!FactionsPlugin.cachedRadiusClaim || !context.fPlayer.attemptClaim(forFaction, context.player.getLocation(), false)) {
                 context.fPlayer.attemptClaim(forFaction, location, true);
+            }
             claims++;
             location = location.add(blockFace.getModX() * 16, 0, blockFace.getModZ() * 16);
-            Util.logFactionEvent(forFaction, FLogType.CHUNK_CLAIMS, context.fPlayer.getName(), CC.GreenB + "CLAIMED", String.valueOf(i), new FLocation(context.player.getLocation()).formatXAndZ(","));
+            FactionsPlugin.instance.logFactionEvent(forFaction, FLogType.CHUNK_CLAIMS, context.fPlayer.getName(), CC.GreenB + "CLAIMED", String.valueOf(i), new FLocation(context.player.getLocation()).formatXAndZ(","));
         }
         int cachedClaims = claims;
         context.fPlayer.getFaction().getFPlayersWhereOnline(true).forEach(f -> f.msg(TL.CLAIM_RADIUS_CLAIM, context.fPlayer.describeTo(f, true), String.valueOf(cachedClaims), context.fPlayer.getPlayer().getLocation().getChunk().getX(), context.fPlayer.getPlayer().getLocation().getChunk().getZ()));
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_CLAIMLINE_DESCRIPTION;
     }
 }

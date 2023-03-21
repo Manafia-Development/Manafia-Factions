@@ -1,16 +1,16 @@
 package com.github.manafia.factions.zcore.util;
 
+import com.github.manafia.factions.util.Logger;
 import com.github.manafia.factions.zcore.MPlugin;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.logging.Level;
 
 // TODO: Give better name and place to differentiate from the entity-orm-ish system in "com.github.manafia.core.persist".
 
 public class Persist {
 
-    private final MPlugin p;
+    private MPlugin p;
 
     public Persist(MPlugin p) {
         this.p = p;
@@ -28,6 +28,10 @@ public class Persist {
         return getName(o.getClass());
     }
 
+    public static String getName(Type type) {
+        return getName(type.getClass());
+    }
+
     // ------------------------------------------------------------ //
     // GET FILE - In which file would we like to store this object?
     // ------------------------------------------------------------ //
@@ -36,12 +40,24 @@ public class Persist {
         return new File(p.getDataFolder(), name + ".json");
     }
 
+    public File getFile(Class<?> clazz) {
+        return getFile(getName(clazz));
+    }
+
     public File getFile(Object obj) {
         return getFile(getName(obj));
     }
 
+    public File getFile(Type type) {
+        return getFile(getName(type));
+    }
+
 
     // NICE WRAPPERS
+
+    public <T> T loadOrSaveDefault(T def, Class<T> clazz) {
+        return loadOrSaveDefault(def, clazz, getFile(clazz));
+    }
 
     public <T> T loadOrSaveDefault(T def, Class<T> clazz, String name) {
         return loadOrSaveDefault(def, clazz, getFile(name));
@@ -49,7 +65,7 @@ public class Persist {
 
     public <T> T loadOrSaveDefault(T def, Class<T> clazz, File file) {
         if (!file.exists()) {
-            p.log("Creating default: " + file);
+            Logger.print("Creating default: " + file, Logger.PrefixType.DEFAULT);
             this.save(def, file);
             return def;
         }
@@ -57,7 +73,16 @@ public class Persist {
         T loaded = this.load(clazz, file);
 
         if (loaded == null) {
-            p.log(Level.WARNING, "Couldn't load the persisten conf file.");
+            Logger.print("Using default as I failed to load: " + file, Logger.PrefixType.WARNING);
+
+            // backup bad file, so user can attempt to recover their changes from it
+            File backup = new File(file.getPath() + "_bad");
+            if (backup.exists()) {
+                backup.delete();
+            }
+            Logger.print("Backing up copy of bad file to: " + backup, Logger.PrefixType.WARNING);
+            file.renameTo(backup);
+
             return def;
         }
 
@@ -82,19 +107,36 @@ public class Persist {
         return saveSync(instance, getFile(instance));
     }
 
+    public boolean saveSync(Object instance, String name) {
+        return saveSync(instance, getFile(name));
+    }
+
     public boolean saveSync(Object instance, File file) {
         return DiscUtil.writeCatch(file, p.gson.toJson(instance), true);
     }
 
+    // LOAD BY CLASS
+
+    public <T> T load(Class<T> clazz) {
+        return load(clazz, getFile(clazz));
+    }
+
+    public <T> T load(Class<T> clazz, String name) {
+        return load(clazz, getFile(name));
+    }
+
     public <T> T load(Class<T> clazz, File file) {
         String content = DiscUtil.readCatch(file);
-        if (content == null)
+        if (content == null) {
             return null;
+        }
+
         try {
             return p.gson.fromJson(content, clazz);
         } catch (Exception ex) {    // output the error message rather than full stack trace; error parsing the file, most likely
-            p.log(Level.WARNING, ex.getMessage());
+            Logger.print(ex.getMessage(), Logger.PrefixType.WARNING);
         }
+
         return null;
     }
 
@@ -108,13 +150,16 @@ public class Persist {
     @SuppressWarnings("unchecked")
     public <T> T load(Type typeOfT, File file) {
         String content = DiscUtil.readCatch(file);
-        if (content == null)
+        if (content == null) {
             return null;
-        try {
-            return p.gson.fromJson(content, typeOfT);
-        } catch (Exception ex) {    // output the error message rather than full stack trace; error parsing the file, most likely
-            p.log(Level.WARNING, ex.getMessage());
         }
+
+        try {
+            return (T) p.gson.fromJson(content, typeOfT);
+        } catch (Exception ex) {    // output the error message rather than full stack trace; error parsing the file, most likely
+            Logger.print(ex.getMessage(), Logger.PrefixType.WARNING);
+        }
+
         return null;
     }
 }

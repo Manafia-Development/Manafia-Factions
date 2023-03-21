@@ -55,35 +55,40 @@ public class BrigadierManager {
 
                 // We create an orderly stack of all args, required and optional, format them differently
                 List<RequiredArgumentBuilder<Object, ?>> stack = new ArrayList<>();
-                for (String required : subCommand.requiredArgs)
+                for (String required : subCommand.requiredArgs) {
                     // Simply add the arg name as required
                     stack.add(RequiredArgumentBuilder.argument(required, StringArgumentType.word()));
+                }
 
                 for (Map.Entry<String, String> optionalEntry : subCommand.optionalArgs.entrySet()) {
                     RequiredArgumentBuilder<Object, ?> optional;
 
                     // Optional without default
-                    if (optionalEntry.getKey().equalsIgnoreCase(optionalEntry.getValue()))
+                    if (optionalEntry.getKey().equalsIgnoreCase(optionalEntry.getValue())) {
                         optional = RequiredArgumentBuilder.argument(":" + optionalEntry.getKey(), StringArgumentType.word());
                         // Optional with default, explain
-                    else
+                    } else {
                         optional = RequiredArgumentBuilder.argument(optionalEntry.getKey() + "|" + optionalEntry.getValue(), StringArgumentType.word());
+                    }
 
                     stack.add(optional);
                 }
 
                 // Reverse the stack and apply .then()
                 RequiredArgumentBuilder<Object, ?> previous = null;
-                for (int i = stack.size() - 1; i >= 0; i--)
-                    if (previous == null)
+                for (int i = stack.size() - 1; i >= 0; i--) {
+                    if (previous == null) {
                         previous = stack.get(i);
-                    else
+                    } else {
                         previous = stack.get(i).then(previous);
+                    }
+                }
 
-                if (previous == null)
+                if (previous == null) {
                     brigadier.then(literal);
-                else
+                } else {
                     brigadier.then(literal.then(previous));
+                }
             }
         }
     }

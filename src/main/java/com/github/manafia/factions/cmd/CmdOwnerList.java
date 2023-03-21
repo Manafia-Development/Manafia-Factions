@@ -27,8 +27,9 @@ public class CmdOwnerList extends FCommand {
     public void perform(CommandContext context) {
         boolean hasBypass = context.fPlayer.isAdminBypassing();
 
-        if (!hasBypass && !context.assertHasFaction())
+        if (!hasBypass && !context.assertHasFaction()) {
             return;
+        }
 
         if (!Conf.ownedAreasEnabled) {
             context.msg(TL.COMMAND_OWNERLIST_DISABLED);

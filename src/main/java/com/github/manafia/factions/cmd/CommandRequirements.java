@@ -45,8 +45,9 @@ public class CommandRequirements {
 
     public boolean computeRequirements(CommandContext context, boolean informIfNot) {
         // Did not modify CommandRequirements return true
-        if (permission == null)
+        if (permission == null) {
             return true;
+        }
 
         if (context.player != null) {
             // Is Player
@@ -69,18 +70,20 @@ public class CommandRequirements {
                     return false;
                 }
 
-                if (access != Access.ALLOW)
+                if (access != Access.ALLOW) {
                     // They have undefined assert their role
                     if (role != null && !context.fPlayer.getRole().isAtLeast(role)) {
                         // They do not fullfill the role
                         if (informIfNot) context.msg(TL.GENERIC_YOUMUSTBE, role.translation);
                         return false;
                     }
+                }
                 // They have been explicitly allowed
                 return true;
             } else {
-                if ((role != null && !context.fPlayer.getRole().isAtLeast(role)) && informIfNot)
+                if ((role != null && !context.fPlayer.getRole().isAtLeast(role)) && informIfNot) {
                     context.msg(TL.GENERIC_YOUMUSTBE, role.translation);
+                }
                 return role == null || context.fPlayer.getRole().isAtLeast(role);
             }
         } else {
@@ -94,7 +97,7 @@ public class CommandRequirements {
 
     public static class Builder {
 
-        private final Permission permission;
+        private Permission permission;
 
         private boolean playerOnly = false;
         private boolean memberOnly = false;

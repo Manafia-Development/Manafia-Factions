@@ -9,7 +9,7 @@ public class CmdRelationAlly extends FRelationCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdRelationAlly () {
+    public CmdRelationAlly() {
         aliases.addAll(Aliases.relation_ally);
         targetRelation = Relation.ALLY;
     }

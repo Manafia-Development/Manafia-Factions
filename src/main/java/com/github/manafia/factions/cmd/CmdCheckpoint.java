@@ -54,11 +54,10 @@ public class CmdCheckpoint extends FCommand {
                 if (myLocFaction == Factions.getInstance().getWilderness() || myLocFaction == context.faction) {
                     context.faction.setCheckpoint(context.player.getLocation());
                     context.msg(TL.COMMAND_CHECKPOINT_SET);
-                    return;
                 } else {
                     context.msg(TL.COMMAND_CHECKPOINT_INVALIDLOCATION);
-                    return;
                 }
+                return;
             }
         }
 
@@ -68,11 +67,14 @@ public class CmdCheckpoint extends FCommand {
         }
         FLocation checkLocation = new FLocation(context.faction.getCheckpoint());
         Faction checkfaction = Board.getInstance().getFactionAt(checkLocation);
+
         if (checkfaction.getId().equals(Factions.getInstance().getWilderness().getId()) || checkfaction.getId().equals(context.faction.getId())) {
             context.msg(TL.COMMAND_CHECKPOINT_GO);
+
             context.doWarmUp(WarmUpUtil.Warmup.CHECKPOINT, TL.WARMUPS_NOTIFY_TELEPORT, "Checkpoint", () -> context.player.teleport(context.faction.getCheckpoint()), FactionsPlugin.getInstance().getConfig().getLong("warmups.f-checkpoint", 0));
-        } else
+        } else {
             context.msg(TL.COMMAND_CHECKPOINT_CLAIMED);
+        }
     }
 
     @Override

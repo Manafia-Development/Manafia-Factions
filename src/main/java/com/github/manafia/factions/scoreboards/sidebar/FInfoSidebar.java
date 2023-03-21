@@ -37,10 +37,11 @@ public class FInfoSidebar extends FSidebarProvider {
                 continue;
             }
             String replaced = replaceTags(faction, fplayer, next);
-            if (replaced == null)
+            if (replaced == null) {
                 it.remove();
-            else
+            } else {
                 it.set(replaced);
+            }
         }
         return lines;
     }

@@ -13,7 +13,7 @@ public class CmdMap extends FCommand {
      * @author FactionsUUID Team - Modified By CmdrKittens
      */
 
-    public CmdMap () {
+    public CmdMap() {
         super();
         this.aliases.addAll(Aliases.map_map);
         this.optionalArgs.put("on/off", "once");
@@ -24,7 +24,7 @@ public class CmdMap extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (context.argIsSet(0)) {
             if (context.argAsBool(0, !context.fPlayer.isMapAutoUpdating())) {
                 // Turn on
@@ -55,12 +55,12 @@ public class CmdMap extends FCommand {
         }
     }
 
-    public void showMap (CommandContext context) {
+    public void showMap(CommandContext context) {
         context.sendFancyMessage(Board.getInstance().getMap(context.fPlayer, new FLocation(context.fPlayer), context.player.getLocation().getYaw()));
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_MAP_DESCRIPTION;
     }
 

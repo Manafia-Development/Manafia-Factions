@@ -27,8 +27,9 @@ public enum FancyTag implements Tag {
         FancyMessage currentOnline = FactionsPlugin.getInstance().txt.parseFancy(prefix);
         boolean firstOnline = true;
         for (FPlayer p : MiscUtil.rankOrder(target.getFPlayersWhereOnline(true, fme))) {
-            if (fme.getPlayer() != null && !fme.getPlayer().canSee(p.getPlayer()))
+            if (fme.getPlayer() != null && !fme.getPlayer().canSee(p.getPlayer())) {
                 continue; // skip
+            }
             String name = p.getNameAndTitle();
             currentOnline.then(firstOnline ? name : ", " + name);
             currentOnline.tooltip(tipPlayer(p, gm)).color(fme.getColorTo(p));
@@ -76,8 +77,9 @@ public enum FancyTag implements Tag {
         FancyMessage message = FactionsPlugin.getInstance().txt.parseFancy(prefix);
         boolean first = true;
         for (Faction otherFaction : Factions.getInstance().getAllFactions()) {
-            if (otherFaction == faction)
+            if (otherFaction == faction) {
                 continue;
+            }
             String s = otherFaction.getTag(fPlayer);
             if (otherFaction.getRelationTo(faction) == relation) {
                 message.then(first ? s : ", " + s);
@@ -94,9 +96,11 @@ public enum FancyTag implements Tag {
     }
 
     public static List<FancyMessage> parse(String text, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
-        for (FancyTag tag : FancyTag.values())
-            if (tag.foundInString(text))
+        for (FancyTag tag : VALUES) {
+            if (tag.foundInString(text)) {
                 return tag.getMessage(text, faction, player, groupMap);
+            }
+        }
         return Collections.emptyList(); // We really shouldn't be here.
     }
 
@@ -105,9 +109,11 @@ public enum FancyTag implements Tag {
     }
 
     public static FancyTag getMatch(String text) {
-        for (FancyTag tag : FancyTag.values())
-            if (tag.foundInString(text))
+        for (FancyTag tag : VALUES) {
+            if (tag.foundInString(text)) {
                 return tag;
+            }
+        }
         return null;
     }
 
@@ -151,12 +157,15 @@ public enum FancyTag implements Tag {
                 continue;
             }
             String string = Tag.parsePlain(fplayer, newLine);
-            if (string == null)
+            if (string == null) {
                 continue;
+            }
             lines.add(ChatColor.translateAlternateColorCodes('&', string));
         }
         return lines;
     }
+
+    public static final FancyTag[] VALUES = FancyTag.values();
 
     @Override
     public String getTag() {
@@ -169,8 +178,9 @@ public enum FancyTag implements Tag {
     }
 
     public List getMessage(String text, Faction faction, FPlayer player, Map<UUID, String> groupMap) {
-        if (!this.foundInString(text))
+        if (!this.foundInString(text)) {
             return Collections.EMPTY_LIST; // We really, really shouldn't be here.
+        }
         return this.function.apply(faction, player, text.replace(this.getTag(), ""), groupMap);
     }
 }

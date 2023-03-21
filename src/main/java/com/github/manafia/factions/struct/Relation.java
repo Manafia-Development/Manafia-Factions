@@ -37,18 +37,19 @@ public enum Relation implements Permissable {
     }
 
     public static Relation fromString(String s) {
-        // not possible to add a switch statement to non-constant fields
-        // sorry >.<
-        if (s.equalsIgnoreCase(MEMBER.nicename))
+        // Because Java 6 doesn't allow String switches :(
+        // We should use name here. Since most of features use name as identifier.
+        if (s.equalsIgnoreCase(MEMBER.name())) {
             return MEMBER;
-        else if (s.equalsIgnoreCase(ALLY.nicename))
+        } else if (s.equalsIgnoreCase(ALLY.name())) {
             return ALLY;
-        else if (s.equalsIgnoreCase(TRUCE.nicename))
+        } else if (s.equalsIgnoreCase(TRUCE.name())) {
             return TRUCE;
-        else if (s.equalsIgnoreCase(ENEMY.nicename))
+        } else if (s.equalsIgnoreCase(ENEMY.name())) {
             return ENEMY;
-        else
+        } else {
             return NEUTRAL; // If they somehow mess things up, go back to default behavior.
+        }
     }
 
     @Override
@@ -65,9 +66,11 @@ public enum Relation implements Permissable {
     }
 
     public String getPluralTranslation() {
-        for (TL t : TL.values())
-            if (t.name().equalsIgnoreCase("RELATION_" + name() + "_PLURAL"))
+        for (TL t : TL.values()) {
+            if (t.name().equalsIgnoreCase("RELATION_" + name() + "_PLURAL")) {
                 return t.toString();
+            }
+        }
         return toString();
     }
 
@@ -117,112 +120,108 @@ public enum Relation implements Permissable {
 
     // return appropriate Conf setting for DenyBuild based on this relation and their online status
     public boolean confDenyBuild(boolean online) {
-        if (isMember())
+        if (isMember()) {
             return false;
+        }
 
-        // cant add switch statement to this.
-        // only switch I could do is for online by passing
-        // the bool to an int with something like
-        // int t = (online) ? 1 : 0, but it's pointless for 2 cases
-        if (online)
-            switch (this) {
-                case ENEMY:
-                    return Conf.territoryEnemyDenyBuild;
-                case ALLY:
-                    return Conf.territoryAllyDenyBuild;
-                case TRUCE:
-                    return Conf.territoryTruceDenyBuild;
-                default:
-                    return Conf.territoryDenyBuild;
+        if (online) {
+            if (isEnemy()) {
+                return Conf.territoryEnemyDenyBuild;
+            } else if (isAlly()) {
+                return Conf.territoryAllyDenyBuild;
+            } else if (isTruce()) {
+                return Conf.territoryTruceDenyBuild;
+            } else {
+                return Conf.territoryDenyBuild;
             }
-        else
-            switch (this) {
-                case ENEMY:
-                    return Conf.territoryEnemyDenyBuildWhenOffline;
-                case ALLY:
-                    return Conf.territoryAllyDenyBuildWhenOffline;
-                case TRUCE:
-                    return Conf.territoryTruceDenyBuildWhenOffline;
-                default:
-                    return Conf.territoryDenyBuildWhenOffline;
+        } else {
+            if (isEnemy()) {
+                return Conf.territoryEnemyDenyBuildWhenOffline;
+            } else if (isAlly()) {
+                return Conf.territoryAllyDenyBuildWhenOffline;
+            } else if (isTruce()) {
+                return Conf.territoryTruceDenyBuildWhenOffline;
+            } else {
+                return Conf.territoryDenyBuildWhenOffline;
             }
+        }
     }
 
     // return appropriate Conf setting for PainBuild based on this relation and their online status
     public boolean confPainBuild(boolean online) {
-        if (isMember())
+        if (isMember()) {
             return false;
+        }
 
-        if (online)
-            switch (this) {
-                case ENEMY:
-                    return Conf.territoryEnemyPainBuild;
-                case ALLY:
-                    return Conf.territoryAllyPainBuild;
-                case TRUCE:
-                    return Conf.territoryTrucePainBuild;
-                default:
-                    return Conf.territoryPainBuild;
+        if (online) {
+            if (isEnemy()) {
+                return Conf.territoryEnemyPainBuild;
+            } else if (isAlly()) {
+                return Conf.territoryAllyPainBuild;
+            } else if (isTruce()) {
+                return Conf.territoryTrucePainBuild;
+            } else {
+                return Conf.territoryPainBuild;
             }
-        else
-            switch (this) {
-                case ENEMY:
-                    return Conf.territoryEnemyPainBuildWhenOffline;
-                case ALLY:
-                    return Conf.territoryAllyPainBuildWhenOffline;
-                case TRUCE:
-                    return Conf.territoryTrucePainBuildWhenOffline;
-                default:
-                    return Conf.territoryPainBuildWhenOffline;
+        } else {
+            if (isEnemy()) {
+                return Conf.territoryEnemyPainBuildWhenOffline;
+            } else if (isAlly()) {
+                return Conf.territoryAllyPainBuildWhenOffline;
+            } else if (isTruce()) {
+                return Conf.territoryTrucePainBuildWhenOffline;
+            } else {
+                return Conf.territoryPainBuildWhenOffline;
             }
+        }
     }
 
     // return appropriate Conf setting for DenyUseage based on this relation
     public boolean confDenyUseage() {
-        switch (this) {
-            case MEMBER:
-                return false;
-            case ENEMY:
-                return Conf.territoryEnemyDenyUsage;
-            case ALLY:
-                return Conf.territoryAllyDenyUsage;
-            case TRUCE:
-                return Conf.territoryTruceDenyUsage;
-            default:
-                return Conf.territoryDenyUsage;
+        if (isMember()) {
+            return false;
+        } else if (isEnemy()) {
+            return Conf.territoryEnemyDenyUsage;
+        } else if (isAlly()) {
+            return Conf.territoryAllyDenyUsage;
+        } else if (isTruce()) {
+            return Conf.territoryTruceDenyUsage;
+        } else {
+            return Conf.territoryDenyUsage;
         }
     }
 
     public double getRelationCost() {
-        switch (this) {
-            case ENEMY:
-                return Conf.econCostEnemy;
-            case ALLY:
-                return Conf.econCostAlly;
-            case TRUCE:
-                return Conf.econCostTruce;
-            default:
-                return Conf.econCostNeutral;
+        if (isEnemy()) {
+            return Conf.econCostEnemy;
+        } else if (isAlly()) {
+            return Conf.econCostAlly;
+        } else if (isTruce()) {
+            return Conf.econCostTruce;
+        } else {
+            return Conf.econCostNeutral;
         }
     }
 
     // Utility method to build items for F Perm GUI
     @Override
     public ItemStack buildItem() {
-        final ConfigurationSection RELATION_CONFIG = FactionsPlugin.getInstance().getConfig().getConfigurationSection("fperm-gui.relation");
+        final ConfigurationSection RELATION_CONFIG = FactionsPlugin.getInstance().getFileManager().getFperms().getConfig().getConfigurationSection("fperm-gui.relation");
 
         String displayName = replacePlaceholders(RELATION_CONFIG.getString("placeholder-item.name", ""));
         List<String> lore = new ArrayList<>();
 
         Material material = XMaterial.matchXMaterial(RELATION_CONFIG.getString("materials." + name().toLowerCase())).get().parseMaterial();
-        if (material == null)
+        if (material == null) {
             return null;
+        }
 
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
 
-        for (String loreLine : RELATION_CONFIG.getStringList("placeholder-item.lore"))
+        for (String loreLine : RELATION_CONFIG.getStringList("placeholder-item.lore")) {
             lore.add(replacePlaceholders(loreLine));
+        }
 
         itemMeta.setDisplayName(displayName);
         itemMeta.setLore(lore);

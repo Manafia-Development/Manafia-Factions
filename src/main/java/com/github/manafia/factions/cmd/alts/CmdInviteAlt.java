@@ -3,7 +3,6 @@ package com.github.manafia.factions.cmd.alts;
 import com.github.manafia.factions.Conf;
 import com.github.manafia.factions.FPlayer;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.Util;
 import com.github.manafia.factions.cmd.Aliases;
 import com.github.manafia.factions.cmd.CommandContext;
 import com.github.manafia.factions.cmd.CommandRequirements;
@@ -16,7 +15,6 @@ import com.github.manafia.factions.zcore.fperms.Access;
 import com.github.manafia.factions.zcore.fperms.PermissableAction;
 import com.github.manafia.factions.zcore.util.TL;
 import mkremins.fanciful.FancyMessage;
-import org.bukkit.ChatColor;
 
 public class CmdInviteAlt extends FCommand {
 
@@ -24,7 +22,7 @@ public class CmdInviteAlt extends FCommand {
      * @author Driftay
      */
 
-    public CmdInviteAlt () {
+    public CmdInviteAlt() {
         super();
         this.aliases.addAll(Aliases.alts_invite);
         this.requiredArgs.add("player name");
@@ -36,15 +34,16 @@ public class CmdInviteAlt extends FCommand {
     }
 
     @Override
-    public void perform (CommandContext context) {
+    public void perform(CommandContext context) {
         if (!FactionsPlugin.getInstance().getConfig().getBoolean("f-alts.Enabled", false)) {
             context.msg(TL.GENERIC_DISABLED, "Faction Alts");
             return;
         }
 
         FPlayer target = context.argAsBestFPlayerMatch(0);
-        if (target == null)
+        if (target == null) {
             return;
+        }
 
         if (target.getFaction() == context.faction) {
             context.msg(TL.COMMAND_INVITE_ALREADYMEMBER, target.getName(), context.faction.getTag());
@@ -53,8 +52,9 @@ public class CmdInviteAlt extends FCommand {
 
         // if economy is enabled, they're not on the bypass list, and this
         // command has a cost set, make 'em pay
-        if (!context.payForCommand(Conf.econCostInvite, TL.COMMAND_INVITE_TOINVITE.toString(), TL.COMMAND_INVITE_FORINVITE.toString()))
+        if (!context.payForCommand(Conf.econCostInvite, TL.COMMAND_INVITE_TOINVITE.toString(), TL.COMMAND_INVITE_FORINVITE.toString())) {
             return;
+        }
 
         if (!context.fPlayer.isAdminBypassing()) {
             Access access = context.faction.getAccess(context.fPlayer, PermissableAction.INVITE);
@@ -71,26 +71,23 @@ public class CmdInviteAlt extends FCommand {
 
         context.faction.deinvite(target);
         context.faction.altInvite(target);
-        if (!target.isOnline())
+        if (!target.isOnline()) {
             return;
+        }
 
-        FancyMessage message = new FancyMessage(context.fPlayer.describeTo(target, true))
+        FancyMessage message = new FancyMessage(TL.COMMAND_INVITE_INVITEDYOU.toString()
+                .replace("%1$s", context.fPlayer.describeTo(target, true))
+                .replace("%2$s", context.faction.getTag())
+                .replaceAll("&", "§"))
                 .tooltip(TL.COMMAND_INVITE_CLICKTOJOIN.toString())
-                .command("/" + Conf.baseCommandAliases.get(0) + " join " + context.faction.getTag())
-                .then(TL.COMMAND_INVITE_INVITEDYOU.toString())
-                .color(ChatColor.YELLOW)
-                .tooltip(TL.COMMAND_INVITE_CLICKTOJOIN.toString())
-                .command("/" + Conf.baseCommandAliases.get(0) + " join " + context.faction.getTag())
-                .then(context.faction.describeTo(target)).tooltip(TL.COMMAND_INVITE_CLICKTOJOIN.toString())
                 .command("/" + Conf.baseCommandAliases.get(0) + " join " + context.faction.getTag());
-
         message.send(target.getPlayer());
-        Util.logFactionEvent(context.faction, FLogType.INVITES, context.fPlayer.getName(), CC.Green + "invited", target.getName());
+        FactionsPlugin.instance.logFactionEvent(context.faction, FLogType.INVITES, context.fPlayer.getName(), CC.Green + "invited", target.getName());
         context.faction.msg(TL.COMMAND_ALTINVITE_INVITED_ALT, context.fPlayer.describeTo(context.faction, true), target.describeTo(context.faction));
     }
 
     @Override
-    public TL getUsageTranslation () {
+    public TL getUsageTranslation() {
         return TL.COMMAND_ALTINVITE_DESCRIPTION;
     }
 }

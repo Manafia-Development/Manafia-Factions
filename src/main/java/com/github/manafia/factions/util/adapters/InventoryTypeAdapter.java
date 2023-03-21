@@ -2,7 +2,7 @@ package com.github.manafia.factions.util.adapters;
 
 import com.google.gson.*;
 import com.github.manafia.factions.FactionsPlugin;
-import com.github.manafia.factions.Util;
+import com.github.manafia.factions.util.CC;
 import com.github.manafia.factions.util.InventoryUtil;
 import org.bukkit.inventory.Inventory;
 
@@ -23,6 +23,6 @@ public class InventoryTypeAdapter implements JsonSerializer<Inventory>, JsonDese
     @Override
     public Inventory deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         JsonObject object = jsonElement.getAsJsonObject();
-        return InventoryUtil.fromBase64(object.get("contents").getAsString(), Util.color(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title")));
+        return InventoryUtil.fromBase64(object.get("contents").getAsString(), CC.translate(FactionsPlugin.getInstance().getConfig().getString("fchest.Inventory-Title")));
     }
 }

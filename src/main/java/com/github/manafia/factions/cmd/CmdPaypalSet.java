@@ -38,27 +38,29 @@ public class CmdPaypalSet extends FCommand {
             return;
         }
 
-        switch (context.args.size()) {
-            case 1:
-                if (isEmail(context.argAsString(0))) {
-                    context.fPlayer.getFaction().paypalSet(context.argAsString(0));
-                    context.msg(TL.COMMAND_PAYPALSET_SUCCESSFUL, context.argAsString(0));
-                } else
-                    context.msg(TL.COMMAND_PAYPALSET_NOTEMAIL, context.argAsString(0));
-            case 2:
-                if (context.fPlayer.isAdminBypassing()) {
-                    Faction faction = context.argAsFaction(1);
-                    if (faction != null) {
-                        if (isEmail(context.argAsString(0))) {
-                            context.fPlayer.getFaction().paypalSet(context.argAsString(0));
-                            context.msg(TL.COMMAND_PAYPALSET_ADMIN_SUCCESSFUL, faction.getTag(), context.argAsString(0));
-                        } else
-                            context.msg(TL.COMMAND_PAYPALSET_ADMIN_FAILED, context.argAsString(0));
+        if (context.args.size() == 1) {
+            if (isEmail(context.argAsString(0))) {
+                context.fPlayer.getFaction().paypalSet(context.argAsString(0));
+                context.msg(TL.COMMAND_PAYPALSET_SUCCESSFUL, context.argAsString(0));
+            } else {
+                context.msg(TL.COMMAND_PAYPALSET_NOTEMAIL, context.argAsString(0));
+            }
+        } else if (context.args.size() == 2) {
+            if (context.fPlayer.isAdminBypassing()) {
+                Faction faction = context.argAsFaction(1);
+                if (faction != null) {
+                    if (isEmail(context.argAsString(0))) {
+                        context.fPlayer.getFaction().paypalSet(context.argAsString(0));
+                        context.msg(TL.COMMAND_PAYPALSET_ADMIN_SUCCESSFUL, faction.getTag(), context.argAsString(0));
+                    } else {
+                        context.msg(TL.COMMAND_PAYPALSET_ADMIN_FAILED, context.argAsString(0));
                     }
-                } else
-                    context.msg(TL.GENERIC_NOPERMISSION, "set another factions paypal!");
-            default:
-                context.msg(FactionsPlugin.getInstance().cmdBase.cmdPaypalSet.getUsageTemplate(context));
+                }
+            } else {
+                context.msg(TL.GENERIC_NOPERMISSION, "set another factions paypal!");
+            }
+        } else {
+            context.msg(FactionsPlugin.getInstance().cmdBase.cmdPaypalSet.getUsageTemplate(context));
         }
     }
 
